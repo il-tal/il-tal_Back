@@ -32,31 +32,31 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.security:spring-security-test'
 
     // querydsl
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 
-    //mysql
+    // mysql
     runtimeOnly 'com.mysql:mysql-connector-j'
 
-    //s3
+    // s3
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.2'
 
-    //jwt
+    // jwt
     compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 
-
-    annotationProcessor 'org.projectlombok:lombok'
+    // spring security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
 
     // validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
