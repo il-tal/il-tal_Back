@@ -37,7 +37,7 @@ public class CompanyService {
                 .companyName(companyRequestDto.getCompanyName())
                 .companyScore(companyRequestDto.getCompanyScore())
                 .location(companyRequestDto.getLocation())
-                .imgUrl(imgurl)
+                .companyImgUrl(imgurl)
                 .companyUrl(companyRequestDto.getCompanyUrl())
                 .build();
         companyRepository.save(company);

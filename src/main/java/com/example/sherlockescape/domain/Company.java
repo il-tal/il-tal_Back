@@ -23,7 +23,7 @@ public class Company {
     private String companyName;
 
     @Column(nullable = false)
-    private String imgUrl;
+    private String companyImgUrl;
 
     @Column(nullable = false)
     private String location;
