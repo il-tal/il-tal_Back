@@ -186,5 +186,6 @@ gradle-app.setting
 
 # appication files
 **/application.yml
+**/application.properties
 .properties
 application.properties
