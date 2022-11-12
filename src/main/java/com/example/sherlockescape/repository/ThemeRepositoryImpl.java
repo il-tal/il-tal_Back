@@ -25,15 +25,19 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository{
 
 
     @Override
-    public Page<Theme> findFilter(Pageable pageable, List<String> location, List<String> genre) {
+    public Page<Theme> findFilter(Pageable pageable, List<String> location, List<String> genre/*, List<Double> themeScore, List<Double> difficulty, List<Integer> people*/) {
 
         QTheme theme = QTheme.theme;
 
         QueryResults<Theme> result = queryFactory
                 .from(theme)
                 .select(theme)
-                .where(theme.location.in(location))
+                .where(theme.company.location.in(location))
                 .where(eqGenres(genre))
+//                .where(theme.themeScore.in(themeScore))
+//                .where(theme.difficulty.in(difficulty))
+//                .where(theme.minPeople.in(people))
+//                .where(theme.maxPeople.in(people))
                 .limit(pageable.getPageSize()) // 현재 제한한 갯수
                 .offset(pageable.getOffset())
                 .orderBy(theme.id.desc())

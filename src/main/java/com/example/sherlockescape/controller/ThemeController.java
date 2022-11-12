@@ -3,12 +3,14 @@ package com.example.sherlockescape.controller;
 
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ThemeRequestDto;
+import com.example.sherlockescape.dto.response.ThemeDetailResponseDto;
 import com.example.sherlockescape.dto.response.ThemeResponseDto;
 import com.example.sherlockescape.service.ThemeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,16 +34,26 @@ public class ThemeController {
     }
 
     //테마 전체 조회
-    @GetMapping("/theme")
+    @GetMapping("/themes")
     public ResponseDto<List<ThemeResponseDto>> getAllTheme(@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseDto.success(themeService.findAllTheme(pageable));
     }
 
     //테마 필터링
-    @GetMapping("/theme/filter")
+    @GetMapping("/themes/filter")
     public ResponseDto<List<ThemeResponseDto>> findFilter(@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                                                           @RequestParam(value = "location", required = false) List<String> location,
-                                                          @RequestParam(value = "genre", required = false) List<String> genre){
-        return ResponseDto.success(themeService.filter(pageable,location,genre));
+                                                          @RequestParam(value = "genre", required = false) List<String> genre
+//                                                          @RequestParam(value = "themeScore", required = false) List<Double> themeScore,
+//                                                          @RequestParam(value = "difficulty", required = false) List<Double> difficulty,
+//                                                          @RequestParam(value = "people", required = false) List<Integer> people
+                                                          ){
+        return ResponseDto.success(themeService.filter(pageable,location,genre/*,themeScore,difficulty,people*/));
+    }
+
+    //테마 상세페이지
+    @GetMapping("/theme/{themeId}")
+    public ResponseDto getTheme(@PathVariable Long themeId) {
+        return themeService.findTheme(themeId);
     }
 }
