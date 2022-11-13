@@ -2,6 +2,7 @@ package com.example.sherlockescape.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
@@ -12,6 +13,10 @@ public enum ErrorCode {
 	BAD_PASSWORD(HttpStatus.BAD_REQUEST.value(), "Password incorrect", "비밀번호를 확인하세요"),
 
 	/*UNAUTHORIZED 401 error*/
+
+	/*FORBIDDEN 403 error*/
+	NEED_TO_LOGIN(HttpStatus.FORBIDDEN.value(), "You Need To LogIn", "로그인이 필요합니다."),
+	AUTHOR_IS_DIFFERENT(HttpStatus.FORBIDDEN.value(), "You are not a writer", "회원님이 작성한 글이 아닙니다."),
 
 	/*Not Found 404 error*/
 
