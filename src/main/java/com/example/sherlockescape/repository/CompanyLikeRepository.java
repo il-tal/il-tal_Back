@@ -11,4 +11,6 @@ public interface CompanyLikeRepository extends JpaRepository<CompanyLike, Long> 
     Optional<CompanyLike> findByCompanyIdAndMemberId(long parseLong, Long memberId);
 
     Long countByCompanyId(long parseLong);
+
+    Optional<CompanyLike> findByCompanyId(Long companyId);
 }
