@@ -27,7 +27,9 @@ public class ThemeDetailResponseDto {
 
     private double difficulty;
 
-    private List<Integer> people;
+    private int minPeople;
+
+    private int maxPeople;
     private int playTime;
 
     private int price;
@@ -50,7 +52,8 @@ public class ThemeDetailResponseDto {
         this.companyName = theme.getCompany().getCompanyName();
         this.genre = theme.getGenre();
         this.difficulty = theme.getDifficulty();
-        this.people = theme.getPeople();
+        this.minPeople = theme.getMinPeople();
+        this.maxPeople = theme.getMaxPeople();
         this.playTime = theme.getPlayTime();
         this.price = theme.getPrice();
         this.themeUrl = theme.getThemeUrl();

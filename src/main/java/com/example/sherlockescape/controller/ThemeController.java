@@ -32,8 +32,6 @@ public class ThemeController {
     public ResponseDto<ThemeResponseDto> createTheme(@PathVariable Long companyId,
                                                      @RequestPart(required = false, value = "file") MultipartFile multipartFile,
                                                      @RequestPart(value = "theme") ThemeRequestDto themeRequestDto){
-        int d = themeRequestDto.getThemeScore().intValue();
-        System.out.println(d);
         return themeService.createTheme(companyId, multipartFile, themeRequestDto);
 
     }
@@ -50,7 +48,7 @@ public class ThemeController {
                                                           @RequestParam(value = "location", required = false) List<String> location,
                                                           @RequestParam(value = "genre", required = false) List<String> genre,
                                                           @RequestParam(value = "themeScore", required = false) List<Integer> themeScore,
-                                                          @RequestParam(value = "difficulty", required = false) List<Double> difficulty,
+                                                          @RequestParam(value = "difficulty", required = false) List<Integer> difficulty,
                                                           @RequestParam(value = "people", required = false) List<Integer> people
                                                           ){
         return ResponseDto.success(themeService.filter(pageable,location,genre,themeScore,difficulty,people));

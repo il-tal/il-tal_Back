@@ -38,7 +38,9 @@ public class ThemeRequestDto {
     @NotBlank
     private Double themeScore;
 
-    private List<Integer> people;
+    private int minPeople;
+
+    private int maxPeople;
 
     @NotBlank
     private int price;
