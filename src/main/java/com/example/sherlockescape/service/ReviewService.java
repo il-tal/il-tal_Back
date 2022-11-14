@@ -11,15 +11,21 @@ import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.MemberRepository;
 import com.example.sherlockescape.repository.ReviewRepository;
 import com.example.sherlockescape.repository.ThemeRepository;
+import com.example.sherlockescape.security.user.UserDetailsImpl;
 import com.example.sherlockescape.utils.ValidateCheck;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.parsing.Problem;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
@@ -30,7 +36,6 @@ public class ReviewService {
 	private final ThemeRepository themeRepository;
 	private final ReviewRepository reviewRepository;
 	private final MemberRepository memberRepository;
-	private Review review;
 	private final ValidateCheck validateCheck;
 
 
@@ -38,14 +43,14 @@ public class ReviewService {
 	@Transactional
 	public ResponseDto<?> createReview(Long themeId, ReviewRequestDto reviewRequestDto, Long memberId) {
 
-
+		// 로그인이 필요합니다.
 		Member member = memberRepository.findById(memberId).orElseThrow(
-				() -> new IllegalArgumentException("사용자를 찾을수 없습니다.")
+				() -> new GlobalException(ErrorCode.NEED_TO_LOGIN)
 		);
+
 		Theme theme = themeRepository.findById(themeId).orElseThrow(
 				() -> new IllegalArgumentException("테마를 찾을수 없습니다.")
 		);
-
 
 		Review review = Review.builder()
 				.theme(theme)
@@ -59,7 +64,7 @@ public class ReviewService {
 				.comment(reviewRequestDto.getComment())
 				.build();
 		reviewRepository.save(review);
-		return ResponseDto.success("리뷰 등록 성공");
+		return ResponseDto.success("리뷰 등록 성공!");
 	}
 
 	// 해당 테마 후기 조회
@@ -87,36 +92,35 @@ public class ReviewService {
 
 	// 테마 후기 수정
 	@Transactional
-	public ResponseDto<?> updateReview(Member member, Long themeId, Long reviewId, ReviewRequestDto reviewRequestDto, HttpServletRequest request) {
+	public ResponseDto<?> updateReview(Member member, Long reviewId, ReviewRequestDto requestDto) {
+
+		Review review = reviewRepository.findById(reviewId).orElseThrow(
+				() -> new IllegalArgumentException("리뷰가 존재하지 않습니다"));
 
 		// 회원님이 작성한 글이 아닙니다.
-		if(member.getUsername().equals(review.getMember().getUsername())) {
-			review.update(member, reviewRequestDto);
-			return ResponseDto.success(
-					ReviewResponseDto.builder()
-							.nickname(member.getNickname())
-							.playDate(review.getPlayDate())
-							.score(review.getScore())
-							.success(review.isSuccess())
-							.difficulty(review.getDifficulty())
-							.hint(review.getHint())
-							.comment(review.getComment())
-							.build()
-			);
-		} else {throw new GlobalException(ErrorCode.AUTHOR_IS_DIFFERENT);}
+		if (!member.getUsername().equals(review.getMember().getUsername())) {
+		throw new GlobalException(ErrorCode.AUTHOR_IS_DIFFERENT);
+		}
 
+		review.update(requestDto);
+		return ResponseDto.success("리뷰 수정 완료!");
 	}
+
+
 
 	// 테마 후기 삭제
 	@Transactional
-	public ResponseDto<String> deleteReview(Member member, Long themeId, Long reviewId, HttpServletRequest request) {
+	public ResponseDto<String> deleteReview (Long reviewId, Member member){
+
+		Optional<Review> review = reviewRepository.findById(reviewId);
 
 		// 회원님이 작성한 글이 아닙니다.
-		if(!member.getUsername().equals(review.getMember().getUsername())) {
+		if (!member.getUsername().equals(review.get().getMember().getUsername())) {
 			throw new GlobalException(ErrorCode.AUTHOR_IS_DIFFERENT);
 		}
+
 		reviewRepository.deleteById(reviewId);
-		return ResponseDto.success("테마 후기 삭제 성공");
-		}
+		return ResponseDto.success("리뷰 삭제 성공!");
+	}
 
 }
