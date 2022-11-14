@@ -1,6 +1,7 @@
 package com.example.sherlockescape.repository;
 
 
+import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.domain.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,5 +14,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
 
     Long countByMemberId(Long memberId);
+
+    List<Review> findReviewsByMember(Member member);
 }
 

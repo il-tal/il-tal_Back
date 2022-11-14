@@ -5,11 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.persistence.Column;
-import javax.persistence.Lob;
-import javax.persistence.criteria.CriteriaBuilder;
-import java.util.List;
-
 @Getter
 @AllArgsConstructor
 @Builder
