@@ -46,12 +46,12 @@ public class ThemeController {
     @GetMapping("/themes/filter")
     public ResponseDto<List<ThemeResponseDto>> findFilter(@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                                                           @RequestParam(value = "location", required = false) List<String> location,
-                                                          @RequestParam(value = "genre", required = false) List<String> genre,
+                                                          @RequestParam(value = "genreFilter", required = false) List<String> genreFilter,
                                                           @RequestParam(value = "themeScore", required = false) List<Integer> themeScore,
                                                           @RequestParam(value = "difficulty", required = false) List<Integer> difficulty,
                                                           @RequestParam(value = "people", required = false) List<Integer> people
                                                           ){
-        return ResponseDto.success(themeService.filter(pageable,location,genre,themeScore,difficulty,people));
+        return ResponseDto.success(themeService.filter(pageable,location,genreFilter,themeScore,difficulty,people));
     }
 
     //테마 상세페이지

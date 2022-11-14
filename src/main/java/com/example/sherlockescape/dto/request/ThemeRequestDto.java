@@ -18,13 +18,13 @@ public class ThemeRequestDto {
     private String themeName;
 
     @NotBlank
-    private String location;
-
-    @NotBlank
     private Double difficulty;
 
     @NotBlank
     private String genre;
+
+    @NotBlank
+    private String genreFilter;
 
     @NotBlank
     private int playTime;
@@ -38,8 +38,10 @@ public class ThemeRequestDto {
     @NotBlank
     private Double themeScore;
 
+    @NotBlank
     private int minPeople;
 
+    @NotBlank
     private int maxPeople;
 
     @NotBlank
