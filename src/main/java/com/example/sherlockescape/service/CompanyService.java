@@ -3,12 +3,14 @@ package com.example.sherlockescape.service;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.example.sherlockescape.domain.Company;
 import com.example.sherlockescape.domain.CompanyLike;
+import com.example.sherlockescape.domain.Review;
 import com.example.sherlockescape.domain.Theme;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.CompanyRequestDto;
 import com.example.sherlockescape.dto.response.AllResponseDto;
 import com.example.sherlockescape.repository.CompanyLikeRepository;
 import com.example.sherlockescape.repository.CompanyRepository;
+import com.example.sherlockescape.repository.ReviewRepository;
 import com.example.sherlockescape.repository.ThemeRepository;
 import com.example.sherlockescape.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,7 @@ public class CompanyService {
     private final ThemeRepository themeRepository;
 
     private final CompanyLikeRepository companyLikeRepository;
+    private final ReviewRepository reviewRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -103,10 +106,13 @@ public class CompanyService {
 
             List<Theme> theme = themeRepository.findAllByCompanyId(companyId);
             Long companyLikeCnt = companyLikeRepository.countByCompanyId(companyId);
+
             Optional<CompanyLike> likes = companyLikeRepository.findByCompanyId(companyId);
+
             boolean likeCheck;
             likeCheck = likes.isPresent();
             //댓글 수 추가
+
             AllResponseDto allResponseDto =
                     AllResponseDto.builder()
                             .id(companyId)
@@ -124,5 +130,4 @@ public class CompanyService {
         }
         return allResponseDtoList;
     }
-
 }

@@ -22,15 +22,13 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @Column(name = "review_id")
     private Long id;
-
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "theme_id")
     private Theme theme;
-
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-    // ??????
+
     @Column(nullable = false)
     private String nickname;
 
@@ -39,7 +37,6 @@ public class Review {
 
     @Column(nullable = false)
     private double score;
-
     ///// enum 고려
     @Column(nullable = false)
     private boolean success;
@@ -52,6 +49,7 @@ public class Review {
 
     @Column(nullable = false)
     private String comment;
+
 
     public Review(Member member, Theme theme, ReviewRequestDto requestDto){
         this.member = member;

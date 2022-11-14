@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Slf4j
@@ -46,6 +45,8 @@ public class ReviewService {
 		Theme theme = themeRepository.findById(themeId).orElseThrow(
 				() -> new IllegalArgumentException("테마를 찾을수 없습니다.")
 		);
+
+
 		Review review = Review.builder()
 				.theme(theme)
 				.member(member)
@@ -63,7 +64,7 @@ public class ReviewService {
 
 	// 해당 테마 후기 조회
 	@Transactional
-	public ResponseDto<?> getReview(Long themeId,ReviewRequestDto reviewRequestDto) {
+	public ResponseDto<?> getReview(Long themeId) {
 
 		themeRepository.findById(themeId);
 		List<ReviewResponseDto> reviewAllList = new ArrayList<>();
@@ -86,7 +87,7 @@ public class ReviewService {
 
 	// 테마 후기 수정
 	@Transactional
-	public ResponseDto<?> updateReview(Member member, Long id, ReviewRequestDto reviewRequestDto, HttpServletRequest request) {
+	public ResponseDto<?> updateReview(Member member, Long themeId, Long reviewId, ReviewRequestDto reviewRequestDto, HttpServletRequest request) {
 
 		// 회원님이 작성한 글이 아닙니다.
 		if(member.getUsername().equals(review.getMember().getUsername())) {
@@ -108,13 +109,13 @@ public class ReviewService {
 
 	// 테마 후기 삭제
 	@Transactional
-	public ResponseDto<String> deleteReview(Member member, Long id, HttpServletRequest request) {
+	public ResponseDto<String> deleteReview(Member member, Long themeId, Long reviewId, HttpServletRequest request) {
 
 		// 회원님이 작성한 글이 아닙니다.
 		if(!member.getUsername().equals(review.getMember().getUsername())) {
 			throw new GlobalException(ErrorCode.AUTHOR_IS_DIFFERENT);
 		}
-		reviewRepository.deleteById(id);
+		reviewRepository.deleteById(reviewId);
 		return ResponseDto.success("테마 후기 삭제 성공");
 		}
 
