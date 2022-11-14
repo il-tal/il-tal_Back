@@ -55,7 +55,6 @@ public class ThemeService {
                 .company(company)
                 .themeName(themeReqDto.getThemeName())
                 .themeImgUrl(imgurl)
-                .location(themeReqDto.getLocation())
                 .difficulty(themeReqDto.getDifficulty())
                 .genre(themeReqDto.getGenre())
                 .playTime(themeReqDto.getPlayTime())
