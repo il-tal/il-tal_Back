@@ -62,8 +62,7 @@ public class ThemeService {
                 .synopsis(themeReqDto.getSynopsis())
                 .themeScore(themeReqDto.getThemeScore())
                 .themeUrl(themeReqDto.getThemeUrl())
-                .maxPeople(themeReqDto.getMaxPeople())
-                .minPeople(themeReqDto.getMinPeople())
+                .people(themeReqDto.getPeople())
                 .price(themeReqDto.getPrice())
                 .build();
         themeRepository.save(theme);
