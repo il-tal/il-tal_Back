@@ -49,18 +49,20 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository{
 
     }
     private BooleanExpression eqLocation(List<String> location) {
-        return location != null ? Expressions.allOf(location.stream().map(this::isFilteredLoacation).toArray(BooleanExpression[]::new)) : null;
+        return location != null ? Expressions.anyOf(location.stream().map(this::isFilteredLoacation).toArray(BooleanExpression[]::new)) : null;
     }
     private BooleanExpression isFilteredLoacation(String location) {
         return theme.company.location.contains(location);
     }
 
+
     private BooleanExpression eqGenres(List<String> genre) {
-        return genre != null ? Expressions.allOf(genre.stream().map(this::isFilteredGenre).toArray(BooleanExpression[]::new)) : null;
+        return genre != null ? Expressions.anyOf(genre.stream().map(this::isFilteredGenre).toArray(BooleanExpression[]::new)) : null;
     }
     private BooleanExpression isFilteredGenre(String genre) {
         return theme.genre.contains(genre);
     }
+
 
     private BooleanExpression eqThemeScore(List<Integer> themeScore) {
         if (themeScore == null) { return null; }
@@ -83,12 +85,10 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository{
     }
 
     private BooleanExpression eqPeople(List<Integer> people) {
-        if (people == null) { return null; }
-            else {
-                Integer minPeople = Collections.min(people);
-                Integer maxPeople = Collections.max(people);
-                return theme.minPeople.loe(minPeople).and(theme.maxPeople.goe(maxPeople));
+        return people != null ? Expressions.anyOf(people.stream().map(this::isFilteredPeople).toArray(BooleanExpression[]::new)) : null;
             }
-        }
+                private BooleanExpression isFilteredPeople(Integer people) {
+        return theme.people.contains(people);
+    }
 
 }

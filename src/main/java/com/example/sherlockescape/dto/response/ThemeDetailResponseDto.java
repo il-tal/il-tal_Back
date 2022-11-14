@@ -7,6 +7,8 @@ import lombok.Getter;
 
 import javax.persistence.Column;
 import javax.persistence.Lob;
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -25,10 +27,7 @@ public class ThemeDetailResponseDto {
 
     private double difficulty;
 
-    private int minPeople;
-
-    private int maxPeople;
-
+    private List<Integer> people;
     private int playTime;
 
     private int price;
@@ -51,8 +50,7 @@ public class ThemeDetailResponseDto {
         this.companyName = theme.getCompany().getCompanyName();
         this.genre = theme.getGenre();
         this.difficulty = theme.getDifficulty();
-        this.minPeople = theme.getMinPeople();
-        this.maxPeople = theme.getMaxPeople();
+        this.people = theme.getPeople();
         this.playTime = theme.getPlayTime();
         this.price = theme.getPrice();
         this.themeUrl = theme.getThemeUrl();
