@@ -43,13 +43,15 @@ public class ReviewService {
 	@Transactional
 	public ResponseDto<?> createReview(Long themeId, ReviewRequestDto reviewRequestDto, Long memberId) {
 
-
+		// 로그인이 필요합니다.
 		Member member = memberRepository.findById(memberId).orElseThrow(
-				() -> new IllegalArgumentException("사용자를 찾을수 없습니다.")
+				() -> new GlobalException(ErrorCode.NEED_TO_LOGIN)
 		);
+
 		Theme theme = themeRepository.findById(themeId).orElseThrow(
 				() -> new IllegalArgumentException("테마를 찾을수 없습니다.")
 		);
+
 		Review review = Review.builder()
 				.theme(theme)
 				.member(member)
@@ -62,7 +64,7 @@ public class ReviewService {
 				.comment(reviewRequestDto.getComment())
 				.build();
 		reviewRepository.save(review);
-		return ResponseDto.success("리뷰 등록 성공");
+		return ResponseDto.success("리뷰 등록 성공!");
 	}
 
 	// 해당 테마 후기 조회
@@ -95,12 +97,13 @@ public class ReviewService {
 		Review review = reviewRepository.findById(reviewId).orElseThrow(
 				() -> new IllegalArgumentException("리뷰가 존재하지 않습니다"));
 
+		// 회원님이 작성한 글이 아닙니다.
 		if (!member.getUsername().equals(review.getMember().getUsername())) {
-			return ResponseDto.fail(403,"ddd", "작성자만 수정 가능합니다.");
+		throw new GlobalException(ErrorCode.AUTHOR_IS_DIFFERENT);
 		}
 
 		review.update(requestDto);
-		return ResponseDto.success("수정 완료!");
+		return ResponseDto.success("리뷰 수정 완료!");
 	}
 
 
@@ -108,13 +111,16 @@ public class ReviewService {
 	// 테마 후기 삭제
 	@Transactional
 	public ResponseDto<String> deleteReview (Long reviewId, Member member){
+
 		Optional<Review> review = reviewRepository.findById(reviewId);
+
 		// 회원님이 작성한 글이 아닙니다.
 		if (!member.getUsername().equals(review.get().getMember().getUsername())) {
 			throw new GlobalException(ErrorCode.AUTHOR_IS_DIFFERENT);
 		}
+
 		reviewRepository.deleteById(reviewId);
-		return ResponseDto.success("테마 후기 삭제 성공");
+		return ResponseDto.success("리뷰 삭제 성공!");
 	}
 
 }
