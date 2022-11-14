@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.example.sherlockescape.domain.QCompany.company;
-import static com.example.sherlockescape.domain.QTheme.theme;
 
 @Service
 @RequiredArgsConstructor
@@ -37,8 +35,6 @@ public class ThemeService {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
-
-
     /*
      *
      * 테마 DB 등록
