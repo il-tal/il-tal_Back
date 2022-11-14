@@ -30,7 +30,7 @@ public class Theme {
     private Achievement achievement;
 
     @Column(nullable = false)
-    private String imgUrl;
+    private String themeImgUrl;
 
     @Column(nullable = false)
     private String location;
@@ -44,6 +44,10 @@ public class Theme {
     @Column
     private String genre;
 
+//    @Column
+//    private String genreFilter;
+
+
     @Column(nullable = false)
     private int playTime;
 
@@ -51,16 +55,16 @@ public class Theme {
     private String synopsis;
 
     @Column
-    private double themeScore;
+    private Double themeScore;
 
     @Column(nullable = false)
     private String themeUrl;
 
     @Column(nullable = false)
-    private int maxPeople;
+    private int minPeople;
 
     @Column(nullable = false)
-    private int minPeople;
+    private int maxPeople;
 
     @Column(nullable = false)
     private int price;

@@ -20,7 +20,7 @@ public class ThemeRequestDto {
     private String location;
 
     @NotBlank
-    private double difficulty;
+    private Double difficulty;
 
     @NotBlank
     private String genre;
@@ -35,7 +35,7 @@ public class ThemeRequestDto {
     private String themeUrl;
 
     @NotBlank
-    private int themeScore;
+    private Double themeScore;
 
     @NotBlank
     private int maxPeople;
