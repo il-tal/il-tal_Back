@@ -1,6 +1,5 @@
 package com.example.sherlockescape.dto.response;
 
-import com.example.sherlockescape.domain.Company;
 import com.example.sherlockescape.domain.Theme;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
