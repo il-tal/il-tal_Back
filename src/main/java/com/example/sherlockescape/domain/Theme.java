@@ -26,6 +26,9 @@ public class Theme {
     @JoinColumn(name = "company_id")
     private Company company;
 
+    @OneToOne(mappedBy = "theme")
+    private Achievement achievement;
+
     @Column(nullable = false)
     private String imgUrl;
 
