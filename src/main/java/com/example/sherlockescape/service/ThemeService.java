@@ -36,7 +36,7 @@ public class ThemeService {
      *
      * 테마 DB 등록
      * */
-    public ResponseDto createTheme(Long companyId, MultipartFile multipartFile, ThemeRequestDto themeReqDto) {
+    public ResponseDto<String> createTheme(Long companyId, MultipartFile multipartFile, ThemeRequestDto themeReqDto) {
         Company company = companyRepository.findById(companyId).orElseThrow(
                 () -> new IllegalArgumentException("해당 업체가 존재하지 않습니다.")
         );
