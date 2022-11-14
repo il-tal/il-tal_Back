@@ -33,9 +33,6 @@ public class Theme {
     private String themeImgUrl;
 
     @Column(nullable = false)
-    private String location;
-
-    @Column(nullable = false)
     private String themeName;
 
     @Column(nullable = false)
@@ -44,8 +41,8 @@ public class Theme {
     @Column
     private String genre;
 
-//    @Column
-//    private String genreFilter;
+    @Column
+    private String genreFilter;
 
 
     @Column(nullable = false)
