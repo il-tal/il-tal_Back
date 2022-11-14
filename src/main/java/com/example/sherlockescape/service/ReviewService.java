@@ -13,6 +13,7 @@ import com.example.sherlockescape.repository.ReviewRepository;
 import com.example.sherlockescape.repository.ThemeRepository;
 import com.example.sherlockescape.security.user.UserDetailsImpl;
 import com.example.sherlockescape.utils.ValidateCheck;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.parsing.Problem;
@@ -35,7 +36,6 @@ public class ReviewService {
 	private final ThemeRepository themeRepository;
 	private final ReviewRepository reviewRepository;
 	private final MemberRepository memberRepository;
-	private final Review review;
 	private final ValidateCheck validateCheck;
 
 
@@ -108,9 +108,9 @@ public class ReviewService {
 	// 테마 후기 삭제
 	@Transactional
 	public ResponseDto<String> deleteReview (Long reviewId, Member member){
-
+		Optional<Review> review = reviewRepository.findById(reviewId);
 		// 회원님이 작성한 글이 아닙니다.
-		if (!member.getUsername().equals(review.getMember().getUsername())) {
+		if (!member.getUsername().equals(review.get().getMember().getUsername())) {
 			throw new GlobalException(ErrorCode.AUTHOR_IS_DIFFERENT);
 		}
 		reviewRepository.deleteById(reviewId);
