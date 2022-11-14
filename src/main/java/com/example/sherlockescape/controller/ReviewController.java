@@ -21,8 +21,8 @@ public class ReviewController {
 	// 테마 후기 작성
 	@PostMapping("/{themeId}/review")
 	public ResponseDto<?> createReview(@PathVariable Long themeId,
-									   @RequestBody @Valid ReviewRequestDto requestDto,
-									   @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+										@RequestBody @Valid ReviewRequestDto requestDto,
+										@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
 		return reviewService.createReview(themeId, requestDto, userDetailsImpl.getMember().getId());
 	}
 
@@ -33,22 +33,18 @@ public class ReviewController {
 	}
 
 	// 테마 후기 수정
-	@PutMapping("{themeId}/review/{reviewId}")
+	@PutMapping("review/{reviewId}")
 	public ResponseDto<?> updateReview(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
-									   @PathVariable Long themeId,
-									   @PathVariable Long reviewId,
-									   @RequestBody ReviewRequestDto requestDto,
-									   HttpServletRequest request) {
-		return reviewService.updateReview(userDetailsImpl.getMember(), themeId, reviewId, requestDto, request);
+										@PathVariable Long reviewId,
+										@RequestBody @Valid ReviewRequestDto requestDto) {
+		return reviewService.updateReview(userDetailsImpl.getMember(), reviewId, requestDto);
 	}
 
 	// 테마 후기 삭제
-	@DeleteMapping("{themeId}/review/{reviewId}")
-	public ResponseDto<String> deleteReview(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
-											@PathVariable Long themeId,
-											@PathVariable Long reviewId,
-											HttpServletRequest request) {
-		return reviewService.deleteReview(userDetailsImpl.getMember(), themeId, reviewId, request);
+	@DeleteMapping("/review/{reviewId}")
+	public ResponseDto<String> deleteReview(@PathVariable Long reviewId,
+											@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+		return reviewService.deleteReview(reviewId, userDetailsImpl.getMember());
 	}
 
 }
