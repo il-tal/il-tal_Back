@@ -62,8 +62,8 @@ public class ThemeService {
                 .synopsis(themeReqDto.getSynopsis())
                 .themeScore(themeReqDto.getThemeScore())
                 .themeUrl(themeReqDto.getThemeUrl())
-                .maxPeople(themeReqDto.getMaxPeople())
                 .minPeople(themeReqDto.getMinPeople())
+                .maxPeople(themeReqDto.getMaxPeople())
                 .price(themeReqDto.getPrice())
                 .build();
         themeRepository.save(theme);
@@ -80,7 +80,7 @@ public class ThemeService {
     }
 
     //테마 필터링
-    public List<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genre, List<Integer> themeScore, List<Double> difficulty, List<Integer> people){
+    public List<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genre, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people){
 
         Page<Theme> filteredTheme = themeRepository.findFilter(pageable, location, genre, themeScore, difficulty, people);
 
