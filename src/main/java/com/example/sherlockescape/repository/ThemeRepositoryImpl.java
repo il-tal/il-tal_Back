@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import static com.example.sherlockescape.domain.QTheme.theme;
 
@@ -73,7 +72,7 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
         } else {
             Integer minScore = Collections.min(themeScore);
             Integer maxScore = Collections.max(themeScore);
-            return theme.themeScore.between(minScore, maxScore + 1);
+            return theme.themeScore.goe(minScore).and(theme.themeScore.lt(maxScore+1));
         }
     }
 
@@ -84,7 +83,7 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
         } else {
             Integer minDifficulty = Collections.min(difficulty);
             Integer maxDifficulty = Collections.max(difficulty);
-            return theme.difficulty.between(minDifficulty, maxDifficulty + 1);
+            return theme.themeScore.goe(minDifficulty).and(theme.themeScore.lt(maxDifficulty+1));
         }
     }
 
