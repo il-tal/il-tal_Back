@@ -29,18 +29,12 @@ public class ReviewService {
 
 	private ThemeRepository themeRepository;
 	private ReviewRepository reviewRepository;
-	private JwtUtil jwtUtil;
 	private Review review;
 
 
 	// 테마 후기 작성
 	@Transactional
 	public ResponseDto<?> createReview(ReviewRequestDto reviewRequestDto, HttpServletRequest request) {
-
-		//  로그인이 필요합니다.
-		if (!jwtUtil.tokenValidation(request.getHeader("Refresh-Token"))) {
-			throw new GlobalException(ErrorCode.NEED_TO_LOGIN);
-		}
 
 		Review review = Review.builder()
 				.nickname(reviewRequestDto.getNickname())
@@ -75,18 +69,12 @@ public class ReviewService {
 							.build()
 			);
 		}
-
 		return ResponseDto.success(reviewAllList);
 	}
 
 	// 테마 후기 수정
 	@Transactional
 	public ResponseDto<?> updateReview(Member member, Long id, ReviewRequestDto reviewRequestDto, HttpServletRequest request) {
-
-		//  로그인이 필요합니다.
-		if (!jwtUtil.tokenValidation(request.getHeader("Refresh-Token"))) {
-			throw new GlobalException(ErrorCode.NEED_TO_LOGIN);
-		}
 
 		// 회원님이 작성한 글이 아닙니다.
 		if(member.getUsername().equals(review.getMember().getUsername())) {
@@ -110,43 +98,12 @@ public class ReviewService {
 	@Transactional
 	public ResponseDto<String> deleteReview(Member member, Long id, HttpServletRequest request) {
 
-		//  로그인이 필요합니다.
-		if (!jwtUtil.tokenValidation(request.getHeader("Refresh-Token"))) {
-			throw new GlobalException(ErrorCode.NEED_TO_LOGIN);
-		}
-
 		// 회원님이 작성한 글이 아닙니다.
 		if(!member.getUsername().equals(review.getMember().getUsername())) {
 			throw new GlobalException(ErrorCode.AUTHOR_IS_DIFFERENT);
 		}
-		// 삭제
 		reviewRepository.deleteById(id);
 		return ResponseDto.success("테마 후기 삭제 성공");
 		}
-
-
-
-	/////////////////////////////////////////////////////
-
-	// member 유효성 검사
-//	private Member validateMember(HttpServletRequest request) {
-//		if (!jwtUtil.tokenValidation(request.getHeader("Refresh-Token"))) {
-//			return null;
-//		}
-//		return jwtUtil.getMemberFromAuthentication();
-//	}
-
-	// theme 유효성 검사
-	public Theme isPresentTheme(Long id){
-		Optional<Theme> optionalTheme = themeRepository.findById(id);
-		return optionalTheme.orElse(null);
-	}
-
-	// review 유효성 검사
-	@Transactional(readOnly = true)
-	public Review isPresentReview(Long id){
-		Optional<Review> optionalReview = reviewRepository.findById(id);
-		return optionalReview.orElse(null);
-	}
 
 }
