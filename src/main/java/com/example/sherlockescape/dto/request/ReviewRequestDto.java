@@ -1,10 +1,14 @@
 package com.example.sherlockescape.dto.request;
 
+import com.example.sherlockescape.domain.Member;
+import com.example.sherlockescape.domain.Review;
+import com.example.sherlockescape.domain.Theme;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Getter
@@ -12,22 +16,17 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ReviewRequestDto {
 
-	@NotBlank(message = "플레이날짜를 입력해주세요!")
+
 	private LocalDate playDate;
 
-	@NotBlank(message = "평점을 입력해주세요!")
 	private double score;
-
 	///// Enum 고려
-	@NotBlank(message = "성공여부를 입력해주세요!")
 	private boolean success;
 
-	@NotBlank(message = "난이도를 입력해주세요!")
 	private int difficulty;
 
-	@NotBlank(message = "힌트사용개수를 입력해주세요!")
 	private int hint;
-
-	@NotBlank(message = "후기를 입력해주세요!")
+	@NotBlank
 	private String comment;
+
 }

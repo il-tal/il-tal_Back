@@ -8,9 +8,10 @@ import com.example.sherlockescape.dto.request.ReviewRequestDto;
 import com.example.sherlockescape.dto.response.ReviewResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
+import com.example.sherlockescape.repository.MemberRepository;
 import com.example.sherlockescape.repository.ReviewRepository;
 import com.example.sherlockescape.repository.ThemeRepository;
-import com.example.sherlockescape.security.user.UserDetailsImpl;
+import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,18 +28,24 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ReviewService {
 
-	private ThemeRepository themeRepository;
-	private ReviewRepository reviewRepository;
+	private final ThemeRepository themeRepository;
+	private final ReviewRepository reviewRepository;
+	private final MemberRepository memberRepository;
 	private Review review;
+	private final ValidateCheck validateCheck;
 
 
 	// 테마 후기 작성
 	@Transactional
-	public ResponseDto<?> createReview(Long themeId, ReviewRequestDto reviewRequestDto, Member member) {
+	public ResponseDto<?> createReview(Long themeId, ReviewRequestDto reviewRequestDto, Long memberId) {
 
+
+		Member member = memberRepository.findById(memberId).orElseThrow(
+				() -> new IllegalArgumentException("사용자를 찾을수 없습니다.")
+		);
 		Theme theme = themeRepository.findById(themeId).orElseThrow(
-				()-> new IllegalArgumentException("테마가 존재하지 않습니다.")
-				);
+				() -> new IllegalArgumentException("테마를 찾을수 없습니다.")
+		);
 		Review review = Review.builder()
 				.theme(theme)
 				.member(member)
