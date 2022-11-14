@@ -12,12 +12,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ReviewRequestDto {
 
-	@NotBlank // theme_id
-	private Long id;
-
-	@NotBlank
-	private String nickname;
-
 	@NotBlank(message = "플레이날짜를 입력해주세요!")
 	private LocalDate playDate;
 
@@ -26,7 +20,7 @@ public class ReviewRequestDto {
 
 	///// Enum 고려
 	@NotBlank(message = "성공여부를 입력해주세요!")
-	private String challenge;
+	private boolean success;
 
 	@NotBlank(message = "난이도를 입력해주세요!")
 	private int difficulty;

@@ -18,15 +18,17 @@ public class ReviewController {
 	private ReviewService reviewService;
 
 	// 테마 후기 작성
-	@PostMapping("/review")
-	public ResponseDto<?> createReview(@RequestBody ReviewRequestDto requestDto,  HttpServletRequest request) {
-		return reviewService.createReview(requestDto,request);
+	@PostMapping("/{themeId}/review")
+	public ResponseDto<?> createReview(@PathVariable Long themeId,
+											@RequestBody ReviewRequestDto requestDto,
+											@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+		return reviewService.createReview(themeId, requestDto, userDetailsImpl.getMember());
 	}
 
 	// 테마 후기 조회
-	@GetMapping("/reviews")
-	public ResponseDto<?> getReview(@RequestBody ReviewRequestDto requestDto) {
-		return reviewService.getReview(requestDto.getId());
+	@GetMapping("/{themeId}/reviews")
+	public ResponseDto<?> getReview(@PathVariable Long themeId, @RequestBody ReviewRequestDto requestDto) {
+		return reviewService.getReview(themeId, requestDto);
 	}
 
 	// 테마 후기 수정

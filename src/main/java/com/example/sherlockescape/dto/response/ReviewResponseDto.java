@@ -17,7 +17,7 @@ public class ReviewResponseDto {
 	private String nickname;
 	private LocalDate playDate;
 	private double score;
-	private String challenge;
+	private boolean success;
 	private int difficulty;
 	private int hint;
 	private String comment;

@@ -43,7 +43,7 @@ public class Review {
 
     ///// enum 고려
     @Column(nullable = false)
-    private String challenge;
+    private boolean success;
 
     @Column(nullable = false)
     private int difficulty;
@@ -54,11 +54,21 @@ public class Review {
     @Column(nullable = false)
     private String comment;
 
+    public Review(Member member, Theme theme, ReviewRequestDto requestDto){
+        this.member = member;
+        this.theme = theme;
+        this.nickname = member.getNickname();
+        this.playDate = requestDto.getPlayDate();
+        this.score = requestDto.getScore();
+        this.success = requestDto.isSuccess();
+        this.difficulty = requestDto.getDifficulty();
+        this.hint = requestDto.getHint();
+    }
     public void update(Member member, ReviewRequestDto requestDto) {
         this.nickname = member.getNickname();
         this.playDate = requestDto.getPlayDate();
         this.score = requestDto.getScore();
-        this.challenge = requestDto.getChallenge();
+        this.success = requestDto.isSuccess();
         this.difficulty = requestDto.getDifficulty();
         this.hint = requestDto.getHint();
         this.comment = requestDto.getComment();
