@@ -36,14 +36,14 @@ public class ThemeController {
 
     }
 
-    //테마 전체 조회
-    @GetMapping("/themes")
-    public ResponseDto<List<ThemeResponseDto>> getAllTheme(@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseDto.success(themeService.findAllTheme(pageable));
-    }
+//    //테마 전체 조회
+//    @GetMapping("/themes")
+//    public ResponseDto<List<ThemeResponseDto>> getAllTheme(@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+//        return ResponseDto.success(themeService.findAllTheme(pageable));
+//    }
 
     //테마 필터링
-    @GetMapping("/themes/filter")
+    @GetMapping("/themes")
     public ResponseDto<List<ThemeResponseDto>> findFilter(@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                                                           @RequestParam(value = "location", required = false) List<String> location,
                                                           @RequestParam(value = "genreFilter", required = false) List<String> genreFilter,
