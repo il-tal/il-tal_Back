@@ -65,8 +65,8 @@ public class Review {
         this.hint = requestDto.getHint();
         this.comment = requestDto.getComment();
     }
-    public void update(Member member, ReviewRequestDto requestDto) {
-        this.nickname = member.getNickname();
+    public void update(ReviewRequestDto requestDto) {
+//        this.nickname = member.getNickname();
         this.playDate = requestDto.getPlayDate();
         this.score = requestDto.getScore();
         this.success = requestDto.isSuccess();

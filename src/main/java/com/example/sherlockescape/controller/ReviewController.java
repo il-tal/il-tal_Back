@@ -21,27 +21,30 @@ public class ReviewController {
 	// 테마 후기 작성
 	@PostMapping("/{themeId}/review")
 	public ResponseDto<?> createReview(@PathVariable Long themeId,
-									   @RequestBody @Valid ReviewRequestDto requestDto,
-									   @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+										@RequestBody @Valid ReviewRequestDto requestDto,
+										@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
 		return reviewService.createReview(themeId, requestDto, userDetailsImpl.getMember().getId());
 	}
 
 	// 테마 후기 조회
 	@GetMapping("/{themeId}/reviews")
-	public ResponseDto<?> getReview(@PathVariable Long themeId, @RequestBody ReviewRequestDto requestDto) {
-		return reviewService.getReview(themeId, requestDto);
+	public ResponseDto<?> getReview(@PathVariable Long themeId) {
+		return reviewService.getReview(themeId);
 	}
 
 	// 테마 후기 수정
-	@PatchMapping("/review/{id}")
-	public ResponseDto<?> updateReview(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @PathVariable Long id, @RequestBody ReviewRequestDto requestDto, HttpServletRequest request) {
-		return reviewService.updateReview(userDetailsImpl.getMember(), id, requestDto, request);
+	@PutMapping("review/{reviewId}")
+	public ResponseDto<?> updateReview(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+										@PathVariable Long reviewId,
+										@RequestBody @Valid ReviewRequestDto requestDto) {
+		return reviewService.updateReview(userDetailsImpl.getMember(), reviewId, requestDto);
 	}
 
 	// 테마 후기 삭제
-	@DeleteMapping("/review/{id}")
-	public ResponseDto<String> deleteReview(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @PathVariable Long id, HttpServletRequest request) {
-		return reviewService.deleteReview(userDetailsImpl.getMember(), id, request);
+	@DeleteMapping("/review/{reviewId}")
+	public ResponseDto<String> deleteReview(@PathVariable Long reviewId,
+											@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+		return reviewService.deleteReview(reviewId, userDetailsImpl.getMember());
 	}
 
 }

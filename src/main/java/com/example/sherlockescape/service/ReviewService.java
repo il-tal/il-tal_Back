@@ -11,9 +11,13 @@ import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.MemberRepository;
 import com.example.sherlockescape.repository.ReviewRepository;
 import com.example.sherlockescape.repository.ThemeRepository;
+import com.example.sherlockescape.security.user.UserDetailsImpl;
 import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.parsing.Problem;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +35,7 @@ public class ReviewService {
 	private final ThemeRepository themeRepository;
 	private final ReviewRepository reviewRepository;
 	private final MemberRepository memberRepository;
-	private Review review;
+	private final Review review;
 	private final ValidateCheck validateCheck;
 
 
@@ -63,7 +67,7 @@ public class ReviewService {
 
 	// 해당 테마 후기 조회
 	@Transactional
-	public ResponseDto<?> getReview(Long themeId,ReviewRequestDto reviewRequestDto) {
+	public ResponseDto<?> getReview(Long themeId) {
 
 		themeRepository.findById(themeId);
 		List<ReviewResponseDto> reviewAllList = new ArrayList<>();
@@ -86,36 +90,31 @@ public class ReviewService {
 
 	// 테마 후기 수정
 	@Transactional
-	public ResponseDto<?> updateReview(Member member, Long id, ReviewRequestDto reviewRequestDto, HttpServletRequest request) {
+	public ResponseDto<?> updateReview(Member member, Long reviewId, ReviewRequestDto requestDto) {
 
-		// 회원님이 작성한 글이 아닙니다.
-		if(member.getUsername().equals(review.getMember().getUsername())) {
-			review.update(member, reviewRequestDto);
-			return ResponseDto.success(
-					ReviewResponseDto.builder()
-							.nickname(member.getNickname())
-							.playDate(review.getPlayDate())
-							.score(review.getScore())
-							.success(review.isSuccess())
-							.difficulty(review.getDifficulty())
-							.hint(review.getHint())
-							.comment(review.getComment())
-							.build()
-			);
-		} else {throw new GlobalException(ErrorCode.AUTHOR_IS_DIFFERENT);}
+		Review review = reviewRepository.findById(reviewId).orElseThrow(
+				() -> new IllegalArgumentException("리뷰가 존재하지 않습니다"));
 
+		if (!member.getUsername().equals(review.getMember().getUsername())) {
+			return ResponseDto.fail(403,"ddd", "작성자만 수정 가능합니다.");
+		}
+
+		review.update(requestDto);
+		return ResponseDto.success("수정 완료!");
 	}
+
+
 
 	// 테마 후기 삭제
 	@Transactional
-	public ResponseDto<String> deleteReview(Member member, Long id, HttpServletRequest request) {
+	public ResponseDto<String> deleteReview (Long reviewId, Member member){
 
 		// 회원님이 작성한 글이 아닙니다.
-		if(!member.getUsername().equals(review.getMember().getUsername())) {
+		if (!member.getUsername().equals(review.getMember().getUsername())) {
 			throw new GlobalException(ErrorCode.AUTHOR_IS_DIFFERENT);
 		}
-		reviewRepository.deleteById(id);
+		reviewRepository.deleteById(reviewId);
 		return ResponseDto.success("테마 후기 삭제 성공");
-		}
+	}
 
 }
