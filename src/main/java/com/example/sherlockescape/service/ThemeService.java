@@ -57,6 +57,7 @@ public class ThemeService {
                 .themeImgUrl(imgurl)
                 .difficulty(themeReqDto.getDifficulty())
                 .genre(themeReqDto.getGenre())
+                .genreFilter(themeReqDto.getGenreFilter())
                 .playTime(themeReqDto.getPlayTime())
                 .synopsis(themeReqDto.getSynopsis())
                 .themeScore(themeReqDto.getThemeScore())
@@ -79,9 +80,9 @@ public class ThemeService {
     }
 
     //테마 필터링
-    public List<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genre, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people){
+    public List<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people){
 
-        Page<Theme> filteredTheme = themeRepository.findFilter(pageable, location, genre, themeScore, difficulty, people);
+        Page<Theme> filteredTheme = themeRepository.findFilter(pageable, location, genreFilter, themeScore, difficulty, people);
 
         List<ThemeResponseDto> themeLists = filteredTheme.stream()
                 .map(ThemeResponseDto::new).collect(Collectors.toList());

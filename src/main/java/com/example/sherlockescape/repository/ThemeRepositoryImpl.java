@@ -26,7 +26,7 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
 
 
     @Override
-    public Page<Theme> findFilter(Pageable pageable, List<String> location, List<String> genre, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people) {
+    public Page<Theme> findFilter(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people) {
 
         QTheme theme = QTheme.theme;
 
@@ -35,7 +35,7 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
                 .select(theme)
                 .where(
                         eqLocation(location),
-                        eqGenres(genre),
+                        eqGenres(genreFilter),
                         eqThemeScore(themeScore),
                         eqDifficulty(difficulty),
                         eqPeople(people)
@@ -57,12 +57,12 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
     }
 
 
-    private BooleanExpression eqGenres(List<String> genre) {
-        return genre != null ? Expressions.anyOf(genre.stream().map(this::isFilteredGenre).toArray(BooleanExpression[]::new)) : null;
+    private BooleanExpression eqGenres(List<String> genreFilter) {
+        return genreFilter != null ? Expressions.anyOf(genreFilter.stream().map(this::isFilteredGenre).toArray(BooleanExpression[]::new)) : null;
     }
 
-    private BooleanExpression isFilteredGenre(String genre) {
-        return theme.genre.contains(genre);
+    private BooleanExpression isFilteredGenre(String genreFilter) {
+        return theme.genreFilter.contains(genreFilter);
     }
 
 
