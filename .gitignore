@@ -188,3 +188,11 @@ gradle-app.setting
 **/application.yml
 **/application.properties
 .properties
+/.idea/.gitignore
+/.idea/.name
+/.idea/aws.xml
+/.idea/compiler.xml
+/.idea/jarRepositories.xml
+/.idea/jpa-buddy.xml
+/.idea/misc.xml
+/.idea/vcs.xml
