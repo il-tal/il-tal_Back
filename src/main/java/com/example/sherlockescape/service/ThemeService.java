@@ -70,14 +70,14 @@ public class ThemeService {
         return ResponseDto.success("테마 등록 성공");
     }
 
-    //테마 전체 조회
-    public List<ThemeResponseDto> findAllTheme(Pageable pageable) {
-
-        Page<Theme> allTheme = themeRepository.findAll(pageable);
-        List<ThemeResponseDto> themeLists = allTheme.stream()
-                .map(ThemeResponseDto::new).collect(Collectors.toList());
-        return themeLists;
-    }
+//    //테마 전체 조회
+//    public List<ThemeResponseDto> findAllTheme(Pageable pageable) {
+//
+//        Page<Theme> allTheme = themeRepository.findAll(pageable);
+//        List<ThemeResponseDto> themeLists = allTheme.stream()
+//                .map(ThemeResponseDto::new).collect(Collectors.toList());
+//        return themeLists;
+//    }
 
     //테마 필터링
     public List<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people){
