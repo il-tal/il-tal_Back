@@ -16,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static com.example.sherlockescape.domain.QTheme.theme;
+
 @RestController
 @RequiredArgsConstructor
 public class ThemeController {
@@ -30,7 +32,10 @@ public class ThemeController {
     public ResponseDto<ThemeResponseDto> createTheme(@PathVariable Long companyId,
                                                      @RequestPart(required = false, value = "file") MultipartFile multipartFile,
                                                      @RequestPart(value = "theme") ThemeRequestDto themeRequestDto){
+        int d = themeRequestDto.getThemeScore().intValue();
+        System.out.println(d);
         return themeService.createTheme(companyId, multipartFile, themeRequestDto);
+
     }
 
     //테마 전체 조회
@@ -43,12 +48,12 @@ public class ThemeController {
     @GetMapping("/themes/filter")
     public ResponseDto<List<ThemeResponseDto>> findFilter(@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                                                           @RequestParam(value = "location", required = false) List<String> location,
-                                                          @RequestParam(value = "genre", required = false) List<String> genre
-//                                                          @RequestParam(value = "themeScore", required = false) List<Double> themeScore,
-//                                                          @RequestParam(value = "difficulty", required = false) List<Double> difficulty,
-//                                                          @RequestParam(value = "people", required = false) List<Integer> people
+                                                          @RequestParam(value = "genre", required = false) List<String> genre,
+                                                          @RequestParam(value = "themeScore", required = false) List<Integer> themeScore,
+                                                          @RequestParam(value = "difficulty", required = false) List<Double> difficulty,
+                                                          @RequestParam(value = "people", required = false) List<Integer> people
                                                           ){
-        return ResponseDto.success(themeService.filter(pageable,location,genre/*,themeScore,difficulty,people*/));
+        return ResponseDto.success(themeService.filter(pageable,location,genre,themeScore,difficulty,people));
     }
 
     //테마 상세페이지

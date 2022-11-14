@@ -50,7 +50,7 @@ public class Theme {
     private String synopsis;
 
     @Column
-    private double themeScore;
+    private Double themeScore;
 
     @Column(nullable = false)
     private String themeUrl;
