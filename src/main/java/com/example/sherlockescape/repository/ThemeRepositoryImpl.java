@@ -21,13 +21,13 @@ import static com.example.sherlockescape.domain.QTheme.theme;
 
 @RequiredArgsConstructor
 @Repository
-public class ThemeRepositoryImpl implements ThemeQueryRepository{
+public class ThemeRepositoryImpl implements ThemeQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
 
     @Override
-    public Page<Theme> findFilter(Pageable pageable, List<String> location, List<String> genre, List<Integer> themeScore, List<Double> difficulty, List<Integer> people) {
+    public Page<Theme> findFilter(Pageable pageable, List<String> location, List<String> genre, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people) {
 
         QTheme theme = QTheme.theme;
 
@@ -45,12 +45,14 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository{
                 .offset(pageable.getOffset())
                 .orderBy(theme.id.desc())
                 .fetchResults();
-        return new PageImpl<>(result.getResults(),pageable,result.getTotal());
+        return new PageImpl<>(result.getResults(), pageable, result.getTotal());
 
     }
+
     private BooleanExpression eqLocation(List<String> location) {
         return location != null ? Expressions.anyOf(location.stream().map(this::isFilteredLoacation).toArray(BooleanExpression[]::new)) : null;
     }
+
     private BooleanExpression isFilteredLoacation(String location) {
         return theme.company.location.contains(location);
     }
@@ -59,36 +61,40 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository{
     private BooleanExpression eqGenres(List<String> genre) {
         return genre != null ? Expressions.anyOf(genre.stream().map(this::isFilteredGenre).toArray(BooleanExpression[]::new)) : null;
     }
+
     private BooleanExpression isFilteredGenre(String genre) {
         return theme.genre.contains(genre);
     }
 
 
     private BooleanExpression eqThemeScore(List<Integer> themeScore) {
-        if (themeScore == null) { return null; }
-        else {
+        if (themeScore == null) {
+            return null;
+        } else {
             Integer minScore = Collections.min(themeScore);
             Integer maxScore = Collections.max(themeScore);
-            System.out.println(theme.themeScore.intValue());
-                return !Objects.equals(minScore, maxScore) ? theme.themeScore.intValue().between(minScore,maxScore) : theme.themeScore.intValue().eq((themeScore.get(0)));
-            }
+            return theme.themeScore.between(minScore, maxScore + 1);
         }
+    }
 
 
-    private BooleanExpression eqDifficulty(List<Double> difficulty) {
-        if (difficulty == null) { return null; }
-        else {
-            Double minDifficulty = Collections.min(difficulty);
-            Double maxDifficulty = Collections.max(difficulty);
-            return !Objects.equals(minDifficulty, maxDifficulty) ? theme.difficulty.between(minDifficulty,maxDifficulty) : theme.difficulty.eq(difficulty.get(0));
+    private BooleanExpression eqDifficulty(List<Integer> difficulty) {
+        if (difficulty == null) {
+            return null;
+        } else {
+            Integer minDifficulty = Collections.min(difficulty);
+            Integer maxDifficulty = Collections.max(difficulty);
+            return theme.difficulty.between(minDifficulty, maxDifficulty + 1);
         }
     }
 
     private BooleanExpression eqPeople(List<Integer> people) {
         return people != null ? Expressions.anyOf(people.stream().map(this::isFilteredPeople).toArray(BooleanExpression[]::new)) : null;
-            }
-                private BooleanExpression isFilteredPeople(Integer people) {
-        return theme.people.contains(people);
     }
 
+    private BooleanExpression isFilteredPeople(Integer people) {
+        return theme.minPeople.loe(people).and(theme.maxPeople.goe(people));
+    }
 }
+
+

@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-import java.util.List;
-
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
@@ -57,11 +55,11 @@ public class Theme {
     @Column(nullable = false)
     private String themeUrl;
 
-    @ElementCollection
-    private List<Integer> people;
+    @Column(nullable = false)
+    private int minPeople;
 
-//    @Column(nullable = false)
-//    private int maxPeople;
+    @Column(nullable = false)
+    private int maxPeople;
 
     @Column(nullable = false)
     private int price;
