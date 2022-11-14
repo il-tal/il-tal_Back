@@ -9,20 +9,21 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/theme")
 public class ReviewController {
 
-	private ReviewService reviewService;
+	private final ReviewService reviewService;
 
 	// 테마 후기 작성
 	@PostMapping("/{themeId}/review")
 	public ResponseDto<?> createReview(@PathVariable Long themeId,
-											@RequestBody ReviewRequestDto requestDto,
-											@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-		return reviewService.createReview(themeId, requestDto, userDetailsImpl.getMember());
+									   @RequestBody @Valid ReviewRequestDto requestDto,
+									   @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+		return reviewService.createReview(themeId, requestDto, userDetailsImpl.getMember().getId());
 	}
 
 	// 테마 후기 조회

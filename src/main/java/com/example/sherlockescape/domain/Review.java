@@ -30,7 +30,6 @@ public class Review {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
     // ??????
     @Column(nullable = false)
     private String nickname;
@@ -57,12 +56,14 @@ public class Review {
     public Review(Member member, Theme theme, ReviewRequestDto requestDto){
         this.member = member;
         this.theme = theme;
+        this.comment = requestDto.getComment();
         this.nickname = member.getNickname();
         this.playDate = requestDto.getPlayDate();
         this.score = requestDto.getScore();
         this.success = requestDto.isSuccess();
         this.difficulty = requestDto.getDifficulty();
         this.hint = requestDto.getHint();
+        this.comment = requestDto.getComment();
     }
     public void update(Member member, ReviewRequestDto requestDto) {
         this.nickname = member.getNickname();
