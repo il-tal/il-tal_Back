@@ -1,5 +1,6 @@
 package com.example.sherlockescape.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,9 +21,13 @@ public class Theme {
 //    @Column(name = "theme_id")
     public Long id;
 
+    @JsonIgnore
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
+
+    @OneToOne(mappedBy = "theme")
+    private Achievement achievement;
 
     @Column(nullable = false)
     private String themeImgUrl;

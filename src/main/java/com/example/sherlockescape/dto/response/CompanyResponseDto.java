@@ -1,30 +1,36 @@
-package com.example.sherlockescape.dto.request;
+package com.example.sherlockescape.dto.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanyRequestDto {
+public class CompanyResponseDto {
 
-    @NotBlank
-    private String companyName;
+    private Long id;
 
-    @NotBlank
+    private String companyImgUrl;
+
     private String location;
 
     private double companyScore;
 
-    @NotBlank
     private String companyUrl;
+
+    private Long companyLikeCnt;
+
+    private boolean companyLikeCheck;
 
     private String address;
 
     private String phoneNumber;
 
     private String workHour;
+
+//    private Long ReviewCnt;
+
 }
