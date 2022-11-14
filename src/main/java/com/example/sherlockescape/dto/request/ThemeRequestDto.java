@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Lob;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -37,11 +38,9 @@ public class ThemeRequestDto {
     @NotBlank
     private Double themeScore;
 
-    @NotBlank
-    private int maxPeople;
-
-    @NotBlank
     private int minPeople;
+
+    private int maxPeople;
 
     @NotBlank
     private int price;

@@ -7,6 +7,8 @@ import lombok.Getter;
 
 import javax.persistence.Column;
 import javax.persistence.Lob;
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -28,7 +30,6 @@ public class ThemeDetailResponseDto {
     private int minPeople;
 
     private int maxPeople;
-
     private int playTime;
 
     private int price;
