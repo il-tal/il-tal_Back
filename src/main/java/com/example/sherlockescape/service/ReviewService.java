@@ -10,7 +10,7 @@ import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.ReviewRepository;
 import com.example.sherlockescape.repository.ThemeRepository;
-import com.example.sherlockescape.security.jwt.JwtUtil;
+import com.example.sherlockescape.security.user.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,13 +34,18 @@ public class ReviewService {
 
 	// 테마 후기 작성
 	@Transactional
-	public ResponseDto<?> createReview(ReviewRequestDto reviewRequestDto, HttpServletRequest request) {
+	public ResponseDto<?> createReview(Long themeId, ReviewRequestDto reviewRequestDto, Member member) {
 
+		Theme theme = themeRepository.findById(themeId).orElseThrow(
+				()-> new IllegalArgumentException("테마가 존재하지 않습니다.")
+				);
 		Review review = Review.builder()
-				.nickname(reviewRequestDto.getNickname())
+				.theme(theme)
+				.member(member)
+				.nickname(member.getNickname())
 				.playDate(reviewRequestDto.getPlayDate())
 				.score(reviewRequestDto.getScore())
-				.challenge(reviewRequestDto.getChallenge())
+				.success(reviewRequestDto.isSuccess())
 				.difficulty(reviewRequestDto.getDifficulty())
 				.hint(reviewRequestDto.getHint())
 				.comment(reviewRequestDto.getComment())
@@ -51,7 +56,7 @@ public class ReviewService {
 
 	// 해당 테마 후기 조회
 	@Transactional
-	public ResponseDto<?> getReview(Long themeId) {
+	public ResponseDto<?> getReview(Long themeId,ReviewRequestDto reviewRequestDto) {
 
 		themeRepository.findById(themeId);
 		List<ReviewResponseDto> reviewAllList = new ArrayList<>();
@@ -62,7 +67,7 @@ public class ReviewService {
 							.nickname(review.getMember().getNickname())
 							.playDate(review.getPlayDate())
 							.score(review.getScore())
-							.challenge(review.getChallenge())
+							.success(review.isSuccess())
 							.difficulty(review.getDifficulty())
 							.hint(review.getHint())
 							.comment(review.getComment())
@@ -84,7 +89,7 @@ public class ReviewService {
 							.nickname(member.getNickname())
 							.playDate(review.getPlayDate())
 							.score(review.getScore())
-							.challenge(review.getChallenge())
+							.success(review.isSuccess())
 							.difficulty(review.getDifficulty())
 							.hint(review.getHint())
 							.comment(review.getComment())
