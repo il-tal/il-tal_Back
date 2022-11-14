@@ -5,8 +5,10 @@ import com.example.sherlockescape.domain.Company;
 import com.example.sherlockescape.domain.Theme;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ThemeRequestDto;
+import com.example.sherlockescape.dto.response.ThemeDetailResponseDto;
 import com.example.sherlockescape.dto.response.ThemeResponseDto;
 import com.example.sherlockescape.repository.CompanyRepository;
+import com.example.sherlockescape.repository.ThemeLikeRepository;
 import com.example.sherlockescape.repository.ThemeRepository;
 import com.example.sherlockescape.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.example.sherlockescape.domain.QCompany.company;
+import static com.example.sherlockescape.domain.QTheme.theme;
+
 @Service
 @RequiredArgsConstructor
 public class ThemeService {
@@ -27,6 +32,8 @@ public class ThemeService {
     private final ThemeRepository themeRepository;
     private final CompanyRepository companyRepository;
     private final AmazonS3Client amazonS3Client;
+
+    private final ThemeLikeRepository themeLikeRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -47,7 +54,7 @@ public class ThemeService {
         Theme theme = Theme.builder()
                 .company(company)
                 .themeName(themeReqDto.getThemeName())
-                .imgUrl(imgurl)
+                .themeImgUrl(imgurl)
                 .location(themeReqDto.getLocation())
                 .difficulty(themeReqDto.getDifficulty())
                 .genre(themeReqDto.getGenre())
@@ -65,6 +72,7 @@ public class ThemeService {
 
     //테마 전체 조회
     public List<ThemeResponseDto> findAllTheme(Pageable pageable) {
+
         Page<Theme> allTheme = themeRepository.findAll(pageable);
         List<ThemeResponseDto> themeLists = allTheme.stream()
                 .map(ThemeResponseDto::new).collect(Collectors.toList());
@@ -72,9 +80,9 @@ public class ThemeService {
     }
 
     //테마 필터링
-    public List<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genre /*, List<Double> themeScore, List<Double> difficulty, List<int> minPeople, List<int> maxPeople*/){
+    public List<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genre, List<Integer> themeScore, List<Double> difficulty, List<Integer> people){
 
-        Page<Theme> filteredTheme = themeRepository.findFilter(pageable, location, genre);
+        Page<Theme> filteredTheme = themeRepository.findFilter(pageable, location, genre, themeScore, difficulty, people);
 
         List<ThemeResponseDto> themeLists = filteredTheme.stream()
                 .map(ThemeResponseDto::new).collect(Collectors.toList());
@@ -82,4 +90,15 @@ public class ThemeService {
         return themeLists;
     }
 
+
+    //테마 상세조회
+    public ResponseDto<ThemeDetailResponseDto> findTheme(Long themeId) {
+
+        Theme theme = themeRepository.findById(themeId).orElseThrow(
+                () -> new IllegalArgumentException("테마가 존재하지 않습니다"));
+
+        ThemeDetailResponseDto themeDetail = new ThemeDetailResponseDto(theme);
+        return ResponseDto.success(themeDetail);
+
+    }
 }
