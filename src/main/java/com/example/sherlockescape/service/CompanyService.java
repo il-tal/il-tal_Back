@@ -111,7 +111,10 @@ public class CompanyService {
 
             boolean likeCheck;
             likeCheck = likes.isPresent();
+
             //댓글 수 추가
+
+            //평점 계산
 
             AllResponseDto allResponseDto =
                     AllResponseDto.builder()
