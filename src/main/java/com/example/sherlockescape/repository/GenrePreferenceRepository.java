@@ -8,4 +8,5 @@ import java.util.List;
 public interface GenrePreferenceRepository extends JpaRepository<GenrePreference, Long> {
 
     List<GenrePreference> findAllByTendencyId(Long id);
+
 }

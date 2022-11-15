@@ -6,6 +6,7 @@ import com.example.sherlockescape.dto.request.LoginRequestDto;
 import com.example.sherlockescape.dto.request.MemberRequestDto;
 import com.example.sherlockescape.dto.request.MyTendencyRequestDto;
 import com.example.sherlockescape.dto.request.NicknameRequestDto;
+import com.example.sherlockescape.dto.response.AllMyInfoResponseDto;
 import com.example.sherlockescape.dto.response.LoginResponseDto;
 import com.example.sherlockescape.dto.response.MemberResponseDto;
 
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +40,7 @@ public class MemberService {
     private final GenrePreferenceRepository genrePreferenceRepository;
     private final TendencyRepository tendencyRepository;
     private final StylePreferenceRepository stylePreferenceRepository;
+    private final ReviewRepository reviewRepository;
 
     //회원가입
     @org.springframework.transaction.annotation.Transactional
@@ -199,5 +202,27 @@ public class MemberService {
             stylePreferenceRepository.save(stylePreference);
         }
         return "성향 수정 성공";
+    }
+
+    /*
+    *
+    * 내정보 전체 불러오기
+    * */
+    public ResponseDto<AllMyInfoResponseDto> getAllMyInfo(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new GlobalException(ErrorCode.NEED_TO_LOGIN)
+        );
+        Tendency tendency = tendencyRepository.findByMember(member);
+        List<GenrePreference> genrePreferenceList = genrePreferenceRepository.findAllByTendencyId(tendency.getId());
+        List<StylePreference> stylePreferenceList = stylePreferenceRepository.findAllByTendencyId(tendency.getId());
+
+        List<Review> reviews = reviewRepository.findReviewsByMember(member);
+        int totalAchieveCnt = 0;
+        for(Review review: reviews){
+            if(review.isSuccess()){
+                totalAchieveCnt += 1;
+            }
+        }
+        return ResponseDto.success(new AllMyInfoResponseDto(member, tendency, totalAchieveCnt,genrePreferenceList, stylePreferenceList));
     }
 }
