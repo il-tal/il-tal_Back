@@ -120,7 +120,8 @@ public class ReviewService {
 	}
 
 	//내가 작성한 후기 조회
-	public List<MyReviewResponseDto> getAllReviews(Member member) {
+	public List<MyReviewResponseDto> getMyReviews(Member member) {
+
 		List<Review> reviewList = reviewRepository.findReviewsByMember(member);
 
 		List<MyReviewResponseDto> reviewResponseDtoList = new ArrayList<>();

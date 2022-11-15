@@ -1,16 +1,12 @@
 package com.example.sherlockescape.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.example.sherlockescape.domain.Company;
-import com.example.sherlockescape.domain.CompanyLike;
-import com.example.sherlockescape.domain.Theme;
+import com.example.sherlockescape.domain.*;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.CompanyRequestDto;
 import com.example.sherlockescape.dto.response.AllResponseDto;
-import com.example.sherlockescape.repository.CompanyLikeRepository;
-import com.example.sherlockescape.repository.CompanyRepository;
-import com.example.sherlockescape.repository.ReviewRepository;
-import com.example.sherlockescape.repository.ThemeRepository;
+import com.example.sherlockescape.dto.response.MyCompanyResponseDto;
+import com.example.sherlockescape.repository.*;
 import com.example.sherlockescape.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +27,8 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
     private final AmazonS3Client amazonS3Client;
-
     private final ThemeRepository themeRepository;
-
+    private final MemberRepository memberRepository;
     private final CompanyLikeRepository companyLikeRepository;
     private final ReviewRepository reviewRepository;
 
@@ -131,5 +126,42 @@ public class CompanyService {
             allResponseDtoList.add(allResponseDto);
         }
         return allResponseDtoList;
+    }
+
+    /*
+    *
+    * 내가 찜한 업체 조회
+    * */
+    public List<MyCompanyResponseDto> getMyCompanies(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new IllegalArgumentException("사용자를 찾을 수 없습니다.")
+        );
+        List<CompanyLike> companyLikeList = companyLikeRepository.findCompanyLikesByMemberId(memberId);
+        List<MyCompanyResponseDto> myCompanyResponseDtoList = new ArrayList<>();
+
+        for(CompanyLike like: companyLikeList){
+            Company company = companyRepository.findById(like.getCompany().getId()).orElseThrow(
+                    () -> new IllegalArgumentException("업체를 찾을 수 없습니다.")
+            );
+            int reviewCnt = 0;
+            List<Theme> themeList = themeRepository.findAllByCompanyId(company.getId());
+            for(Theme theme: themeList){
+                reviewCnt += reviewRepository.countByThemeId(theme.getId());
+            }
+            MyCompanyResponseDto myCompanyResponseDto =
+                    MyCompanyResponseDto.builder()
+                            .companyUrl(company.getCompanyUrl())
+                            .address(company.getAddress())
+                            .companyScore(company.getCompanyScore())
+                            .workHour(company.getWorkHour())
+                            .phoneNumber(company.getPhoneNumber())
+                            .location(company.getLocation())
+                            .companyName(company.getCompanyName())
+                            .companyScore(company.getCompanyScore())
+                            .reviewCnt(reviewCnt)
+                            .build();
+            myCompanyResponseDtoList.add(myCompanyResponseDto);
+        }
+        return myCompanyResponseDtoList;
     }
 }

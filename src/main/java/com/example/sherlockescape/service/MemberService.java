@@ -5,8 +5,10 @@ import com.example.sherlockescape.domain.RefreshToken;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.LoginRequestDto;
 import com.example.sherlockescape.dto.request.MemberRequestDto;
+import com.example.sherlockescape.dto.request.NicknameRequestDto;
 import com.example.sherlockescape.dto.response.LoginResponseDto;
 import com.example.sherlockescape.dto.response.MemberResponseDto;
+import com.example.sherlockescape.dto.response.NicknameResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.MemberRepository;
@@ -61,7 +63,6 @@ public class MemberService {
         ));
 
     }
-
     public void usernameDuplicateCheck(MemberRequestDto memberReqDto) {
         if(memberRepository.findByUsername(memberReqDto.getUsername()).isPresent()){
             throw new GlobalException(ErrorCode.DUPLICATE_MEMBER_ID);
@@ -115,5 +116,20 @@ public class MemberService {
     public String logout(Member member) {
         refreshTokenRepository.deleteByMemberUsername(member.getUsername());
         return "로그아웃 완료";
+    }
+
+    //닉네임 수정하기
+    @Transactional
+    public ResponseDto<NicknameResponseDto> updateNickname(Long memberId,NicknameRequestDto nicknameRequestDto) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                ()-> new IllegalArgumentException("사용자를 찾을 수 없습니다.")
+        );
+        member.updateNickname(nicknameRequestDto.getNickname());
+        memberRepository.save(member);
+        NicknameResponseDto nicknameResponseDto = NicknameResponseDto.builder()
+                .username(member.getUsername())
+                .nickname(member.getNickname())
+                .build();
+        return ResponseDto.success(nicknameResponseDto);
     }
 }
