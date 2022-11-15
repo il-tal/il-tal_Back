@@ -50,9 +50,9 @@ public class Tendency {
     @Column(nullable = false)
     private int surprise;
 
-    public void updateTendency(int lessScare, int roomSize,
-                               int lockStyle, int device,
-                               int interior, int excitePreference, int surprise){
+    public void updateTendency(int lessScare, int roomSize,int lockStyle, int device,
+                               int interior, int excitePreference, int surprise)
+    {
         this.lessScare = lessScare;
         this.roomSize = roomSize;
         this.lockStyle = lockStyle;

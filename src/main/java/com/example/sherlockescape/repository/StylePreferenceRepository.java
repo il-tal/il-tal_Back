@@ -8,4 +8,6 @@ import java.util.List;
 public interface StylePreferenceRepository extends JpaRepository<StylePreference, Long> {
 
     List<StylePreference> findAllByTendencyId(Long id);
+
+    List<StylePreference> findStylePreferencesByTendencyId(Long id);
 }

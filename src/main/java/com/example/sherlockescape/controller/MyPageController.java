@@ -2,6 +2,7 @@ package com.example.sherlockescape.controller;
 
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.MyTendencyRequestDto;
+import com.example.sherlockescape.dto.response.AllMyInfoResponseDto;
 import com.example.sherlockescape.dto.response.MyCompanyResponseDto;
 import com.example.sherlockescape.dto.response.MyReviewResponseDto;
 import com.example.sherlockescape.dto.response.MyThemeResponseDto;
@@ -81,7 +82,9 @@ public class MyPageController {
     *
     * 내 정보 전체 불러오기
     * */
-//    @GetMapping("/mypage")
-//    public ResponseDto<AllMyPageResponseDto> getAllMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,)
+    @GetMapping("/mypage")
+    public ResponseDto<AllMyInfoResponseDto> getAllMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
+        return memberService.getAllMyInfo(userDetailsImpl.getMember().getId());
+    }
 
 }
