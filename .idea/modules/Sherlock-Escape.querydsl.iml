@@ -4,7 +4,6 @@
     <output url="file://$MODULE_DIR$/../../build/classes/java/querydsl" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../src/querydsl/resources" />
-    <content url="file://$MODULE_DIR$/../../src/querydsl/resources" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

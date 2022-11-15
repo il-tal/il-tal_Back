@@ -32,7 +32,27 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String kakaoEmail;
+
+    @Column(nullable = false)
+    private String profile;
+
+//    @Column(nullable = false)
+//    private PasswordEncoder passwordEncoder;
+
+
+
+
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
     }
+
+    public Member(String kakaoEmail, String nickname, String profile, String encodedPassword) {
+        this.kakaoEmail = kakaoEmail;
+        this.nickname = nickname;
+        this.profile = profile;
+        this.passwordEncoder = encodedPassword;
+    }
+//    kakaoEmail, nickname, profile, encodedPassword
 }

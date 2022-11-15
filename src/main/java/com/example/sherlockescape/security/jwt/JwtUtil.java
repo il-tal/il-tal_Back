@@ -1,5 +1,6 @@
 package com.example.sherlockescape.security.jwt;
 
+import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.domain.RefreshToken;
 import com.example.sherlockescape.repository.RefreshTokenRepository;
 import com.example.sherlockescape.security.user.UserDetailsServiceImpl;
@@ -35,6 +36,8 @@ public class JwtUtil {
     private static final long REFRESH_TIME = 7 * 24 * 60 * 60 * 1000L;
     public static final String ACCESS_TOKEN = "Access_Token";
     public static final String REFRESH_TOKEN = "Refresh_Token";
+    private static final String AUTHORITIES_KEY = "auth";
+    private static final String BEARER_TYPE = "bearer";
 
 
 
@@ -108,4 +111,25 @@ public class JwtUtil {
     }
 
     // 토큰 삭제
+
+
+    /// !!!!!
+    public TokenDto generateTokenDto(Member member) {
+        long now = (new Date().getTime());
+
+        Date accessTokenExpiresIn = new Date(now + ACCESS_TIME);
+        String accessToken = Jwts.builder()
+                .setSubject(member.getEmail())
+                .claim(AUTHORITIES_KEY, Authority.ROLE_MEMBER.toString())
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        return TokenDto.builder()
+                .grantType(BEARER_TYPE)
+                .accessToken(accessToken)
+                .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
+                .build();
+    }
+
 }
