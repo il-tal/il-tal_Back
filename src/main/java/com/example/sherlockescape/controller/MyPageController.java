@@ -1,18 +1,20 @@
 package com.example.sherlockescape.controller;
 
 import com.example.sherlockescape.dto.ResponseDto;
+import com.example.sherlockescape.dto.request.MyTendencyRequestDto;
 import com.example.sherlockescape.dto.response.MyCompanyResponseDto;
 import com.example.sherlockescape.dto.response.MyReviewResponseDto;
 import com.example.sherlockescape.dto.response.MyThemeResponseDto;
 import com.example.sherlockescape.security.user.UserDetailsImpl;
 import com.example.sherlockescape.service.CompanyService;
+import com.example.sherlockescape.service.MemberService;
 import com.example.sherlockescape.service.ReviewService;
 import com.example.sherlockescape.service.ThemeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,6 +24,8 @@ public class MyPageController {
     private final ReviewService reviewService;
     private final ThemeService themeService;
     private final CompanyService companyService;
+
+    private final MemberService memberService;
 
     /*
     *
@@ -52,4 +56,32 @@ public class MyPageController {
         List<MyCompanyResponseDto> myCompanyResponseDtoList = companyService.getMyCompanies(userDetailsImpl.getMember().getId());
         return ResponseDto.success(myCompanyResponseDtoList);
     }
+
+    /*
+    *
+    * 내 성향 등록하기
+    * */
+    @PostMapping("/tendency")
+    public String createMyTendency(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+                                   @RequestBody @Valid MyTendencyRequestDto myTendencyRequestDto){
+       return memberService.createMyTendency(userDetailsImpl.getMember().getId(), myTendencyRequestDto);
+    }
+
+    /*
+    *
+    *내 성향 수정하기
+    * */
+    @PutMapping("/tendency")
+    public String updateMyTendency(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+                                   @RequestBody @Valid MyTendencyRequestDto myTendencyRequestDto){
+        return memberService.updateMyTendency(userDetailsImpl.getMember().getId(), myTendencyRequestDto);
+    }
+
+    /*
+    *
+    * 내 정보 전체 불러오기
+    * */
+//    @GetMapping("/mypage")
+//    public ResponseDto<AllMyPageResponseDto> getAllMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,)
+
 }
