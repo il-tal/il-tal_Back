@@ -64,6 +64,7 @@ public class ReviewService {
 				.comment(reviewRequestDto.getComment())
 				.build();
 		reviewRepository.save(review);
+
 		return ResponseDto.success("리뷰 등록 성공!");
 	}
 

@@ -7,6 +7,7 @@ import com.example.sherlockescape.dto.response.ThemeDetailResponseDto;
 import com.example.sherlockescape.dto.response.ThemeResponseDto;
 import com.example.sherlockescape.service.ThemeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -58,5 +59,19 @@ public class ThemeController {
     @GetMapping("/theme/{themeId}")
     public ResponseDto getTheme(@PathVariable Long themeId) {
         return themeService.findTheme(themeId);
+    }
+
+
+//    //메인 페이지 인기테마
+//    @GetMapping("/main/best")
+//    public ResponseDto<List<ThemeResponseDto>> getBestTheme(@PageableDefault(size=3, sort = "themeLikeCnt", direction = Sort.Direction.DESC) Pageable pageable) {
+//     return ResponseDto.success(themeService.findBestTheme(pageable));
+//    }
+
+
+    //메인페이지 랜덤테마
+    @GetMapping("/main/random")
+    public ResponseDto<List<ThemeResponseDto>> getRandomTheme() {
+        return ResponseDto.success(themeService.findRandomTheme());
     }
 }

@@ -2,6 +2,7 @@ package com.example.sherlockescape.dto.response;
 
 import com.example.sherlockescape.domain.Company;
 import com.example.sherlockescape.domain.Theme;
+import com.example.sherlockescape.repository.ReviewRepository;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,17 +24,19 @@ public class ThemeResponseDto {
 
     private double themeScore;
 
-//    themeLike
-//
-//    reviewCnt
-//
+    private Long themeLikeCnt;
 
-    public ThemeResponseDto(Theme theme) {
+    private Long reviewCnt;
+
+
+    public ThemeResponseDto(Theme theme/*, ReviewRepository reviewRepository*/) {
         this.id = theme.getId();
         this.themeImgUrl = theme.getThemeImgUrl();
         this.themeName = theme.getThemeName();
         this.companyName = theme.getCompany().getCompanyName();
         this.genre = theme.getGenre();
         this.themeScore = theme.getThemeScore();
+        this.themeLikeCnt = theme.getThemeLikeCnt();
+//        this.reviewCnt = (long) reviewRepository.findAllByThemeId(id).size();
     }
 }
