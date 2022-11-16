@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class ThemeResponseDto {
+public class ThemeDetailResponseDto {
 
     private Long id;
 
@@ -20,6 +20,17 @@ public class ThemeResponseDto {
 
     private String genre;
 
+    private double difficulty;
+
+    private int minPeople;
+
+    private int maxPeople;
+    private int playTime;
+
+    private int price;
+
+    private String themeUrl;
+
     private double themeScore;
 
 //    themeLike
@@ -27,12 +38,21 @@ public class ThemeResponseDto {
 //    reviewCnt
 //
 
-    public ThemeResponseDto(Theme theme) {
+    private String synopsis;
+
+    public ThemeDetailResponseDto(Theme theme) {
         this.id = theme.getId();
         this.themeImgUrl = theme.getThemeImgUrl();
         this.themeName = theme.getThemeName();
         this.companyName = theme.getCompany().getCompanyName();
         this.genre = theme.getGenre();
+        this.difficulty = theme.getDifficulty();
+        this.minPeople = theme.getMinPeople();
+        this.maxPeople = theme.getMaxPeople();
+        this.playTime = theme.getPlayTime();
+        this.price = theme.getPrice();
+        this.themeUrl = theme.getThemeUrl();
         this.themeScore = theme.getThemeScore();
     }
+
 }

@@ -5,6 +5,7 @@ import com.example.sherlockescape.domain.Review;
 import com.example.sherlockescape.domain.Theme;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ReviewRequestDto;
+import com.example.sherlockescape.dto.response.MyReviewResponseDto;
 import com.example.sherlockescape.dto.response.ReviewResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
@@ -118,4 +119,23 @@ public class ReviewService {
 		return ResponseDto.success("리뷰 삭제 성공!");
 	}
 
+	//내가 작성한 후기 조회
+	public List<MyReviewResponseDto> getMyReviews(Member member) {
+
+		List<Review> reviewList = reviewRepository.findReviewsByMember(member);
+
+		List<MyReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
+		for(Review review: reviewList){
+
+			MyReviewResponseDto myReviewResponseDtoList = MyReviewResponseDto.builder()
+					.themeName(review.getTheme().getThemeName())
+					.playTime(review.getPlayDate())
+					.score(review.getScore())
+					.difficulty(review.getDifficulty())
+					.comment(review.getComment())
+					.build();
+			reviewResponseDtoList.add(myReviewResponseDtoList);
+		}
+		return reviewResponseDtoList;
+	}
 }

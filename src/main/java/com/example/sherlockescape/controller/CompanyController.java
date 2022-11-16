@@ -52,4 +52,5 @@ public class CompanyController {
         return ResponseDto.success(resDto);
     }
 
+
 }

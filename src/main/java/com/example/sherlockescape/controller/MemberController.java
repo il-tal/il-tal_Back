@@ -4,14 +4,19 @@ package com.example.sherlockescape.controller;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.LoginRequestDto;
 import com.example.sherlockescape.dto.request.MemberRequestDto;
+import com.example.sherlockescape.dto.request.NicknameRequestDto;
 import com.example.sherlockescape.dto.response.LoginResponseDto;
 import com.example.sherlockescape.dto.response.MemberResponseDto;
+import com.example.sherlockescape.dto.response.NicknameResponseDto;
+import com.example.sherlockescape.security.user.UserDetailsImpl;
 import com.example.sherlockescape.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -43,6 +48,16 @@ public class MemberController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
         return headers;
+    }
+
+    /*
+    *
+    * 닉네임 수정하기
+    * */
+    @PutMapping("/nickname")
+    public ResponseDto<NicknameResponseDto> updateNickname(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+                                                           @RequestBody NicknameRequestDto nicknameRequestDto){
+        return memberService.updateNickname(userDetailsImpl.getMember().getId(), nicknameRequestDto);
     }
 
 }

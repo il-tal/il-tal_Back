@@ -22,7 +22,9 @@ public class AllResponseDto {
     private String location;
     private double companyScore;
     private String companyUrl;
+
     private Long companyLikeCnt;
+
     private boolean companyLikeCheck;
     private String address;
     private String phoneNumber;
