@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -73,6 +72,7 @@ public class ReviewService {
 		for(Review review: reviewList){
 			reviewAllList.add(
 					ReviewResponseDto.builder()
+							.id(review.getId())
 							.nickname(review.getMember().getNickname())
 							.playDate(review.getPlayDate())
 							.score(review.getScore())
