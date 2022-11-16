@@ -1,9 +1,9 @@
 package com.example.sherlockescape.repository;
 
+import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.domain.ThemeLike;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,8 +13,7 @@ public interface ThemeLikeRepository extends JpaRepository<ThemeLike, Long> {
 
     Long countByThemeId(long parseLong);
 
-//    Long countByThemeId(Long themeId);
-//
-//    List<ThemeLike> findAllByThemeId(Long themeId);
+
+    List<ThemeLike> findThemeLikesByMember(Member member);
 }
 

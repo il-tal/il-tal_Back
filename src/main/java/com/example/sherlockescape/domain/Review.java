@@ -53,18 +53,6 @@ public class Review {
     @Column(nullable = false)
     private String comment;
 
-//    public Review(Member member, Theme theme, ReviewRequestDto requestDto){
-//        this.member = member;
-//        this.theme = theme;
-//        this.comment = requestDto.getComment();
-//        this.nickname = member.getNickname();
-//        this.playDate = requestDto.getPlayDate();
-//        this.score = requestDto.getScore();
-//        this.success = requestDto.isSuccess();
-//        this.difficulty = requestDto.getDifficulty();
-//        this.hint = requestDto.getHint();
-//        this.comment = requestDto.getComment();
-//    }
     public void update(ReviewRequestDto requestDto) {
         this.playDate = requestDto.getPlayDate();
         this.score = requestDto.getScore();
