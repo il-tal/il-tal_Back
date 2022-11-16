@@ -4,6 +4,7 @@ import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.dto.request.SocialUserInfoDto;
 import com.example.sherlockescape.repository.MemberRepository;
 import com.example.sherlockescape.security.jwt.JwtUtil;
+import com.example.sherlockescape.security.jwt.TokenDto;
 import com.example.sherlockescape.security.user.UserDetailsImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -32,7 +33,7 @@ public class KakaoUserService {
 	private final PasswordEncoder passwordEncoder;
 	private final MemberRepository memberRepository;
 
-	public SocialUserInfoDto kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+	public SocialUserInfoDto kakaoLogin(String code, TokenDto tokenDto, HttpServletResponse response) throws JsonProcessingException {
 		// 1. "인가 코드"로 "액세스 토큰" 요청
 		String accessToken = getAccessToken(code);
 
@@ -46,7 +47,7 @@ public class KakaoUserService {
 		Authentication authentication = forceLogin(kakaoUser);
 
 		// 5. response Header에 JWT 토큰 추가
-		kakaoUsersAuthorizationInput(authentication, response);
+		kakaoUsersAuthorizationInput(response, tokenDto);
 		return kakaoUserInfo;
 	}
 
@@ -59,7 +60,7 @@ public class KakaoUserService {
 		// HTTP Body 생성
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 		body.add("grant_type", "authorization_code");
-		body.add("client_id", "38400076c414f86c381ed021d394daaa");
+		body.add("client_id", "...");
 		body.add("redirect_uri", "http://localhost:8080/kakao/callback");
 		body.add("code", code);
 
@@ -115,7 +116,7 @@ public class KakaoUserService {
 		// DB 에 중복된 email이 있는지 확인
 		String kakaoEmail = kakaoUserInfo.getEmail();
 		String nickname = kakaoUserInfo.getNickname();
-		Member kakaoUser = memberRepository.findByUserEmail(kakaoEmail)
+		Member kakaoUser = memberRepository.findByUsername(kakaoEmail)
 				.orElse(null);
 
 		if (kakaoUser == null) {
@@ -142,11 +143,9 @@ public class KakaoUserService {
 	}
 
 	// 5. response Header에 JWT 토큰 추가
-	private void kakaoUsersAuthorizationInput(Authentication authentication, HttpServletResponse response) {
-		// response header에 token 추가
-		UserDetailsImpl userDetailsImpl = ((UserDetailsImpl) authentication.getPrincipal());
-		String token = JwtUtil.generateToken(claims,userDetailsImpl); //!!!!!!!
-		response.addHeader("Authorization", "BEARER" + " " + token);
+	private void kakaoUsersAuthorizationInput(HttpServletResponse response, TokenDto tokenDto) {
+		response.addHeader(JwtUtil.ACCESS_TOKEN, tokenDto.getAccessToken());
+		response.addHeader(JwtUtil.REFRESH_TOKEN, tokenDto.getRefreshToken());
 	}
 
 }

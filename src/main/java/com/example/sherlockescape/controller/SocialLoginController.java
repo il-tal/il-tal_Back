@@ -1,6 +1,7 @@
 package com.example.sherlockescape.controller;
 
 import com.example.sherlockescape.dto.request.SocialUserInfoDto;
+import com.example.sherlockescape.security.jwt.TokenDto;
 import com.example.sherlockescape.service.KakaoUserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ public class SocialLoginController {
 
 	// 카카오 로그인
 	@GetMapping("/kakao/callback")
-	public SocialUserInfoDto kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-		return kakaoUserService.kakaoLogin(code, response);
+	public SocialUserInfoDto kakaoLogin(@RequestParam String code, TokenDto tokenDto, HttpServletResponse response) throws JsonProcessingException {
+		return kakaoUserService.kakaoLogin(code, tokenDto, response);
 	}
+}
