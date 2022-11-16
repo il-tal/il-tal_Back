@@ -1,10 +1,10 @@
 package com.example.sherlockescape.security.jwt;
 
-import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.domain.RefreshToken;
 import com.example.sherlockescape.repository.RefreshTokenRepository;
 import com.example.sherlockescape.security.user.UserDetailsServiceImpl;
 import com.example.sherlockescape.utils.ValidateCheck;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -114,22 +114,29 @@ public class JwtUtil {
 
 
     /// !!!!!
-    public TokenDto generateTokenDto(Member member) {
-        long now = (new Date().getTime());
+//    public TokenDto generateTokenDto(Member member) {
+//        long now = (new Date().getTime());
+//
+//        Date accessTokenExpiresIn = new Date(now + ACCESS_TIME);
+//        String accessToken = Jwts.builder()
+//                .setSubject(member.getEmail())
+//                .claim(AUTHORITIES_KEY, Authority.ROLE_MEMBER.toString())
+//                .setExpiration(accessTokenExpiresIn)
+//                .signWith(key, SignatureAlgorithm.HS256)
+//                .compact();
+//
+//        return TokenDto.builder()
+//                .grantType(BEARER_TYPE)
+//                .accessToken(accessToken)
+//                .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
+//                .build();
+//    }
 
-        Date accessTokenExpiresIn = new Date(now + ACCESS_TIME);
-        String accessToken = Jwts.builder()
-                .setSubject(member.getEmail())
-                .claim(AUTHORITIES_KEY, Authority.ROLE_MEMBER.toString())
-                .setExpiration(accessTokenExpiresIn)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-
-        return TokenDto.builder()
-                .grantType(BEARER_TYPE)
-                .accessToken(accessToken)
-                .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
-                .build();
+    public String generateToken(UserDetails userDetails) {
+        Claims claims = Jwts.claims();
+        claims.put("username", userDetails.getUsername());
+//        return createToken(claims, userDetails.getUsername()); // username을 subject로 해서 token 생성
+        return createToken(claims, userDetails.getUsername());
     }
 
 }
