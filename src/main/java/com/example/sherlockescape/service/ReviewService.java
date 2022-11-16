@@ -11,18 +11,12 @@ import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.MemberRepository;
 import com.example.sherlockescape.repository.ReviewRepository;
 import com.example.sherlockescape.repository.ThemeRepository;
-import com.example.sherlockescape.security.user.UserDetailsImpl;
 import com.example.sherlockescape.utils.ValidateCheck;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.parsing.Problem;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -77,6 +71,7 @@ public class ReviewService {
 		for(Review review: reviewList){
 			reviewAllList.add(
 					ReviewResponseDto.builder()
+							.id(review.getId())
 							.nickname(review.getMember().getNickname())
 							.playDate(review.getPlayDate())
 							.score(review.getScore())

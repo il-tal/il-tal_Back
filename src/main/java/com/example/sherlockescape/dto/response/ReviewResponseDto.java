@@ -1,6 +1,5 @@
 package com.example.sherlockescape.dto.response;
 
-import com.example.sherlockescape.domain.Review;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewResponseDto {
-
+	private Long id;
 	private String nickname;
 	private LocalDate playDate;
 	private double score;
