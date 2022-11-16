@@ -2,14 +2,15 @@ package com.example.sherlockescape.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.example.sherlockescape.domain.Company;
+import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.domain.Theme;
+import com.example.sherlockescape.domain.ThemeLike;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ThemeRequestDto;
+import com.example.sherlockescape.dto.response.MyThemeResponseDto;
 import com.example.sherlockescape.dto.response.ThemeDetailResponseDto;
 import com.example.sherlockescape.dto.response.ThemeResponseDto;
-import com.example.sherlockescape.repository.CompanyRepository;
-import com.example.sherlockescape.repository.ThemeLikeRepository;
-import com.example.sherlockescape.repository.ThemeRepository;
+import com.example.sherlockescape.repository.*;
 import com.example.sherlockescape.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +19,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static com.example.sherlockescape.domain.QCompany.company;
-import static com.example.sherlockescape.domain.QTheme.theme;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +33,9 @@ public class ThemeService {
     private final CompanyRepository companyRepository;
     private final AmazonS3Client amazonS3Client;
 
+    private final MemberRepository memberRepository;
+
+    private final ReviewRepository reviewRepository;
     private final ThemeLikeRepository themeLikeRepository;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -133,14 +136,14 @@ public class ThemeService {
         return responseDtoList;
     }
 
-//    //인기 테마 조회
-//    public List<ThemeResponseDto> findBestTheme(Pageable pageable) {
-//
-////        Page<Theme> BestTheme = themeRepository.findAllByOrderByThemeLikeCntDesc(pageable);
-//        List<ThemeResponseDto> bestThemes = BestTheme.stream()
-//                .map(ThemeResponseDto::new).collect(Collectors.toList());
-//        return bestThemes;
-//    }
+    //인기 테마 조회
+    public List<ThemeResponseDto> findBestTheme(Pageable pageable) {
+
+        Page<Theme> BestTheme = themeRepository.findAllByOrderByTotalLikeCntDesc(pageable);
+        List<ThemeResponseDto> bestThemes = BestTheme.stream()
+                .map(ThemeResponseDto::new).collect(Collectors.toList());
+        return bestThemes;
+    }
 
 
     // 랜덤 테마 조회
