@@ -145,7 +145,7 @@ public class KakaoUserService {
 	private void kakaoUsersAuthorizationInput(Authentication authentication, HttpServletResponse response) {
 		// response header에 token 추가
 		UserDetailsImpl userDetailsImpl = ((UserDetailsImpl) authentication.getPrincipal());
-		String token = JwtUtil.generateTokenDto(userDetailsImpl); //!!!!!!!
+		String token = JwtUtil.generateToken(claims,userDetailsImpl); //!!!!!!!
 		response.addHeader("Authorization", "BEARER" + " " + token);
 	}
 
