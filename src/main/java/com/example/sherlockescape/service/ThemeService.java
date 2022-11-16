@@ -14,10 +14,13 @@ import com.example.sherlockescape.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -101,4 +104,40 @@ public class ThemeService {
         return ResponseDto.success(themeDetail);
 
     }
+
+//    //인기 테마 조회
+//    public List<ThemeResponseDto> findBestTheme(Pageable pageable) {
+//
+////        Page<Theme> BestTheme = themeRepository.findAllByOrderByThemeLikeCntDesc(pageable);
+//        List<ThemeResponseDto> bestThemes = BestTheme.stream()
+//                .map(ThemeResponseDto::new).collect(Collectors.toList());
+//        return bestThemes;
+//    }
+
+
+    // 랜덤 테마 조회
+    public List<ThemeResponseDto> findRandomTheme() {
+
+        List<Theme> randomTheme = themeRepository.findAll();
+        List<ThemeResponseDto> randomThemes = randomTheme.stream()
+                .map(ThemeResponseDto::new).collect(Collectors.toList());
+        Collections.shuffle(randomThemes);
+        List<ThemeResponseDto> randomThemeList = new ArrayList<>(randomThemes.subList(0,10));
+        return randomThemeList;
+    }
+
+
+//    //랜덤 테마 조회
+//    public List<ThemeResponseDto> findRandomTheme(Pageable pageable) {
+//
+//        int qty = themeRepository.findAll().size();
+//        int idx = (int)(Math.random() * qty);
+//
+//        Page<Theme> randomTheme = themeRepository.findAll(PageRequest.of(idx,1));
+//        List<ThemeResponseDto> randomThemes = randomTheme.stream()
+//                .map(ThemeResponseDto::new).collect(Collectors.toList());
+//        return randomThemes;
+//    }
+
+
 }
