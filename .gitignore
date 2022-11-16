@@ -188,3 +188,6 @@ gradle-app.setting
 **/application.properties
 *.properties
 application.properties
+/.idea/vcs.xml
+/.idea/vcs.xml
+/.idea/vcs.xml
