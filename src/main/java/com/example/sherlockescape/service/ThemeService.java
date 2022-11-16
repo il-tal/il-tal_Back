@@ -1,7 +1,10 @@
 package com.example.sherlockescape.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.example.sherlockescape.domain.*;
+import com.example.sherlockescape.domain.Company;
+import com.example.sherlockescape.domain.Member;
+import com.example.sherlockescape.domain.Theme;
+import com.example.sherlockescape.domain.ThemeLike;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ThemeRequestDto;
 import com.example.sherlockescape.dto.response.MyThemeResponseDto;
@@ -17,10 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 
 @Service
 @RequiredArgsConstructor
@@ -29,13 +32,16 @@ public class ThemeService {
     private final ThemeRepository themeRepository;
     private final CompanyRepository companyRepository;
     private final AmazonS3Client amazonS3Client;
+
     private final MemberRepository memberRepository;
 
-    private final ThemeLikeRepository themeLikeRepository;
     private final ReviewRepository reviewRepository;
+    private final ThemeLikeRepository themeLikeRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
+
+
     /*
      *
      * 테마 DB 등록
@@ -129,4 +135,40 @@ public class ThemeService {
         }
         return responseDtoList;
     }
+
+    //인기 테마 조회
+    public List<ThemeResponseDto> findBestTheme(Pageable pageable) {
+
+        Page<Theme> BestTheme = themeRepository.findAllByOrderByTotalLikeCntDesc(pageable);
+        List<ThemeResponseDto> bestThemes = BestTheme.stream()
+                .map(ThemeResponseDto::new).collect(Collectors.toList());
+        return bestThemes;
+    }
+
+
+    // 랜덤 테마 조회
+    public List<ThemeResponseDto> findRandomTheme() {
+
+        List<Theme> randomTheme = themeRepository.findAll();
+        List<ThemeResponseDto> randomThemes = randomTheme.stream()
+                .map(ThemeResponseDto::new).collect(Collectors.toList());
+        Collections.shuffle(randomThemes);
+        List<ThemeResponseDto> randomThemeList = new ArrayList<>(randomThemes.subList(0,10));
+        return randomThemeList;
+    }
+
+
+//    //랜덤 테마 조회
+//    public List<ThemeResponseDto> findRandomTheme(Pageable pageable) {
+//
+//        int qty = themeRepository.findAll().size();
+//        int idx = (int)(Math.random() * qty);
+//
+//        Page<Theme> randomTheme = themeRepository.findAll(PageRequest.of(idx,1));
+//        List<ThemeResponseDto> randomThemes = randomTheme.stream()
+//                .map(ThemeResponseDto::new).collect(Collectors.toList());
+//        return randomThemes;
+//    }
+
+
 }

@@ -7,6 +7,7 @@ import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ReviewRequestDto;
 import com.example.sherlockescape.dto.response.MyReviewResponseDto;
 import com.example.sherlockescape.dto.response.ReviewResponseDto;
+import com.example.sherlockescape.dto.response.ThemeResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.MemberRepository;
@@ -18,10 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -60,6 +61,7 @@ public class ReviewService {
 				.comment(reviewRequestDto.getComment())
 				.build();
 		reviewRepository.save(review);
+
 		return ResponseDto.success("리뷰 등록 성공!");
 	}
 
@@ -73,6 +75,7 @@ public class ReviewService {
 		for(Review review: reviewList){
 			reviewAllList.add(
 					ReviewResponseDto.builder()
+							.id(review.getId())
 							.nickname(review.getMember().getNickname())
 							.playDate(review.getPlayDate())
 							.score(review.getScore())
@@ -82,7 +85,9 @@ public class ReviewService {
 							.comment(review.getComment())
 							.build()
 			);
+
 		}
+
 		return ResponseDto.success(reviewAllList);
 	}
 
