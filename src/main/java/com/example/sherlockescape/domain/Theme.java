@@ -69,4 +69,5 @@ public class Theme {
     public void updateTotalLikeCnt(int totalLikeCnt){
         this.totalLikeCnt = totalLikeCnt;
     }
+
 }

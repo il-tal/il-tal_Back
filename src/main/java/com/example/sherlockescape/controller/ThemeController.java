@@ -1,6 +1,5 @@
 package com.example.sherlockescape.controller;
 
-
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ThemeRequestDto;
 import com.example.sherlockescape.dto.response.ThemeResponseDto;
@@ -12,7 +11,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -26,8 +24,8 @@ public class ThemeController {
      * */
     @PostMapping("/theme/{companyId}")
     public ResponseDto<String> createTheme(@PathVariable Long companyId,
-                                                     @RequestPart(required = false, value = "file") MultipartFile multipartFile,
-                                                     @RequestPart(value = "theme") ThemeRequestDto themeRequestDto){
+                                           @RequestPart(required = false, value = "file") MultipartFile multipartFile,
+                                           @RequestPart(value = "theme") ThemeRequestDto themeRequestDto) {
         return themeService.createTheme(companyId, multipartFile, themeRequestDto);
 
     }
@@ -46,13 +44,26 @@ public class ThemeController {
                                                           @RequestParam(value = "themeScore", required = false) List<Integer> themeScore,
                                                           @RequestParam(value = "difficulty", required = false) List<Integer> difficulty,
                                                           @RequestParam(value = "people", required = false) List<Integer> people
-                                                          ){
-        return ResponseDto.success(themeService.filter(pageable,location,genreFilter,themeScore,difficulty,people));
+    ) {
+        return ResponseDto.success(themeService.filter(pageable, location, genreFilter, themeScore, difficulty, people));
     }
 
     //테마 상세페이지
     @GetMapping("/theme/{themeId}")
     public ResponseDto getTheme(@PathVariable Long themeId) {
         return themeService.findTheme(themeId);
+    }
+
+    //메인 페이지 인기테마
+    @GetMapping("/main/best")
+    public ResponseDto<List<ThemeResponseDto>> getBestTheme(@PageableDefault(size=3, sort = "totalLikeCnt", direction = Sort.Direction.DESC) Pageable pageable) {
+     return ResponseDto.success(themeService.findBestTheme(pageable));
+    }
+
+
+    //메인페이지 랜덤테마
+    @GetMapping("/main/random")
+    public ResponseDto<List<ThemeResponseDto>> getRandomTheme() {
+        return ResponseDto.success(themeService.findRandomTheme());
     }
 }
