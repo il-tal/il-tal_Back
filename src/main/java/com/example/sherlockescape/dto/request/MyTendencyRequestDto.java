@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -19,6 +21,7 @@ public class MyTendencyRequestDto {
     private List<GenrePreference> genrePreference;
     @NotNull
     private List<StylePreference> stylePreference;
+
     private int lessScare;
     private int roomSize;
     private int lockStyle;

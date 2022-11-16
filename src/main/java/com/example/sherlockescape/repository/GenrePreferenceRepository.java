@@ -9,4 +9,5 @@ public interface GenrePreferenceRepository extends JpaRepository<GenrePreference
 
     List<GenrePreference> findAllByTendencyId(Long id);
 
+    GenrePreference findByTendencyId(Long id);
 }

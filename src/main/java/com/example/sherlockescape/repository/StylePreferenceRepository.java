@@ -10,4 +10,6 @@ public interface StylePreferenceRepository extends JpaRepository<StylePreference
     List<StylePreference> findAllByTendencyId(Long id);
 
     List<StylePreference> findStylePreferencesByTendencyId(Long id);
+
+    StylePreference findByTendencyId(Long id);
 }

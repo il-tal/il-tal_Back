@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -191,14 +190,17 @@ public class MemberService {
                                 myTendencyRequestDto.getInterior(), myTendencyRequestDto.getExcitePreference(),
                                 myTendencyRequestDto.getSurprise());
         tendencyRepository.save(tendency);
-        List<GenrePreference> genrePreferenceList = genrePreferenceRepository.findAllByTendencyId(tendency.getId());
-        for(GenrePreference genrePreference: genrePreferenceList){
-            genrePreference.updateGenrePreference(genrePreference.getGenrePreference());
+
+//        List<GenrePreference> genrePreferenceList = genrePreferenceRepository.findAllByTendencyId(tendency.getId());
+        for(GenrePreference preference: myTendencyRequestDto.getGenrePreference()){
+            GenrePreference genrePreference = genrePreferenceRepository.findByTendencyId(tendency.getId());
+            genrePreference.updateGenrePreference(preference.getGenrePreference());
             genrePreferenceRepository.save(genrePreference);
         }
-        List<StylePreference> stylePreferenceList = stylePreferenceRepository.findAllByTendencyId(tendency.getId());
-        for(StylePreference stylePreference: stylePreferenceList){
-            stylePreference.updateStylePreference(stylePreference.getStylePreference());
+//        List<StylePreference> stylePreferenceList = stylePreferenceRepository.findAllByTendencyId(tendency.getId());
+        for(StylePreference preference: myTendencyRequestDto.getStylePreference()){
+            StylePreference stylePreference = stylePreferenceRepository.findByTendencyId(tendency.getId());
+            stylePreference.updateStylePreference(preference.getStylePreference());
             stylePreferenceRepository.save(stylePreference);
         }
         return "성향 수정 성공";
