@@ -30,6 +30,7 @@ public class GenrePreference {
     private Tendency tendency;
 
     public void updateGenrePreference(String genrePreference){
+
         this.genrePreference = genrePreference;
     }
 }
