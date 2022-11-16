@@ -7,6 +7,7 @@ import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ThemeLikeRequestDto;
 import com.example.sherlockescape.dto.response.ThemeLikeResponseDto;
 import com.example.sherlockescape.repository.ThemeLikeRepository;
+import com.example.sherlockescape.repository.ThemeRepository;
 import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class ThemeLikeService {
 
     private final ThemeLikeRepository themeLikeRepository;
+    private final ThemeRepository themeRepository;
     private final ValidateCheck validateCheck;
     public ResponseDto<ThemeLikeResponseDto> themeLikeUp(ThemeLikeRequestDto themeLikeRequestDto, Long memberId) {
         Optional<ThemeLike> likes = themeLikeRepository
@@ -25,6 +27,10 @@ public class ThemeLikeService {
 
         Member member = validateCheck.getMember(memberId);
         Theme theme = new Theme(Long.parseLong(themeLikeRequestDto.getThemeId()));
+
+        Theme updateTheme = themeRepository.findById(theme.getId()).orElseThrow(
+                () -> new IllegalArgumentException("테마가 존재하지 않습니다.")
+        );
 
         boolean themeLikeCheck;
         if(likes.isPresent()){
@@ -37,6 +43,10 @@ public class ThemeLikeService {
         }
         Long themeLikeCnt = themeLikeRepository
                 .countByThemeId(Long.parseLong(themeLikeRequestDto.getThemeId()));
+
+        updateTheme.updateTotalLikeCnt(themeLikeCnt.intValue());
+        themeRepository.save(updateTheme);
+
         return ResponseDto.success(
                 ThemeLikeResponseDto.builder()
                         .themeLikeCheck(themeLikeCheck)

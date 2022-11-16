@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface ThemeQueryRepository {
-    Page<Theme> findFilter(Pageable pageable, List<String> location, List<String> genre/*, List<Double> themeScore, List<Double> difficulty, List<int> minPeople, List<int> maxPeople*/) ;
+    Page<Theme> findFilter(Pageable pageable, List<String> location, List<String> genreFilter , List<Integer> themeScore, List<Integer> difficulty, List<Integer> people) ;
 }

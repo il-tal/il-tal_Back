@@ -1,10 +1,7 @@
 package com.example.sherlockescape.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -26,14 +23,8 @@ public class Theme {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @OneToOne(mappedBy = "theme")
-    private Achievement achievement;
-
     @Column(nullable = false)
-    private String imgUrl;
-
-    @Column(nullable = false)
-    private String location;
+    private String themeImgUrl;
 
     @Column(nullable = false)
     private String themeName;
@@ -44,6 +35,10 @@ public class Theme {
     @Column
     private String genre;
 
+    @Column
+    private String genreFilter;
+
+
     @Column(nullable = false)
     private int playTime;
 
@@ -51,21 +46,27 @@ public class Theme {
     private String synopsis;
 
     @Column
-    private double themeScore;
+    private Double themeScore;
 
     @Column(nullable = false)
     private String themeUrl;
 
     @Column(nullable = false)
-    private int maxPeople;
-
-    @Column(nullable = false)
     private int minPeople;
 
     @Column(nullable = false)
+    private int maxPeople;
+
+    @Column(nullable = false)
     private int price;
+
+    @Column
+    private int totalLikeCnt;
+
     public Theme(Long themeId){
         this.id = themeId;
     }
-
+    public void updateTotalLikeCnt(int totalLikeCnt){
+        this.totalLikeCnt = totalLikeCnt;
+    }
 }
