@@ -1,7 +1,10 @@
 package com.example.sherlockescape.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.example.sherlockescape.domain.*;
+import com.example.sherlockescape.domain.Company;
+import com.example.sherlockescape.domain.CompanyLike;
+import com.example.sherlockescape.domain.Member;
+import com.example.sherlockescape.domain.Theme;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.CompanyRequestDto;
 import com.example.sherlockescape.dto.response.AllResponseDto;

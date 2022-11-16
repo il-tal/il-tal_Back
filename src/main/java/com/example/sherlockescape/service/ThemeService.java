@@ -86,7 +86,6 @@ public class ThemeService {
     public List<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people){
 
         Page<Theme> filteredTheme = themeRepository.findFilter(pageable, location, genreFilter, themeScore, difficulty, people);
-
         List<ThemeResponseDto> themeLists = filteredTheme.stream()
                 .map(ThemeResponseDto::new).collect(Collectors.toList());
 
@@ -169,6 +168,5 @@ public class ThemeService {
 //                .map(ThemeResponseDto::new).collect(Collectors.toList());
 //        return randomThemes;
 //    }
-
 
 }

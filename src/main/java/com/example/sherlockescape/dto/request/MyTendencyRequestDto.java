@@ -1,9 +1,5 @@
 package com.example.sherlockescape.dto.request;
 
-
-import com.example.sherlockescape.domain.GenrePreference;
-
-import com.example.sherlockescape.domain.StylePreference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,11 +13,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MyTendencyRequestDto {
-    @NotNull
-    private List<GenrePreference> genrePreference;
-    @NotNull
-    private List<StylePreference> stylePreference;
-
+//    @NotNull
+//    private List<GenrePreference> genrePreference;
+//    @NotNull
+//    private List<StylePreference> stylePreference;
+    private String genrePreference;
+    private String stylePreference;
     private int lessScare;
     private int roomSize;
     private int lockStyle;

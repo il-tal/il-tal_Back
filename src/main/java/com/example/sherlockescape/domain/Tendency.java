@@ -4,14 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
@@ -49,10 +44,20 @@ public class Tendency {
 
     @Column(nullable = false)
     private int surprise;
+//
+//    @Enumerated(EnumType.STRING)
+//    private genreEnum status;
+    @Column(nullable = false)
+    private String genrePreference;
 
-    public void updateTendency(int lessScare, int roomSize,int lockStyle, int device,
+    @Column(nullable = false)
+    private String stylePreference;
+    public void updateTendency(String genrePreference, String stylePreference,
+                               int lessScare, int roomSize,int lockStyle, int device,
                                int interior, int excitePreference, int surprise)
     {
+        this.genrePreference = genrePreference;
+        this.stylePreference = stylePreference;
         this.lessScare = lessScare;
         this.roomSize = roomSize;
         this.lockStyle = lockStyle;
