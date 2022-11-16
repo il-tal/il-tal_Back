@@ -52,7 +52,7 @@ public class Member extends BaseTimeEntity {
         this.kakaoEmail = kakaoEmail;
         this.nickname = nickname;
         this.profile = profile;
-        this.passwordEncoder = encodedPassword;
+//        this.passwordEncoder = encodedPassword;
     }
 //    kakaoEmail, nickname, profile, encodedPassword
 }
