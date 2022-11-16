@@ -1,14 +1,12 @@
 package com.example.sherlockescape.dto.response;
 
 
-import com.example.sherlockescape.domain.*;
+import com.example.sherlockescape.domain.Member;
+import com.example.sherlockescape.domain.Tendency;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -17,8 +15,10 @@ import java.util.List;
 public class AllMyInfoResponseDto {
     private String nickname;
     private int totalAchieveCnt;
-    private List<GenrePreference> genrePreferenceList;
-    private List<StylePreference> stylePreferenceList;
+//    private List<GenrePreference> genrePreferenceList;
+//    private List<StylePreference> stylePreferenceList;
+    private String genrePreference;
+    private String stylePreference;
     private int lessScare;
     private int roomSize;
     private int lockStyle;
@@ -27,12 +27,11 @@ public class AllMyInfoResponseDto {
     private int excitePreference;
     private int surprise;
 
-    public AllMyInfoResponseDto(Member member, Tendency tendency, int totalAchieveCnt,
-                                List<GenrePreference> genrePreferenceList, List<StylePreference> stylePreferenceList)
+    public AllMyInfoResponseDto(Member member, Tendency tendency, int totalAchieveCnt)
     {
         this.nickname = member.getNickname();
-        this.genrePreferenceList = genrePreferenceList;
-        this.stylePreferenceList = stylePreferenceList;
+        this.genrePreference = tendency.getGenrePreference();
+        this.stylePreference = tendency.getStylePreference();
         this.lessScare = tendency.getLessScare();
         this.roomSize = tendency.getRoomSize();
         this.lockStyle = tendency.getLockStyle();

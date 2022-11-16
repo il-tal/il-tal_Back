@@ -1,10 +1,7 @@
 package com.example.sherlockescape.dto.response;
 
 import com.example.sherlockescape.domain.Theme;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @AllArgsConstructor
@@ -23,10 +20,9 @@ public class ThemeResponseDto {
     private String genre;
 
     private double themeScore;
-
     private int totalLikeCnt;
 
-    private Long reviewCnt;
+    private int reviewCnt;
 
 
     public ThemeResponseDto(Theme theme) {
@@ -37,6 +33,5 @@ public class ThemeResponseDto {
         this.genre = theme.getGenre();
         this.themeScore = theme.getThemeScore();
         this.totalLikeCnt = theme.getTotalLikeCnt();
-//        this.reviewCnt = (long) reviewRepository.findAllByThemeId(id).size();
     }
 }

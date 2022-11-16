@@ -1,6 +1,9 @@
 package com.example.sherlockescape.service;
 
-import com.example.sherlockescape.domain.*;
+import com.example.sherlockescape.domain.Member;
+import com.example.sherlockescape.domain.RefreshToken;
+import com.example.sherlockescape.domain.Review;
+import com.example.sherlockescape.domain.Tendency;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.LoginRequestDto;
 import com.example.sherlockescape.dto.request.MemberRequestDto;
@@ -36,10 +39,10 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final GenrePreferenceRepository genrePreferenceRepository;
-    private final TendencyRepository tendencyRepository;
-    private final StylePreferenceRepository stylePreferenceRepository;
     private final ReviewRepository reviewRepository;
+    //    private final StylePreferenceRepository stylePreferenceRepository;
+    //    private final GenrePreferenceRepository genrePreferenceRepository;
+    private final TendencyRepository tendencyRepository;
 
     //회원가입
     @org.springframework.transaction.annotation.Transactional
@@ -150,6 +153,8 @@ public class MemberService {
         );
         Tendency tendency = Tendency.builder()
                 .member(member).device(myTendencyRequestDto.getDevice())
+                .genrePreference(myTendencyRequestDto.getGenrePreference())
+                .stylePreference(myTendencyRequestDto.getStylePreference())
                 .excitePreference(myTendencyRequestDto.getExcitePreference())
                 .lessScare(myTendencyRequestDto.getLessScare())
                 .interior(myTendencyRequestDto.getInterior())
@@ -158,20 +163,20 @@ public class MemberService {
                 .surprise(myTendencyRequestDto.getSurprise())
                 .build();
         tendencyRepository.save(tendency);
-            for(GenrePreference preference: myTendencyRequestDto.getGenrePreference()){
-                GenrePreference genrePreference = GenrePreference.builder()
-                        .genrePreference(preference.getGenrePreference())
-                        .tendency(tendency)
-                        .build();
-                genrePreferenceRepository.save(genrePreference);
-            }
-            for(StylePreference preference: myTendencyRequestDto.getStylePreference()){
-                StylePreference stylePreference = StylePreference.builder()
-                        .stylePreference(preference.getStylePreference())
-                        .tendency(tendency)
-                        .build();
-                stylePreferenceRepository.save(stylePreference);
-            }
+//            for(GenrePreference preference: myTendencyRequestDto.getGenrePreference()){
+//                GenrePreference genrePreference = GenrePreference.builder()
+//                        .genrePreference(preference.getGenrePreference())
+//                        .tendency(tendency)
+//                        .build();
+//                genrePreferenceRepository.save(genrePreference);
+//            }
+//            for(StylePreference preference: myTendencyRequestDto.getStylePreference()){
+//                StylePreference stylePreference = StylePreference.builder()
+//                        .stylePreference(preference.getStylePreference())
+//                        .tendency(tendency)
+//                        .build();
+//                stylePreferenceRepository.save(stylePreference);
+//            }
         return "성향 등록 성공";
     }
 
@@ -185,24 +190,25 @@ public class MemberService {
                 () -> new GlobalException(ErrorCode.NEED_TO_LOGIN)
         );
         Tendency tendency = tendencyRepository.findByMember(member);
-        tendency.updateTendency(myTendencyRequestDto.getLessScare(), myTendencyRequestDto.getRoomSize(),
+        tendency.updateTendency(myTendencyRequestDto.getGenrePreference(), myTendencyRequestDto.getStylePreference(),
+                                myTendencyRequestDto.getLessScare(), myTendencyRequestDto.getRoomSize(),
                                 myTendencyRequestDto.getLockStyle(), myTendencyRequestDto.getDevice(),
                                 myTendencyRequestDto.getInterior(), myTendencyRequestDto.getExcitePreference(),
                                 myTendencyRequestDto.getSurprise());
         tendencyRepository.save(tendency);
 
 //        List<GenrePreference> genrePreferenceList = genrePreferenceRepository.findAllByTendencyId(tendency.getId());
-        for(GenrePreference preference: myTendencyRequestDto.getGenrePreference()){
-            GenrePreference genrePreference = genrePreferenceRepository.findByTendencyId(tendency.getId());
-            genrePreference.updateGenrePreference(preference.getGenrePreference());
-            genrePreferenceRepository.save(genrePreference);
-        }
+//        for(GenrePreference preference: myTendencyRequestDto.getGenrePreference()){
+//            GenrePreference genrePreference = genrePreferenceRepository.findByTendencyId(tendency.getId());
+//            genrePreference.updateGenrePreference(preference.getGenrePreference());
+//            genrePreferenceRepository.save(genrePreference);
+//        }
 //        List<StylePreference> stylePreferenceList = stylePreferenceRepository.findAllByTendencyId(tendency.getId());
-        for(StylePreference preference: myTendencyRequestDto.getStylePreference()){
-            StylePreference stylePreference = stylePreferenceRepository.findByTendencyId(tendency.getId());
-            stylePreference.updateStylePreference(preference.getStylePreference());
-            stylePreferenceRepository.save(stylePreference);
-        }
+//        for(StylePreference preference: myTendencyRequestDto.getStylePreference()){
+//            StylePreference stylePreference = stylePreferenceRepository.findByTendencyId(tendency.getId());
+//            stylePreference.updateStylePreference(preference.getStylePreference());
+//            stylePreferenceRepository.save(stylePreference);
+//        }
         return "성향 수정 성공";
     }
 
@@ -215,9 +221,8 @@ public class MemberService {
                 () -> new GlobalException(ErrorCode.NEED_TO_LOGIN)
         );
         Tendency tendency = tendencyRepository.findByMember(member);
-        List<GenrePreference> genrePreferenceList = genrePreferenceRepository.findAllByTendencyId(tendency.getId());
-        List<StylePreference> stylePreferenceList = stylePreferenceRepository.findAllByTendencyId(tendency.getId());
-
+//        List<GenrePreference> genrePreferenceList = genrePreferenceRepository.findAllByTendencyId(tendency.getId());
+//        List<StylePreference> stylePreferenceList = stylePreferenceRepository.findAllByTendencyId(tendency.getId());
         List<Review> reviews = reviewRepository.findReviewsByMember(member);
         int totalAchieveCnt = 0;
         for(Review review: reviews){
@@ -225,6 +230,6 @@ public class MemberService {
                 totalAchieveCnt += 1;
             }
         }
-        return ResponseDto.success(new AllMyInfoResponseDto(member, tendency, totalAchieveCnt,genrePreferenceList, stylePreferenceList));
+        return ResponseDto.success(new AllMyInfoResponseDto(member, tendency, totalAchieveCnt));
     }
 }

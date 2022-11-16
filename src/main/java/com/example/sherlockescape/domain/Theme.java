@@ -59,7 +59,6 @@ public class Theme {
 
     @Column(nullable = false)
     private int price;
-
     @Column
     private int totalLikeCnt;
 

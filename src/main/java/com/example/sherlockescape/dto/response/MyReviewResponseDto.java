@@ -17,4 +17,5 @@ public class MyReviewResponseDto {
     private int difficulty;
     private double score;
     private String comment;
+    private boolean success;
 }
