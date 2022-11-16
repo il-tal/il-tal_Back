@@ -1,14 +1,10 @@
 package com.example.sherlockescape.dto.request;
 
-import com.example.sherlockescape.domain.Member;
-import com.example.sherlockescape.domain.Review;
-import com.example.sherlockescape.domain.Theme;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Getter

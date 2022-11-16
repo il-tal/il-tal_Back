@@ -5,24 +5,19 @@ import com.example.sherlockescape.domain.Review;
 import com.example.sherlockescape.domain.Theme;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ReviewRequestDto;
+import com.example.sherlockescape.dto.response.MyReviewResponseDto;
 import com.example.sherlockescape.dto.response.ReviewResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.MemberRepository;
 import com.example.sherlockescape.repository.ReviewRepository;
 import com.example.sherlockescape.repository.ThemeRepository;
-import com.example.sherlockescape.security.user.UserDetailsImpl;
 import com.example.sherlockescape.utils.ValidateCheck;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.parsing.Problem;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -78,6 +73,7 @@ public class ReviewService {
 		for(Review review: reviewList){
 			reviewAllList.add(
 					ReviewResponseDto.builder()
+							.id(review.getId())
 							.nickname(review.getMember().getNickname())
 							.playDate(review.getPlayDate())
 							.score(review.getScore())
@@ -124,4 +120,23 @@ public class ReviewService {
 		return ResponseDto.success("리뷰 삭제 성공!");
 	}
 
+	//내가 작성한 후기 조회
+	public List<MyReviewResponseDto> getMyReviews(Member member) {
+
+		List<Review> reviewList = reviewRepository.findReviewsByMember(member);
+
+		List<MyReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
+		for(Review review: reviewList){
+
+			MyReviewResponseDto myReviewResponseDtoList = MyReviewResponseDto.builder()
+					.themeName(review.getTheme().getThemeName())
+					.playTime(review.getPlayDate())
+					.score(review.getScore())
+					.difficulty(review.getDifficulty())
+					.comment(review.getComment())
+					.build();
+			reviewResponseDtoList.add(myReviewResponseDtoList);
+		}
+		return reviewResponseDtoList;
+	}
 }

@@ -14,13 +14,10 @@ import com.example.sherlockescape.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -103,6 +100,37 @@ public class ThemeService {
         ThemeDetailResponseDto themeDetail = new ThemeDetailResponseDto(theme);
         return ResponseDto.success(themeDetail);
 
+    }
+
+    //내가 찜한 테마 목록
+    public List<MyThemeResponseDto> getMyThemes(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new IllegalArgumentException("사용자를 찾을 수 없습니다.")
+        );
+
+        List<ThemeLike> themeLikeList = themeLikeRepository.findThemeLikesByMember(member);
+        List<MyThemeResponseDto> responseDtoList = new ArrayList<>();
+        for(ThemeLike like: themeLikeList){
+
+            Theme theme = themeRepository.findById(like.getTheme().getId())
+                    .orElseThrow(
+                            ()-> new IllegalArgumentException("테마를 찾을 수 없습니다.")
+                    );
+
+            Long themeLikeCnt = themeLikeRepository.countByThemeId(like.getTheme().getId());
+            Long reviewCnt = reviewRepository.countByThemeId(like.getTheme().getId());
+            MyThemeResponseDto myThemeResponseDto =
+                    MyThemeResponseDto.builder()
+                            .companyName(theme.getCompany().getCompanyName())
+                            .themeName(theme.getThemeName())
+                            .themeLikeCnt(themeLikeCnt)
+                            .themeImgUrl(theme.getThemeImgUrl())
+                            .themeScore(theme.getThemeScore())
+                            .reviewCnt(reviewCnt)
+                            .build();
+            responseDtoList.add(myThemeResponseDto);
+        }
+        return responseDtoList;
     }
 
 //    //인기 테마 조회

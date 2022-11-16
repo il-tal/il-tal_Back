@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -33,7 +32,7 @@ public class ReviewController {
 	}
 
 	// 테마 후기 수정
-	@PutMapping("review/{reviewId}")
+	@PutMapping("/review/{reviewId}")
 	public ResponseDto<?> updateReview(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
 										@PathVariable Long reviewId,
 										@RequestBody @Valid ReviewRequestDto requestDto) {

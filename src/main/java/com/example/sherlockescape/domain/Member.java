@@ -35,4 +35,8 @@ public class Member extends BaseTimeEntity {
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
     }
+    public void updateNickname(String nickname){
+        this.nickname = nickname;
+    }
+
 }

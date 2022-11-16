@@ -1,12 +1,7 @@
 package com.example.sherlockescape.domain;
 
-import com.example.sherlockescape.repository.ThemeLikeRepository;
-import com.example.sherlockescape.repository.ThemeRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -27,13 +22,6 @@ public class Theme {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
-
-    @OneToOne(mappedBy = "theme")
-    private Achievement achievement;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "themeLike_id")
-    private ThemeLike themeLike;
 
     @Column(nullable = false)
     private String themeImgUrl;
@@ -73,24 +61,12 @@ public class Theme {
     private int price;
 
     @Column
-    private Long themeLikeCnt;
+    private int totalLikeCnt;
 
     public Theme(Long themeId){
         this.id = themeId;
     }
-
-    public void updateThemeLikeCnt(Long themeLikeCnt) {
-        this.themeLikeCnt = themeLikeCnt;
-
-
-        System.out.println(themeLikeCnt);
+    public void updateTotalLikeCnt(int totalLikeCnt){
+        this.totalLikeCnt = totalLikeCnt;
     }
-
-//    public void updateThemeLikeCnt(int num){
-//        if (num == 0) {
-//            this.themeLikeCnt ++;
-//        } else {
-//            this.themeLikeCnt --;
-//        }
-//    }
 }

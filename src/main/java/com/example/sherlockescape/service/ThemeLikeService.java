@@ -19,7 +19,6 @@ import java.util.Optional;
 public class ThemeLikeService {
 
     private final ThemeLikeRepository themeLikeRepository;
-
     private final ThemeRepository themeRepository;
     private final ValidateCheck validateCheck;
     public ResponseDto<ThemeLikeResponseDto> themeLikeUp(ThemeLikeRequestDto themeLikeRequestDto, Long memberId) {
@@ -29,20 +28,24 @@ public class ThemeLikeService {
         Member member = validateCheck.getMember(memberId);
         Theme theme = new Theme(Long.parseLong(themeLikeRequestDto.getThemeId()));
 
+        Theme updateTheme = themeRepository.findById(theme.getId()).orElseThrow(
+                () -> new IllegalArgumentException("테마가 존재하지 않습니다.")
+        );
+
         boolean themeLikeCheck;
         if(likes.isPresent()){
             themeLikeCheck = false;
             themeLikeRepository.delete(likes.get());
-
         }else{
             themeLikeCheck = true;
             ThemeLike like = new ThemeLike(member, theme);
             themeLikeRepository.save(like);
-
         }
-         Long themeLikeCnt = themeLikeRepository
+        Long themeLikeCnt = themeLikeRepository
                 .countByThemeId(Long.parseLong(themeLikeRequestDto.getThemeId()));
 
+        updateTheme.updateTotalLikeCnt(themeLikeCnt.intValue());
+        themeRepository.save(updateTheme);
 
         return ResponseDto.success(
                 ThemeLikeResponseDto.builder()
