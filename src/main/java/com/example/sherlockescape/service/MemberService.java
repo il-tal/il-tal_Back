@@ -59,6 +59,8 @@ public class MemberService {
         Member member = Member.builder()
                 .username(memberReqDto.getUsername())
                 .nickname(memberReqDto.getNickname())
+                .mainBadgeImg("https://mykeejaebucket.s3.ap-northeast-2.amazonaws.com/Serverdefaultprofile.1667758089664.png")
+                .mainBadgeName("뱃지를 획득해 보세요!")
                 .password(passwordEncoder.encode(memberReqDto.getPassword()))
                 .build();
         memberRepository.save(member);
@@ -238,6 +240,7 @@ public class MemberService {
             AllMyInfoResponseDto allMyInfoResponseDto
                     = AllMyInfoResponseDto.builder()
                     .id(memberId).nickname(member.getNickname())
+                    .mainBadgeName(member.getMainBadgeName()).mainBadgeImg(member.getMainBadgeImg())
                     .device(0).excitePreference(0).device(0)
                     .lockStyle(0).lessScare(0).roomSize(0)
                     .surprise(0).interior(0).genrePreference(null)

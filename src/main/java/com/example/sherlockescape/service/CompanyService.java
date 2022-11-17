@@ -1,6 +1,10 @@
 package com.example.sherlockescape.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.util.IOUtils;
 import com.example.sherlockescape.domain.Company;
 import com.example.sherlockescape.domain.CompanyLike;
 import com.example.sherlockescape.domain.Member;
@@ -18,6 +22,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -42,8 +48,17 @@ public class CompanyService {
      *
      * 업체 DB 정보 등록
      * */
-    public ResponseDto<String> createCompany(MultipartFile multipartFile, CompanyRequestDto companyRequestDto) {
+    public ResponseDto<String> createCompany(MultipartFile multipartFile, CompanyRequestDto companyRequestDto) throws IOException {
+
         String fileName = CommonUtils.buildFileName(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(multipartFile.getContentType());
+
+        byte[] bytes = IOUtils.toByteArray(multipartFile.getInputStream());
+        objectMetadata.setContentLength(bytes.length);
+        ByteArrayInputStream byteArrayIs = new ByteArrayInputStream(bytes);
+        amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, byteArrayIs, objectMetadata)
+                .withCannedAcl(CannedAccessControlList.PublicRead));
         String imgurl = amazonS3Client.getUrl(bucketName, fileName).toString();
 
         Company company = Company.builder()

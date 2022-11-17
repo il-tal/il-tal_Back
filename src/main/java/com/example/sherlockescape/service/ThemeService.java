@@ -1,6 +1,10 @@
 package com.example.sherlockescape.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.util.IOUtils;
 import com.example.sherlockescape.domain.*;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ThemeRequestDto;
@@ -16,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,12 +46,20 @@ public class ThemeService {
      *
      * 테마 DB 등록
      * */
-    public ResponseDto<String> createTheme(Long companyId, MultipartFile multipartFile, ThemeRequestDto themeReqDto) {
+    public ResponseDto<String> createTheme(Long companyId, MultipartFile multipartFile, ThemeRequestDto themeReqDto) throws IOException {
         Company company = companyRepository.findById(companyId).orElseThrow(
                 () -> new IllegalArgumentException("해당 업체가 존재하지 않습니다.")
         );
 
         String fileName = CommonUtils.buildFileName(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(multipartFile.getContentType());
+
+        byte[] bytes = IOUtils.toByteArray(multipartFile.getInputStream());
+        objectMetadata.setContentLength(bytes.length);
+        ByteArrayInputStream byteArrayIs = new ByteArrayInputStream(bytes);
+        amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, byteArrayIs, objectMetadata)
+                .withCannedAcl(CannedAccessControlList.PublicRead));
         String imgurl = amazonS3Client.getUrl(bucketName, fileName).toString();
 
         Theme theme = Theme.builder()

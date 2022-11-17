@@ -2,6 +2,10 @@ package com.example.sherlockescape.service;
 
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.util.IOUtils;
 import com.example.sherlockescape.domain.Badge;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.BadgeRequestDto;
@@ -13,6 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Objects;
 
 @Service
@@ -25,8 +31,16 @@ public class BadgeService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    public ResponseDto<BadgeResponseDto> createBadge(MultipartFile multipartFile, BadgeRequestDto badgeRequestDto) {
+    public ResponseDto<BadgeResponseDto> createBadge(MultipartFile multipartFile, BadgeRequestDto badgeRequestDto) throws IOException {
         String fileName = CommonUtils.buildFileName(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(multipartFile.getContentType());
+
+        byte[] bytes = IOUtils.toByteArray(multipartFile.getInputStream());
+        objectMetadata.setContentLength(bytes.length);
+        ByteArrayInputStream byteArrayIs = new ByteArrayInputStream(bytes);
+        amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, byteArrayIs, objectMetadata)
+                .withCannedAcl(CannedAccessControlList.PublicRead));
         String imgurl = amazonS3Client.getUrl(bucketName, fileName).toString();
 
         Badge badge = Badge.builder()

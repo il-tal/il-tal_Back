@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 public class BadgeController {
@@ -22,7 +24,7 @@ public class BadgeController {
     * */
     @PostMapping("/badge")
     public ResponseDto<BadgeResponseDto> createBadge(@RequestPart (value = "file", required = false)MultipartFile multipartFile,
-                                                     @RequestPart (value = "badge") BadgeRequestDto badgeRequestDto){
+                                                     @RequestPart (value = "badge") BadgeRequestDto badgeRequestDto) throws IOException {
         return badgeService.createBadge(multipartFile, badgeRequestDto);
     }
 }

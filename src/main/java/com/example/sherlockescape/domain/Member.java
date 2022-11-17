@@ -32,6 +32,12 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String mainBadgeImg;
+
+    @Column(nullable = false)
+    private String mainBadgeName;
+
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
     }
