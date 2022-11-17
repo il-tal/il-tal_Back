@@ -33,10 +33,9 @@ public class ThemeDetailResponseDto {
 
     private double themeScore;
 
-//    themeLike
-//
-//    reviewCnt
-//
+    private int totalLikeCnt;
+
+    private int reviewCnt;
 
     private String synopsis;
 

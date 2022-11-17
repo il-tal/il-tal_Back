@@ -24,7 +24,6 @@ public class ThemeResponseDto {
 
     private int reviewCnt;
 
-
     public ThemeResponseDto(Theme theme) {
         this.id = theme.getId();
         this.themeImgUrl = theme.getThemeImgUrl();

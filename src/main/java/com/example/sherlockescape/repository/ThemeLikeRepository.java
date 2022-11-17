@@ -10,10 +10,11 @@ import java.util.Optional;
 public interface ThemeLikeRepository extends JpaRepository<ThemeLike, Long> {
 
     Optional<ThemeLike> findByThemeIdAndMemberId(long parseLong, Long memberId);
-
     Long countByThemeId(long parseLong);
-
-
     List<ThemeLike> findThemeLikesByMember(Member member);
+
+    ThemeLike countByThemeId(Long id);
+
+    ThemeLike findByThemeId(Long id);
 }
 
