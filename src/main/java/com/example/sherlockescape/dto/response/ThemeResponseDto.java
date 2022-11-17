@@ -27,4 +27,13 @@ public class ThemeResponseDto {
     private int totalLikeCnt;
 
     private int reviewCnt;
+    public ThemeResponseDto(Theme theme) {
+        this.id = theme.getId();
+        this.themeImgUrl = theme.getThemeImgUrl();
+        this.themeName = theme.getThemeName();
+        this.companyName = theme.getCompany().getCompanyName();
+        this.genre = theme.getGenre();
+        this.themeScore = theme.getThemeScore();
+        this.totalLikeCnt = theme.getTotalLikeCnt();
+    }
 }
