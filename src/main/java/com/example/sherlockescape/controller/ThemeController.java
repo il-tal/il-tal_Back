@@ -10,6 +10,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -25,7 +27,7 @@ public class ThemeController {
     @PostMapping("/theme/{companyId}")
     public ResponseDto<String> createTheme(@PathVariable Long companyId,
                                            @RequestPart(required = false, value = "file") MultipartFile multipartFile,
-                                           @RequestPart(value = "theme") ThemeRequestDto themeRequestDto) {
+                                           @RequestPart(value = "theme") ThemeRequestDto themeRequestDto) throws IOException {
         return themeService.createTheme(companyId, multipartFile, themeRequestDto);
 
     }

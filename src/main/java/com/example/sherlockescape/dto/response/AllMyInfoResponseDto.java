@@ -17,6 +17,10 @@ import java.util.Optional;
 public class AllMyInfoResponseDto {
     private Long id;
     private String nickname;
+
+    private String mainBadgeImg;
+
+    private String mainBadgeName;
     private int totalAchieveCnt;
 //    private List<GenrePreference> genrePreferenceList;
 //    private List<StylePreference> stylePreferenceList;
@@ -34,6 +38,8 @@ public class AllMyInfoResponseDto {
     {
         this.id = member.getId();
         this.nickname = member.getNickname();
+        this.mainBadgeImg = member.getMainBadgeImg();
+        this.mainBadgeName = member.getMainBadgeName();
         this.genrePreference = tendency.getGenrePreference();
         this.stylePreference = tendency.getStylePreference();
         this.lessScare = tendency.getLessScare();
