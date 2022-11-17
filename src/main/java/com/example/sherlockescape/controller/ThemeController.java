@@ -2,6 +2,7 @@ package com.example.sherlockescape.controller;
 
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ThemeRequestDto;
+import com.example.sherlockescape.dto.response.ThemeDetailResponseDto;
 import com.example.sherlockescape.dto.response.ThemeResponseDto;
 import com.example.sherlockescape.service.ThemeService;
 import lombok.RequiredArgsConstructor;
@@ -50,8 +51,8 @@ public class ThemeController {
 
     //테마 상세페이지
     @GetMapping("/theme/{themeId}")
-    public ResponseDto getTheme(@PathVariable Long themeId) {
-        return themeService.findTheme(themeId);
+    public ResponseDto<?> getTheme(@PathVariable Long themeId) {
+        return ResponseDto.success(themeService.findTheme(themeId));
     }
 
     //메인 페이지 인기테마
