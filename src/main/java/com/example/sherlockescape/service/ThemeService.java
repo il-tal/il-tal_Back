@@ -123,6 +123,7 @@ public class ThemeService {
             Long reviewCnt = reviewRepository.countByThemeId(like.getTheme().getId());
             MyThemeResponseDto myThemeResponseDto =
                     MyThemeResponseDto.builder()
+                            .id(theme.getId())
                             .companyName(theme.getCompany().getCompanyName())
                             .themeName(theme.getThemeName())
                             .themeLikeCnt(themeLikeCnt)

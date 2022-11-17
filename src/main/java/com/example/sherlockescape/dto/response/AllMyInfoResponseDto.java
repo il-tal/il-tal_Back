@@ -8,11 +8,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class AllMyInfoResponseDto {
+    private Long id;
     private String nickname;
     private int totalAchieveCnt;
 //    private List<GenrePreference> genrePreferenceList;
@@ -29,6 +32,7 @@ public class AllMyInfoResponseDto {
 
     public AllMyInfoResponseDto(Member member, Tendency tendency, int totalAchieveCnt)
     {
+        this.id = member.getId();
         this.nickname = member.getNickname();
         this.genrePreference = tendency.getGenrePreference();
         this.stylePreference = tendency.getStylePreference();

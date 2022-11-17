@@ -1,6 +1,7 @@
 package com.example.sherlockescape.repository;
 
 import com.example.sherlockescape.domain.Company;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -17,11 +18,13 @@ public class CompanyRepositoryImpl implements CompanyRepositoryCustom{
     public List<Company> getCompanyList(Pageable pageable, String location) {
         return jpaQueryFactory
                 .selectFrom(company)
-                .where(company.location.eq(location))
+                .where(eqLocation(location))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(company.id.asc())
                 .fetch();
     }
-
+    private BooleanExpression eqLocation(String location) {
+        return location != null ? company.location.eq(location) : null;
+    }
 }

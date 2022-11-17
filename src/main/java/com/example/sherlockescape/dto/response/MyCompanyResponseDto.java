@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class MyCompanyResponseDto {
+    private Long id;
     private String companyName;
     private String companyImgUrl;
     private double companyScore;

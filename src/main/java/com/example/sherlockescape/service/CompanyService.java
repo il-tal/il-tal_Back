@@ -153,6 +153,7 @@ public class CompanyService {
             }
             MyCompanyResponseDto myCompanyResponseDto =
                     MyCompanyResponseDto.builder()
+                            .id(company.getId())
                             .companyUrl(company.getCompanyUrl())
                             .address(company.getAddress())
                             .companyScore(company.getCompanyScore())
