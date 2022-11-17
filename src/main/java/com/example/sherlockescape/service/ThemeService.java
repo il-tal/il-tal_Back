@@ -1,10 +1,7 @@
 package com.example.sherlockescape.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.example.sherlockescape.domain.Company;
-import com.example.sherlockescape.domain.Member;
-import com.example.sherlockescape.domain.Theme;
-import com.example.sherlockescape.domain.ThemeLike;
+import com.example.sherlockescape.domain.*;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ThemeRequestDto;
 import com.example.sherlockescape.dto.response.MyThemeResponseDto;
@@ -19,10 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -86,10 +80,23 @@ public class ThemeService {
     public List<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people){
 
         Page<Theme> filteredTheme = themeRepository.findFilter(pageable, location, genreFilter, themeScore, difficulty, people);
-        List<ThemeResponseDto> themeLists = filteredTheme.stream()
-                .map(ThemeResponseDto::new).collect(Collectors.toList());
 
-        return themeLists;
+        List<ThemeResponseDto> themeList = new ArrayList<>();
+        for(Theme theme : filteredTheme){
+                int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
+                ThemeResponseDto themeResponseDto = ThemeResponseDto.builder()
+                        .id(theme.getId())
+                        .themeImgUrl(theme.getThemeImgUrl())
+                        .themeName(theme.getThemeName())
+                        .companyName(theme.getCompany().getCompanyName())
+                        .genre(theme.getGenre())
+                        .themeScore(theme.getThemeScore())
+                        .totalLikeCnt(theme.getTotalLikeCnt())
+                        .reviewCnt(reviewCnt)
+                        .build();
+                themeList.add(themeResponseDto);
+        }
+        return themeList;
     }
 
 
@@ -99,9 +106,19 @@ public class ThemeService {
         Theme theme = themeRepository.findById(themeId).orElseThrow(
                 () -> new IllegalArgumentException("테마가 존재하지 않습니다"));
 
-        ThemeDetailResponseDto themeDetail = new ThemeDetailResponseDto(theme);
-        return ResponseDto.success(themeDetail);
-
+        int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
+        ThemeDetailResponseDto themeDetailResponseDto =
+                ThemeDetailResponseDto.builder()
+                        .id(theme.getId())
+                        .themeImgUrl(theme.getThemeImgUrl())
+                        .themeName(theme.getThemeName())
+                        .companyName(theme.getCompany().getCompanyName())
+                        .genre(theme.getGenre())
+                        .themeScore(theme.getThemeScore())
+                        .totalLikeCnt(theme.getTotalLikeCnt())
+                        .reviewCnt(reviewCnt)
+                        .build();
+        return ResponseDto.success(themeDetailResponseDto);
     }
 
     //내가 찜한 테마 목록
@@ -119,7 +136,7 @@ public class ThemeService {
                             ()-> new IllegalArgumentException("테마를 찾을 수 없습니다.")
                     );
 
-            Long themeLikeCnt = themeLikeRepository.countByThemeId(like.getTheme().getId());
+            Long themeLikeCnt = themeLikeRepository.countByThemeId(like.getTheme().getId()).getId();
             Long reviewCnt = reviewRepository.countByThemeId(like.getTheme().getId());
             MyThemeResponseDto myThemeResponseDto =
                     MyThemeResponseDto.builder()

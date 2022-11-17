@@ -101,7 +101,7 @@ public class CompanyService {
         for(Company company: companyList){
             Long companyId = company.getId();
 
-            List<Theme> theme = themeRepository.findAllByCompanyId(companyId);
+            List<Theme> themeList = themeRepository.findAllByCompanyId(companyId);
             Long companyLikeCnt = companyLikeRepository.countByCompanyId(companyId);
 
             Optional<CompanyLike> likes = companyLikeRepository.findByCompanyId(companyId);
@@ -110,7 +110,11 @@ public class CompanyService {
             likeCheck = likes.isPresent();
 
             //댓글 수 추가
-
+            int totalReviewCnt = 0;
+            for(Theme theme: themeList){
+                int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
+                totalReviewCnt += reviewCnt;
+            }
             //평점 계산
 
             AllResponseDto allResponseDto =
@@ -125,7 +129,9 @@ public class CompanyService {
                             .address(company.getAddress())
                             .companyLikeCnt(companyLikeCnt)
                             .companyLikeCheck(likeCheck)
-                            .themeList(theme).build();
+                            .themeList(themeList)
+                            .totalReviewCnt(totalReviewCnt)
+                            .build();
             allResponseDtoList.add(allResponseDto);
         }
         return allResponseDtoList;
