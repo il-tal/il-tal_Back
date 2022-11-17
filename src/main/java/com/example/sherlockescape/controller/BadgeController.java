@@ -16,6 +16,10 @@ public class BadgeController {
 
     private final BadgeService badgeService;
 
+    /*
+    *
+    * badge등록
+    * */
     @PostMapping("/badge")
     public ResponseDto<BadgeResponseDto> createBadge(@RequestPart (value = "file", required = false)MultipartFile multipartFile,
                                                      @RequestPart (value = "badge") BadgeRequestDto badgeRequestDto){
