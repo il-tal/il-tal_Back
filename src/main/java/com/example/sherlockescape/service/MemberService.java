@@ -151,7 +151,15 @@ public class MemberService {
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new GlobalException(ErrorCode.NEED_TO_LOGIN)
         );
-        Tendency tendency = Tendency.builder()
+        //성향 등록 로직
+        // Tendency.findByMember
+        // Tendency.ispresent() ->
+        // else 성향 등록
+        Optional<Tendency> tendency = Optional.ofNullable(tendencyRepository.findByMember(member));
+        if(tendency.isPresent()){
+            throw new IllegalArgumentException("성향을 이미 등록하셨습니다.");
+        }
+        Tendency createTendency = Tendency.builder()
                 .member(member).device(myTendencyRequestDto.getDevice())
                 .genrePreference(myTendencyRequestDto.getGenrePreference())
                 .stylePreference(myTendencyRequestDto.getStylePreference())
@@ -162,7 +170,7 @@ public class MemberService {
                 .roomSize(myTendencyRequestDto.getRoomSize())
                 .surprise(myTendencyRequestDto.getSurprise())
                 .build();
-        tendencyRepository.save(tendency);
+        tendencyRepository.save(createTendency);
 //            for(GenrePreference preference: myTendencyRequestDto.getGenrePreference()){
 //                GenrePreference genrePreference = GenrePreference.builder()
 //                        .genrePreference(preference.getGenrePreference())
@@ -189,13 +197,18 @@ public class MemberService {
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new GlobalException(ErrorCode.NEED_TO_LOGIN)
         );
-        Tendency tendency = tendencyRepository.findByMember(member);
-        tendency.updateTendency(myTendencyRequestDto.getGenrePreference(), myTendencyRequestDto.getStylePreference(),
-                                myTendencyRequestDto.getLessScare(), myTendencyRequestDto.getRoomSize(),
-                                myTendencyRequestDto.getLockStyle(), myTendencyRequestDto.getDevice(),
-                                myTendencyRequestDto.getInterior(), myTendencyRequestDto.getExcitePreference(),
-                                myTendencyRequestDto.getSurprise());
-        tendencyRepository.save(tendency);
+        Optional<Tendency> tendency = Optional.ofNullable(tendencyRepository.findByMember(member));
+        if(tendency.isEmpty()) {
+            throw new IllegalArgumentException("성향을 등록해주세요");
+        }else{
+            Tendency createdTendency = tendencyRepository.findByMember(member);
+            createdTendency.updateTendency(myTendencyRequestDto.getGenrePreference(), myTendencyRequestDto.getStylePreference(),
+                    myTendencyRequestDto.getLessScare(), myTendencyRequestDto.getRoomSize(),
+                    myTendencyRequestDto.getLockStyle(), myTendencyRequestDto.getDevice(),
+                    myTendencyRequestDto.getInterior(), myTendencyRequestDto.getExcitePreference(),
+                    myTendencyRequestDto.getSurprise());
+            tendencyRepository.save(createdTendency);
+        }
 
 //        List<GenrePreference> genrePreferenceList = genrePreferenceRepository.findAllByTendencyId(tendency.getId());
 //        for(GenrePreference preference: myTendencyRequestDto.getGenrePreference()){
@@ -217,19 +230,33 @@ public class MemberService {
     * 내정보 전체 불러오기
     * */
     public ResponseDto<AllMyInfoResponseDto> getAllMyInfo(Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new GlobalException(ErrorCode.NEED_TO_LOGIN)
-        );
-        Tendency tendency = tendencyRepository.findByMember(member);
+        Member member = memberRepository.findById(memberId).
+                orElse(null);
+        Optional<Tendency> tendency = Optional.ofNullable(tendencyRepository.findByMember(member));
+        if(tendency.isEmpty()){
+            assert member != null;
+            AllMyInfoResponseDto allMyInfoResponseDto
+                    = AllMyInfoResponseDto.builder()
+                    .id(memberId).nickname(member.getNickname())
+                    .device(0).excitePreference(0).device(0)
+                    .lockStyle(0).lessScare(0).roomSize(0)
+                    .surprise(0).interior(0).genrePreference(null)
+                    .stylePreference(null).totalAchieveCnt(0)
+                    .build();
+            return ResponseDto.success(allMyInfoResponseDto);
+        }else{
 //        List<GenrePreference> genrePreferenceList = genrePreferenceRepository.findAllByTendencyId(tendency.getId());
 //        List<StylePreference> stylePreferenceList = stylePreferenceRepository.findAllByTendencyId(tendency.getId());
-        List<Review> reviews = reviewRepository.findReviewsByMember(member);
-        int totalAchieveCnt = 0;
-        for(Review review: reviews){
-            if(review.isSuccess()){
-                totalAchieveCnt += 1;
+            Tendency findTendency = tendencyRepository.findByMember(member);
+            List<Review> reviews = reviewRepository.findReviewsByMember(member);
+            int totalAchieveCnt = 0;
+            for(Review review: reviews){
+                if(review.isSuccess()){
+                    totalAchieveCnt += 1;
+                }
             }
+            assert member != null;
+            return ResponseDto.success(new AllMyInfoResponseDto(member, findTendency, totalAchieveCnt));
         }
-        return ResponseDto.success(new AllMyInfoResponseDto(member, tendency, totalAchieveCnt));
     }
 }

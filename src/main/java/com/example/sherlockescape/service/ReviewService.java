@@ -131,6 +131,7 @@ public class ReviewService {
 		for(Review review: reviewList){
 
 			MyReviewResponseDto myReviewResponseDtoList = MyReviewResponseDto.builder()
+					.id(review.getId())
 					.themeName(review.getTheme().getThemeName())
 					.playTime(review.getPlayDate())
 					.score(review.getScore())

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MyThemeResponseDto {
+    private Long id;
     private String themeImgUrl;
     private String themeName;
     private String companyName;
