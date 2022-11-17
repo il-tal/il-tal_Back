@@ -4,10 +4,12 @@ import com.example.sherlockescape.domain.Theme;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
 @Builder
+@NoArgsConstructor
 public class ThemeDetailResponseDto {
 
     private Long id;
@@ -33,25 +35,9 @@ public class ThemeDetailResponseDto {
 
     private double themeScore;
 
+    private String synopsis;
+
     private int totalLikeCnt;
 
     private int reviewCnt;
-
-    private String synopsis;
-
-    public ThemeDetailResponseDto(Theme theme) {
-        this.id = theme.getId();
-        this.themeImgUrl = theme.getThemeImgUrl();
-        this.themeName = theme.getThemeName();
-        this.companyName = theme.getCompany().getCompanyName();
-        this.genre = theme.getGenre();
-        this.difficulty = theme.getDifficulty();
-        this.minPeople = theme.getMinPeople();
-        this.maxPeople = theme.getMaxPeople();
-        this.playTime = theme.getPlayTime();
-        this.price = theme.getPrice();
-        this.themeUrl = theme.getThemeUrl();
-        this.themeScore = theme.getThemeScore();
-    }
-
 }

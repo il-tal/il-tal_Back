@@ -83,7 +83,13 @@ public class ReviewService {
 							.comment(review.getComment())
 							.build()
 			);
-
+//			List<Double> scoreList = reviewList.stream()
+//					.map(Review::getScore)
+//					.collect(Collectors.toList());
+//
+//			scoreList.stream()
+//					.mapToInt(a -> a)
+//					.average().orElse(0);
 		}
 
 		return ResponseDto.success(reviewAllList);
