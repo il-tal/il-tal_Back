@@ -86,22 +86,54 @@ public class ThemeService {
     public List<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people){
 
         Page<Theme> filteredTheme = themeRepository.findFilter(pageable, location, genreFilter, themeScore, difficulty, people);
+//
+//        List<ThemeResponseDto> themeLists = filteredTheme.stream()
+//                .map(ThemeResponseDto::new).collect(Collectors.toList());
 
-        List<ThemeResponseDto> themeLists = filteredTheme.stream()
-                .map(ThemeResponseDto::new).collect(Collectors.toList());
-
+        List<ThemeResponseDto> themeLists = new ArrayList<>();
+        for(Theme theme: filteredTheme) {
+             ThemeResponseDto themeResponseDto =
+                     ThemeResponseDto.builder()
+                            .id(theme.getId())
+                            .themeImgUrl(theme.getThemeImgUrl())
+                            .themeName(theme.getThemeName())
+                            .companyName(theme.getCompany().getCompanyName())
+                            .genre(theme.getGenre())
+                            .themeScore(theme.getThemeScore())
+                            .totalLikeCnt(theme.getTotalLikeCnt())
+                            .reviewCnt(reviewRepository.findAllByThemeId(theme.getId()).size())
+                            .build();
+            themeLists.add(themeResponseDto);
+        }
         return themeLists;
     }
 
 
     //테마 상세조회
-    public ResponseDto<ThemeDetailResponseDto> findTheme(Long themeId) {
+    public ThemeDetailResponseDto findTheme(Long themeId) {
 
         Theme theme = themeRepository.findById(themeId).orElseThrow(
                 () -> new IllegalArgumentException("테마가 존재하지 않습니다"));
 
-        ThemeDetailResponseDto themeDetail = new ThemeDetailResponseDto(theme);
-        return ResponseDto.success(themeDetail);
+        ThemeDetailResponseDto themeDetailResponseDto =
+                ThemeDetailResponseDto.builder()
+                        .id(theme.getId())
+                        .themeImgUrl(theme.getThemeImgUrl())
+                        .themeName(theme.getThemeName())
+                        .companyName(theme.getCompany().getCompanyName())
+                        .genre(theme.getGenre())
+                        .difficulty(theme.getDifficulty())
+                        .minPeople(theme.getMinPeople())
+                        .maxPeople(theme.getMaxPeople())
+                        .playTime(theme.getPlayTime())
+                        .price(theme.getPrice())
+                        .themeUrl(theme.getThemeUrl())
+                        .themeScore(theme.getThemeScore())
+                        .synopsis((theme.getSynopsis()))
+                        .totalLikeCnt(theme.getTotalLikeCnt())
+                        .reviewCnt(reviewRepository.findAllByThemeId(themeId).size())
+                        .build();
+        return themeDetailResponseDto;
 
     }
 
@@ -140,8 +172,24 @@ public class ThemeService {
     public List<ThemeResponseDto> findBestTheme(Pageable pageable) {
 
         Page<Theme> BestTheme = themeRepository.findAllByOrderByTotalLikeCntDesc(pageable);
-        List<ThemeResponseDto> bestThemes = BestTheme.stream()
-                .map(ThemeResponseDto::new).collect(Collectors.toList());
+//        List<ThemeResponseDto> bestThemes = BestTheme.stream()
+//                .map(ThemeResponseDto::new).collect(Collectors.toList());
+
+        List<ThemeResponseDto> bestThemes = new ArrayList<>();
+        for(Theme theme: BestTheme) {
+            ThemeResponseDto themeResponseDto =
+                    ThemeResponseDto.builder()
+                            .id(theme.getId())
+                            .themeImgUrl(theme.getThemeImgUrl())
+                            .themeName(theme.getThemeName())
+                            .companyName(theme.getCompany().getCompanyName())
+                            .genre(theme.getGenre())
+                            .themeScore(theme.getThemeScore())
+                            .totalLikeCnt(theme.getTotalLikeCnt())
+                            .reviewCnt(reviewRepository.findAllByThemeId(theme.getId()).size())
+                            .build();
+            bestThemes.add(themeResponseDto);
+        }
         return bestThemes;
     }
 
@@ -150,8 +198,25 @@ public class ThemeService {
     public List<ThemeResponseDto> findRandomTheme() {
 
         List<Theme> randomTheme = themeRepository.findAll();
-        List<ThemeResponseDto> randomThemes = randomTheme.stream()
-                .map(ThemeResponseDto::new).collect(Collectors.toList());
+//        List<ThemeResponseDto> randomThemes = randomTheme.stream()
+//                .map(ThemeResponseDto::new).collect(Collectors.toList());
+
+        List<ThemeResponseDto> randomThemes = new ArrayList<>();
+        for(Theme theme: randomTheme) {
+            ThemeResponseDto themeResponseDto =
+                    ThemeResponseDto.builder()
+                            .id(theme.getId())
+                            .themeImgUrl(theme.getThemeImgUrl())
+                            .themeName(theme.getThemeName())
+                            .companyName(theme.getCompany().getCompanyName())
+                            .genre(theme.getGenre())
+                            .themeScore(theme.getThemeScore())
+                            .totalLikeCnt(theme.getTotalLikeCnt())
+                            .reviewCnt(reviewRepository.findAllByThemeId(theme.getId()).size())
+                            .build();
+            randomThemes.add(themeResponseDto);
+        }
+
         Collections.shuffle(randomThemes);
         List<ThemeResponseDto> randomThemeList = new ArrayList<>(randomThemes.subList(0,10));
         return randomThemeList;
