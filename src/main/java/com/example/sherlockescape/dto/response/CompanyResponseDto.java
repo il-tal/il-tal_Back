@@ -31,6 +31,6 @@ public class CompanyResponseDto {
 
     private String workHour;
 
-//    private Long ReviewCnt;
+    private Long ReviewCnt;
 
 }
