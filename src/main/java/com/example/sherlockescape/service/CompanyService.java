@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -106,9 +107,11 @@ public class CompanyService {
             boolean likeCheck;
             likeCheck = likes.isPresent();
 
-            //댓글 수 추가
+            //댓글 수
 
-            //평점 계산
+
+            //업체 평점 계산
+            setCompanyScore(companyId);
 
             AllResponseDto allResponseDto =
                     AllResponseDto.builder()
@@ -163,5 +166,28 @@ public class CompanyService {
             myCompanyResponseDtoList.add(myCompanyResponseDto);
         }
         return myCompanyResponseDtoList;
+    }
+
+    //업체 평점 구하기
+    private void setCompanyScore(Long companyId) {
+        Company updateCompanyScore = companyRepository.findById(companyId).orElseThrow(
+                () -> new IllegalArgumentException("업체를 찾을수 없습니다."));
+
+        List<Theme> theme = themeRepository.findAllByCompanyId(companyId);
+
+        //해당 업체의 테마에서 score 컬럼 값들 리스트로 변환
+        List<Double> themeScoreList = theme.stream()
+                .map(Theme::getThemeScore)
+                .collect(Collectors.toList());
+
+        //리스트 평균 구하기
+        double average = themeScoreList.stream()
+                .mapToDouble(Double::doubleValue)
+                .average().orElse(0);
+        double companyScore = Math.round(average*100)/100.0;
+
+        //해당 테마의 score로 저장하기
+        updateCompanyScore.updateCompanyScore(companyScore);
+        companyRepository.save(updateCompanyScore);
     }
 }

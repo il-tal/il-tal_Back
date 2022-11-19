@@ -45,7 +45,6 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
                 .orderBy(theme.id.desc())
                 .fetchResults();
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());
-
     }
 
     private BooleanExpression eqLocation(List<String> location) {

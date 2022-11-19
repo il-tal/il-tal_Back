@@ -46,7 +46,7 @@ public class Theme {
     private String synopsis;
 
     @Column
-    private Double themeScore;
+    private double themeScore;
 
     @Column(nullable = false)
     private String themeUrl;
@@ -69,5 +69,7 @@ public class Theme {
     public void updateTotalLikeCnt(int totalLikeCnt){
         this.totalLikeCnt = totalLikeCnt;
     }
-
+    public void updateThemeScore(double themeScore){
+        this.themeScore = themeScore;
+    }
 }
