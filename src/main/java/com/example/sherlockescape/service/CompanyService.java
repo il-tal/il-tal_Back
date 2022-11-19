@@ -139,6 +139,7 @@ public class CompanyService {
             Company company = companyRepository.findById(like.getCompany().getId()).orElseThrow(
                     () -> new IllegalArgumentException("업체를 찾을 수 없습니다.")
             );
+            int totalLikeCnt = Math.toIntExact(companyLikeRepository.countByCompanyId(company.getId()));
             int reviewCnt = 0;
             List<Theme> themeList = themeRepository.findAllByCompanyId(company.getId());
             for(Theme theme: themeList){
@@ -157,6 +158,7 @@ public class CompanyService {
                             .companyName(company.getCompanyName())
                             .companyScore(company.getCompanyScore())
                             .totalReviewCnt(reviewCnt)
+                            .totalLikeCnt(totalLikeCnt)
                             .build();
             myCompanyResponseDtoList.add(myCompanyResponseDto);
         }
