@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,6 +60,7 @@ public class ReviewService {
 				.comment(reviewRequestDto.getComment())
 				.build();
 		reviewRepository.save(review);
+
 
 		return ResponseDto.success("리뷰 등록 성공!");
 	}
