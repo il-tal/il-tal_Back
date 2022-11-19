@@ -21,4 +21,5 @@ public class MyCompanyResponseDto {
     private String phoneNumber;
     private String workHour;
     private int totalReviewCnt;
+    private int totalLikeCnt;
 }
