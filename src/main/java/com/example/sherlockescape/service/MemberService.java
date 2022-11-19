@@ -1,9 +1,6 @@
 package com.example.sherlockescape.service;
 
-import com.example.sherlockescape.domain.Member;
-import com.example.sherlockescape.domain.RefreshToken;
-import com.example.sherlockescape.domain.Review;
-import com.example.sherlockescape.domain.Tendency;
+import com.example.sherlockescape.domain.*;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.LoginRequestDto;
 import com.example.sherlockescape.dto.request.MemberRequestDto;
@@ -43,6 +40,8 @@ public class MemberService {
     //    private final StylePreferenceRepository stylePreferenceRepository;
     //    private final GenrePreferenceRepository genrePreferenceRepository;
     private final TendencyRepository tendencyRepository;
+    private final MemberBadgeRepository memberBadgeRepository;
+    private BadgeRepository badgeRepository;
 
     //회원가입
     @org.springframework.transaction.annotation.Transactional
@@ -235,8 +234,9 @@ public class MemberService {
         Member member = memberRepository.findById(memberId).
                 orElse(null);
         Optional<Tendency> tendency = Optional.ofNullable(tendencyRepository.findByMember(member));
-        if(tendency.isEmpty()){
-            assert member != null;
+//        Optional<Review> findReview = reviewRepository.findByMember(member);
+        assert member != null;
+        if(tendency.isEmpty() /*&& badge.isEmpty() && findReview.isEmpty()*/){
             AllMyInfoResponseDto allMyInfoResponseDto
                     = AllMyInfoResponseDto.builder()
                     .id(memberId).nickname(member.getNickname())
@@ -248,18 +248,18 @@ public class MemberService {
                     .build();
             return ResponseDto.success(allMyInfoResponseDto);
         }else{
-//        List<GenrePreference> genrePreferenceList = genrePreferenceRepository.findAllByTendencyId(tendency.getId());
-//        List<StylePreference> stylePreferenceList = stylePreferenceRepository.findAllByTendencyId(tendency.getId());
             Tendency findTendency = tendencyRepository.findByMember(member);
             List<Review> reviews = reviewRepository.findReviewsByMember(member);
             int totalAchieveCnt = 0;
+            int totalFailCnt = 0;
             for(Review review: reviews){
                 if(review.isSuccess()){
                     totalAchieveCnt += 1;
+                }else{
+                    totalFailCnt += 1;
                 }
             }
-            assert member != null;
-            return ResponseDto.success(new AllMyInfoResponseDto(member, findTendency, totalAchieveCnt));
+            return ResponseDto.success(new AllMyInfoResponseDto(member, findTendency, totalAchieveCnt, totalFailCnt));
         }
     }
 }

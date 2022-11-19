@@ -2,13 +2,15 @@ package com.example.sherlockescape.dto.response;
 
 
 import com.example.sherlockescape.domain.Member;
+import com.example.sherlockescape.domain.MemberBadge;
 import com.example.sherlockescape.domain.Tendency;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Optional;
+import java.util.Collections;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -22,6 +24,7 @@ public class AllMyInfoResponseDto {
 
     private String mainBadgeName;
     private int totalAchieveCnt;
+    private int totalFailCnt;
 //    private List<GenrePreference> genrePreferenceList;
 //    private List<StylePreference> stylePreferenceList;
     private String genrePreference;
@@ -34,7 +37,7 @@ public class AllMyInfoResponseDto {
     private int excitePreference;
     private int surprise;
 
-    public AllMyInfoResponseDto(Member member, Tendency tendency, int totalAchieveCnt)
+    public AllMyInfoResponseDto(Member member, Tendency tendency, int totalAchieveCnt, int totalFailCnt)
     {
         this.id = member.getId();
         this.nickname = member.getNickname();
@@ -50,5 +53,6 @@ public class AllMyInfoResponseDto {
         this.excitePreference = tendency.getExcitePreference();
         this.surprise = tendency.getSurprise();
         this.totalAchieveCnt = totalAchieveCnt;
+        this.totalFailCnt = totalFailCnt;
     }
 }

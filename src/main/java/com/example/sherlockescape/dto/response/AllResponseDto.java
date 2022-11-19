@@ -29,6 +29,7 @@ public class AllResponseDto {
     private String address;
     private String phoneNumber;
     private String workHour;
+
     private int totalReviewCnt;
     private List<Theme> themeList;
 

@@ -38,7 +38,6 @@ public class Theme {
     @Column
     private String genreFilter;
 
-
     @Column(nullable = false)
     private int playTime;
 

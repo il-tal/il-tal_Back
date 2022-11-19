@@ -5,7 +5,10 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
-import com.example.sherlockescape.domain.*;
+import com.example.sherlockescape.domain.Company;
+import com.example.sherlockescape.domain.Member;
+import com.example.sherlockescape.domain.Theme;
+import com.example.sherlockescape.domain.ThemeLike;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ThemeRequestDto;
 import com.example.sherlockescape.dto.response.MyThemeResponseDto;
@@ -150,14 +153,13 @@ public class ThemeService {
                             ()-> new IllegalArgumentException("테마를 찾을 수 없습니다.")
                     );
 
-            Long themeLikeCnt = themeLikeRepository.countByThemeId(like.getTheme().getId()).getId();
             Long reviewCnt = reviewRepository.countByThemeId(like.getTheme().getId());
             MyThemeResponseDto myThemeResponseDto =
                     MyThemeResponseDto.builder()
                             .id(theme.getId())
                             .companyName(theme.getCompany().getCompanyName())
                             .themeName(theme.getThemeName())
-                            .themeLikeCnt(themeLikeCnt)
+                            .themeLikeCnt((long) theme.getTotalLikeCnt())
                             .themeImgUrl(theme.getThemeImgUrl())
                             .themeScore(theme.getThemeScore())
                             .reviewCnt(reviewCnt)
