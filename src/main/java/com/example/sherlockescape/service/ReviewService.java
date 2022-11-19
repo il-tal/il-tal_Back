@@ -18,10 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -61,6 +61,8 @@ public class ReviewService {
 				.build();
 		reviewRepository.save(review);
 
+		//리뷰 점수 테마 평점에 반영하기
+		setThemeScore(themeId);
 
 		return ResponseDto.success("리뷰 등록 성공!");
 	}
@@ -68,11 +70,10 @@ public class ReviewService {
 	// 해당 테마 후기 조회
 	@Transactional
 	public ResponseDto<?> getReview(Long themeId) {
-
 		themeRepository.findById(themeId);
 		List<ReviewResponseDto> reviewAllList = new ArrayList<>();
 		List<Review> reviewList = reviewRepository.findAllByThemeId(themeId);
-		for(Review review: reviewList){
+		for(Review review: reviewList) {
 			reviewAllList.add(
 					ReviewResponseDto.builder()
 							.id(review.getId())
@@ -85,15 +86,7 @@ public class ReviewService {
 							.comment(review.getComment())
 							.build()
 			);
-//			List<Double> scoreList = reviewList.stream()
-//					.map(Review::getScore)
-//					.collect(Collectors.toList());
-//
-//			scoreList.stream()
-//					.mapToInt(a -> a)
-//					.average().orElse(0);
 		}
-
 		return ResponseDto.success(reviewAllList);
 	}
 
@@ -139,16 +132,39 @@ public class ReviewService {
 		for(Review review: reviewList){
 
 			MyReviewResponseDto myReviewResponseDtoList = MyReviewResponseDto.builder()
-					.id(review.getId())
 					.themeName(review.getTheme().getThemeName())
 					.playTime(review.getPlayDate())
 					.score(review.getScore())
 					.difficulty(review.getDifficulty())
 					.comment(review.getComment())
-					.success(review.isSuccess())
 					.build();
 			reviewResponseDtoList.add(myReviewResponseDtoList);
 		}
 		return reviewResponseDtoList;
 	}
+
+	//테마 평점 계산
+	private void setThemeScore(Long themeId){
+		Theme updateThemeScore = themeRepository.findById(themeId).orElseThrow(
+				() -> new IllegalArgumentException("테마를 찾을수 없습니다."));
+
+		List<Review> reviewList = reviewRepository.findAllByThemeId(themeId);
+
+		//리뷰에서 score 컬럼 값들 리스트로 변환
+		List<Double> scoreList = reviewList.stream()
+				.map(Review::getScore)
+				.collect(Collectors.toList());
+
+		//리스트 평균 구하기
+		double average = scoreList.stream()
+				.mapToDouble(Double::doubleValue)
+				.average().orElse(0);
+		double themeScore = Math.round(average*100)/100.0;
+
+		//해당 테마의 score로 저장하기
+		updateThemeScore.updateThemeScore(themeScore);
+		themeRepository.save(updateThemeScore);
+
+	}
+
 }

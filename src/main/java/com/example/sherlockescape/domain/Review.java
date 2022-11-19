@@ -63,5 +63,4 @@ public class Review {
         this.hint = requestDto.getHint();
         this.comment = requestDto.getComment();
     }
-
 }

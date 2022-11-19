@@ -52,4 +52,8 @@ public class Company {
     public Company(Long companyId){
         this.id = companyId;
     }
+
+    public void updateCompanyScore(double companyScore){
+        this.companyScore = companyScore;
+    }
 }

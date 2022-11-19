@@ -1,14 +1,7 @@
 package com.example.sherlockescape.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.util.IOUtils;
-import com.example.sherlockescape.domain.Company;
-import com.example.sherlockescape.domain.CompanyLike;
-import com.example.sherlockescape.domain.Member;
-import com.example.sherlockescape.domain.Theme;
+import com.example.sherlockescape.domain.*;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.CompanyRequestDto;
 import com.example.sherlockescape.dto.response.AllResponseDto;
@@ -22,8 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -48,17 +39,8 @@ public class CompanyService {
      *
      * 업체 DB 정보 등록
      * */
-    public ResponseDto<String> createCompany(MultipartFile multipartFile, CompanyRequestDto companyRequestDto) throws IOException {
-
+    public ResponseDto<String> createCompany(MultipartFile multipartFile, CompanyRequestDto companyRequestDto) {
         String fileName = CommonUtils.buildFileName(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(multipartFile.getContentType());
-
-        byte[] bytes = IOUtils.toByteArray(multipartFile.getInputStream());
-        objectMetadata.setContentLength(bytes.length);
-        ByteArrayInputStream byteArrayIs = new ByteArrayInputStream(bytes);
-        amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, byteArrayIs, objectMetadata)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
         String imgurl = amazonS3Client.getUrl(bucketName, fileName).toString();
 
         Company company = Company.builder()
@@ -116,7 +98,7 @@ public class CompanyService {
         for(Company company: companyList){
             Long companyId = company.getId();
 
-            List<Theme> themeList = themeRepository.findAllByCompanyId(companyId);
+            List<Theme> theme = themeRepository.findAllByCompanyId(companyId);
             Long companyLikeCnt = companyLikeRepository.countByCompanyId(companyId);
 
             Optional<CompanyLike> likes = companyLikeRepository.findByCompanyId(companyId);
@@ -131,6 +113,11 @@ public class CompanyService {
                 totalReviewCnt += reviewCnt;
             }
             //평점 계산
+            //댓글 수
+
+
+            //업체 평점 계산
+            setCompanyScore(companyId);
 
             AllResponseDto allResponseDto =
                     AllResponseDto.builder()
@@ -144,9 +131,7 @@ public class CompanyService {
                             .address(company.getAddress())
                             .companyLikeCnt(companyLikeCnt)
                             .companyLikeCheck(likeCheck)
-                            .themeList(themeList)
-                            .totalReviewCnt(totalReviewCnt)
-                            .build();
+                            .themeList(theme).build();
             allResponseDtoList.add(allResponseDto);
         }
         return allResponseDtoList;
@@ -174,7 +159,6 @@ public class CompanyService {
             }
             MyCompanyResponseDto myCompanyResponseDto =
                     MyCompanyResponseDto.builder()
-                            .id(company.getId())
                             .companyUrl(company.getCompanyUrl())
                             .address(company.getAddress())
                             .companyScore(company.getCompanyScore())
@@ -188,5 +172,28 @@ public class CompanyService {
             myCompanyResponseDtoList.add(myCompanyResponseDto);
         }
         return myCompanyResponseDtoList;
+    }
+
+    //업체 평점 구하기
+    private void setCompanyScore(Long companyId) {
+        Company updateCompanyScore = companyRepository.findById(companyId).orElseThrow(
+                () -> new IllegalArgumentException("업체를 찾을수 없습니다."));
+
+        List<Theme> theme = themeRepository.findAllByCompanyId(companyId);
+
+        //해당 업체의 테마에서 score 컬럼 값들 리스트로 변환
+        List<Double> themeScoreList = theme.stream()
+                .map(Theme::getThemeScore)
+                .collect(Collectors.toList());
+
+        //리스트 평균 구하기
+        double average = themeScoreList.stream()
+                .mapToDouble(Double::doubleValue)
+                .average().orElse(0);
+        double companyScore = Math.round(average*100)/100.0;
+
+        //해당 테마의 score로 저장하기
+        updateCompanyScore.updateCompanyScore(companyScore);
+        companyRepository.save(updateCompanyScore);
     }
 }
