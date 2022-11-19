@@ -58,7 +58,7 @@ public class MemberService {
         Member member = Member.builder()
                 .username(memberReqDto.getUsername())
                 .nickname(memberReqDto.getNickname())
-                .mainBadgeImg("https://mykeejaebucket.s3.ap-northeast-2.amazonaws.com/Serverdefaultprofile.1667758089664.png")
+                .mainBadgeImg("https://mykeejaebucket.s3.ap-northeast-2.amazonaws.com/Serverbasigbadge.1668884794370.png")
                 .mainBadgeName("뱃지를 획득해 보세요!")
                 .password(passwordEncoder.encode(memberReqDto.getPassword()))
                 .build();

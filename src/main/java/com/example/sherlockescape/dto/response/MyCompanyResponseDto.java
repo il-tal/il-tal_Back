@@ -20,5 +20,5 @@ public class MyCompanyResponseDto {
     private String address;
     private String phoneNumber;
     private String workHour;
-    private int reviewCnt;
+    private int totalReviewCnt;
 }

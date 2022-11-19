@@ -1,16 +1,18 @@
 package com.example.sherlockescape.dto.response;
 
+import com.example.sherlockescape.domain.Theme;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
+import java.util.List;
+
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanyResponseDto {
-
+public class CompanyDetailResponseDto {
     private Long id;
 
     private String companyImgUrl;
@@ -21,9 +23,7 @@ public class CompanyResponseDto {
 
     private String companyUrl;
 
-    private Long companyLikeCnt;
-
-    private boolean companyLikeCheck;
+    private int companyLikeCnt;
 
     private String address;
 
@@ -31,6 +31,7 @@ public class CompanyResponseDto {
 
     private String workHour;
 
-    private Long ReviewCnt;
+    private int totalReviewCnt;
 
+    private List<Theme> themeList;
 }

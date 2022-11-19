@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewResponseDto {
+
 	private Long id;
 	private String nickname;
 	private LocalDate playDate;

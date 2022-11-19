@@ -5,6 +5,8 @@ import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.domain.MemberBadge;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MemberBadgeRepository extends JpaRepository<MemberBadge, Long> {
+import java.util.Optional;
 
+public interface MemberBadgeRepository extends JpaRepository<MemberBadge, Long> {
+    MemberBadge findByBadgeId(Long badgeId);
 }
