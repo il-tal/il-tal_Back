@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +38,7 @@ public class ReviewService {
 
 	// 테마 후기 작성
 	@Transactional
-	public ResponseDto<?> createReview(Long themeId, ReviewRequestDto reviewRequestDto, Long memberId) {
+	public ResponseDto<MyReviewResponseDto> createReview(Long themeId, ReviewRequestDto reviewRequestDto, Long memberId) {
 
 		// 로그인이 필요합니다.
 		Member member = memberRepository.findById(memberId).orElseThrow(
@@ -64,7 +65,30 @@ public class ReviewService {
 		//리뷰 점수 테마 평점에 반영하기
 		setThemeScore(themeId);
 
-		return ResponseDto.success("리뷰 등록 성공!");
+		//totalAchieveCnt, totalFailCnt 보내주기
+		List<Review> reviews = reviewRepository.findReviewsByMember(member);
+		int totalAchieveCnt = 0;
+		int totalFailCnt = 0;
+		for(Review reviewCnt: reviews){
+			if(reviewCnt.isSuccess()){
+				totalAchieveCnt += 1;
+			}else{
+				totalFailCnt += 1;
+			}
+		}
+		MyReviewResponseDto myReviewResponseDto =
+				MyReviewResponseDto.builder()
+						.id(review.getId())
+						.themeName(review.getTheme().getThemeName())
+						.playTime(review.getTheme().getPlayTime())
+						.score(review.getScore())
+						.comment(review.getComment())
+						.success(review.isSuccess())
+						.difficulty(review.getDifficulty())
+						.totalAchieveCnt(totalAchieveCnt)
+						.totalFailCnt(totalFailCnt)
+						.build();
+		return ResponseDto.success(myReviewResponseDto);
 	}
 
 	// 해당 테마 후기 조회
@@ -132,9 +156,11 @@ public class ReviewService {
 		for(Review review: reviewList){
 
 			MyReviewResponseDto myReviewResponseDtoList = MyReviewResponseDto.builder()
+					.id(review.getId())
 					.themeName(review.getTheme().getThemeName())
-					.playTime(review.getPlayDate())
+					.playTime(review.getTheme().getPlayTime())
 					.score(review.getScore())
+					.success(review.isSuccess())
 					.difficulty(review.getDifficulty())
 					.comment(review.getComment())
 					.build();

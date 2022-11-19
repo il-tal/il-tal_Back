@@ -2,6 +2,7 @@ package com.example.sherlockescape.controller;
 
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ReviewRequestDto;
+import com.example.sherlockescape.dto.response.MyReviewResponseDto;
 import com.example.sherlockescape.security.user.UserDetailsImpl;
 import com.example.sherlockescape.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +20,9 @@ public class ReviewController {
 
 	// 테마 후기 작성
 	@PostMapping("/{themeId}/review")
-	public ResponseDto<?> createReview(@PathVariable Long themeId,
-										@RequestBody @Valid ReviewRequestDto requestDto,
-										@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+	public ResponseDto<MyReviewResponseDto> createReview(@PathVariable Long themeId,
+														 @RequestBody @Valid ReviewRequestDto requestDto,
+														 @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
 		return reviewService.createReview(themeId, requestDto, userDetailsImpl.getMember().getId());
 	}
 

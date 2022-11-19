@@ -4,7 +4,8 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.example.sherlockescape.domain.*;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.CompanyRequestDto;
-import com.example.sherlockescape.dto.response.AllResponseDto;
+import com.example.sherlockescape.dto.response.AllCompanyResponseDto;
+import com.example.sherlockescape.dto.response.CompanyDetailResponseDto;
 import com.example.sherlockescape.dto.response.MyCompanyResponseDto;
 import com.example.sherlockescape.repository.*;
 import com.example.sherlockescape.utils.CommonUtils;
@@ -18,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,71 +57,57 @@ public class CompanyService {
         companyRepository.save(company);
         return ResponseDto.success("업체 등록 성공");
     }
-    //    /*업체 정보 조회*/
-//    public List<CompanyResponseDto> getAll(){
-//
-//
-//        List<Company> companyList = companyRepository.findAll();
-//        List<CompanyResponseDto> allResponseDtoList = new ArrayList<>();
-//        for(Company company: companyList){
-//            Long companyId = company.getId();
-//
-//            Long companyLikeCnt = companyLikeRepository.countByCompanyId(companyId);
-//            Optional<CompanyLike> likes = companyLikeRepository.findByCompanyId(companyId);
-//            boolean likeCheck;
-//            likeCheck = likes.isPresent();
-//
-//            //댓글 수 추가
-//
-//            CompanyResponseDto allResponseDto =
-//                    CompanyResponseDto.builder()
-//                            .id(companyId)
-//                            .companyImgUrl(company.getImgUrl())
-//                            .location(company.getLocation())
-//                            .companyScore(company.getCompanyScore())
-//                            .companyUrl(company.getCompanyUrl())
-//                            .workHour(company.getWorkHour())
-//                            .phoneNumber(company.getPhoneNumber())
-//                            .address(company.getAddress())
-//                            .companyLikeCnt(companyLikeCnt)
-//                            .companyLikeCheck(likeCheck)
-//                            .build();
-//            allResponseDtoList.add(allResponseDto);
-//        }
-//        return allResponseDtoList;
-//    }
+
+    public ResponseDto<CompanyDetailResponseDto> getCompanyDetail(Long companyId) {
+        Company company = companyRepository.findById(companyId).orElseThrow(
+                () -> new IllegalArgumentException("해당 업체가 존재하지 않습니다.")
+        );
+        int companyLike = Math.toIntExact(companyLikeRepository.countByCompanyId(companyId));
+        List<Theme> themeList = themeRepository.findAllByCompanyId(companyId);
+        int totalReviewCnt = 0;
+        for(Theme theme: themeList){
+            int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
+            totalReviewCnt += reviewCnt;
+        }
+        CompanyDetailResponseDto companyDetailResponseDto =
+                CompanyDetailResponseDto.builder()
+                        .id(companyId)
+                        .companyImgUrl(company.getCompanyImgUrl())
+                        .location(company.getLocation())
+                        .companyScore(company.getCompanyScore())
+                        .companyUrl(company.getCompanyUrl())
+                        .companyLikeCnt(companyLike)
+                        .address(company.getAddress())
+                        .phoneNumber(company.getPhoneNumber())
+                        .workHour(company.getWorkHour())
+                        .totalReviewCnt(totalReviewCnt)
+                        .themeList(themeList)
+                        .build();
+        return ResponseDto.success(companyDetailResponseDto);
+    }
+
     /*업체 정보 조회*/
-    public List<AllResponseDto> getAllCompany(Pageable pageable, String location){
+    public List<AllCompanyResponseDto> getAllCompany(Pageable pageable, String location){
 
 
         List<Company> companyList = companyRepository.getCompanyList(pageable, location);
-        List<AllResponseDto> allResponseDtoList = new ArrayList<>();
+        List<AllCompanyResponseDto> allResponseDtoList = new ArrayList<>();
         for(Company company: companyList){
             Long companyId = company.getId();
 
-            List<Theme> theme = themeRepository.findAllByCompanyId(companyId);
+            List<Theme> themeList = themeRepository.findAllByCompanyId(companyId);
             Long companyLikeCnt = companyLikeRepository.countByCompanyId(companyId);
-
-            Optional<CompanyLike> likes = companyLikeRepository.findByCompanyId(companyId);
-
-            boolean likeCheck;
-            likeCheck = likes.isPresent();
-
             //댓글 수 추가
             int totalReviewCnt = 0;
             for(Theme theme: themeList){
                 int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
                 totalReviewCnt += reviewCnt;
             }
-            //평점 계산
-            //댓글 수
-
-
             //업체 평점 계산
             setCompanyScore(companyId);
 
-            AllResponseDto allResponseDto =
-                    AllResponseDto.builder()
+            AllCompanyResponseDto allResponseDto =
+                    AllCompanyResponseDto.builder()
                             .id(companyId)
                             .companyImgUrl(company.getCompanyImgUrl())
                             .location(company.getLocation())
@@ -130,8 +117,8 @@ public class CompanyService {
                             .phoneNumber(company.getPhoneNumber())
                             .address(company.getAddress())
                             .companyLikeCnt(companyLikeCnt)
-                            .companyLikeCheck(likeCheck)
-                            .themeList(theme).build();
+                            .totalReviewCnt(totalReviewCnt)
+                            .themeList(themeList).build();
             allResponseDtoList.add(allResponseDto);
         }
         return allResponseDtoList;
@@ -159,15 +146,17 @@ public class CompanyService {
             }
             MyCompanyResponseDto myCompanyResponseDto =
                     MyCompanyResponseDto.builder()
+                            .id(company.getId())
                             .companyUrl(company.getCompanyUrl())
                             .address(company.getAddress())
+                            .companyImgUrl(company.getCompanyImgUrl())
                             .companyScore(company.getCompanyScore())
                             .workHour(company.getWorkHour())
                             .phoneNumber(company.getPhoneNumber())
                             .location(company.getLocation())
                             .companyName(company.getCompanyName())
                             .companyScore(company.getCompanyScore())
-                            .reviewCnt(reviewCnt)
+                            .totalReviewCnt(reviewCnt)
                             .build();
             myCompanyResponseDtoList.add(myCompanyResponseDto);
         }
@@ -196,4 +185,5 @@ public class CompanyService {
         updateCompanyScore.updateCompanyScore(companyScore);
         companyRepository.save(updateCompanyScore);
     }
+
 }

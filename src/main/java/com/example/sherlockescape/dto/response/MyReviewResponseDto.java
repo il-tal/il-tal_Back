@@ -14,9 +14,11 @@ import java.time.LocalDate;
 public class MyReviewResponseDto {
     private Long id;
     private String themeName;
-    private LocalDate playTime;
+    private int playTime;
     private int difficulty;
     private double score;
     private String comment;
     private boolean success;
+    private int totalAchieveCnt;
+    private int totalFailCnt;
 }
