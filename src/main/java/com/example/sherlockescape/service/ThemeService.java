@@ -117,25 +117,32 @@ public class ThemeService {
     }
 
 
-    //테마 상세조회
-    public ResponseDto<ThemeDetailResponseDto> findTheme(Long themeId) {
+
+
+//테마 상세조회
+    public ThemeDetailResponseDto findTheme(Long themeId) {
 
         Theme theme = themeRepository.findById(themeId).orElseThrow(
                 () -> new IllegalArgumentException("테마가 존재하지 않습니다"));
 
         int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
-        ThemeDetailResponseDto themeDetailResponseDto =
-                ThemeDetailResponseDto.builder()
-                        .id(theme.getId())
-                        .themeImgUrl(theme.getThemeImgUrl())
-                        .themeName(theme.getThemeName())
-                        .companyName(theme.getCompany().getCompanyName())
-                        .genre(theme.getGenre())
-                        .themeScore(theme.getThemeScore())
-                        .totalLikeCnt(theme.getTotalLikeCnt())
-                        .reviewCnt(reviewCnt)
-                        .build();
-        return ResponseDto.success(themeDetailResponseDto);
+        return ThemeDetailResponseDto.builder()
+                .id(theme.getId())
+                .themeImgUrl(theme.getThemeImgUrl())
+                .themeName(theme.getThemeName())
+                .companyName(theme.getCompany().getCompanyName())
+                .genre(theme.getGenre())
+                .difficulty(theme.getDifficulty())
+                .minPeople(theme.getMinPeople())
+                .maxPeople(theme.getMaxPeople())
+                .playTime(theme.getPlayTime())
+                .price(theme.getPrice())
+                .themeUrl(theme.getThemeUrl())
+                .themeScore(theme.getThemeScore())
+                .synopsis((theme.getSynopsis()))
+                .totalLikeCnt(theme.getTotalLikeCnt())
+                .reviewCnt(reviewCnt)
+                .build();
     }
 
     //내가 찜한 테마 목록

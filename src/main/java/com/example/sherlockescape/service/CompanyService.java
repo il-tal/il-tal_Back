@@ -1,7 +1,6 @@
 package com.example.sherlockescape.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.example.sherlockescape.domain.*;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.CompanyRequestDto;
 import com.example.sherlockescape.dto.response.AllCompanyResponseDto;
@@ -9,6 +8,10 @@ import com.example.sherlockescape.dto.response.CompanyDetailResponseDto;
 import com.example.sherlockescape.dto.response.MyCompanyResponseDto;
 import com.example.sherlockescape.repository.*;
 import com.example.sherlockescape.utils.CommonUtils;
+import com.example.sherlockescape.domain.Company;
+import com.example.sherlockescape.domain.CompanyLike;
+import com.example.sherlockescape.domain.Member;
+import com.example.sherlockescape.domain.Theme;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,6 +61,8 @@ public class CompanyService {
         return ResponseDto.success("업체 등록 성공");
     }
 
+
+    //업체 상세 페이지 조회
     public ResponseDto<CompanyDetailResponseDto> getCompanyDetail(Long companyId) {
         Company company = companyRepository.findById(companyId).orElseThrow(
                 () -> new IllegalArgumentException("해당 업체가 존재하지 않습니다.")

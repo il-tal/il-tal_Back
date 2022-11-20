@@ -26,6 +26,7 @@ public class ThemeDetailResponseDto {
     private int minPeople;
 
     private int maxPeople;
+
     private int playTime;
 
     private int price;
