@@ -192,5 +192,4 @@ public class CompanyService {
         updateCompanyScore.updateCompanyScore(companyScore);
         companyRepository.save(updateCompanyScore);
     }
-
 }
