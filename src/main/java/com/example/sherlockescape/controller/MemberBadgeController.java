@@ -7,6 +7,7 @@ import com.example.sherlockescape.security.user.UserDetailsImpl;
 import com.example.sherlockescape.service.MemberBadgeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,4 +23,5 @@ public class MemberBadgeController {
                                                            @PathVariable Long badgeId){
         return memberBadgeService.updateBadge(userDetailsImpl.getMember().getId(), badgeId);
     }
+
 }
