@@ -51,13 +51,13 @@ public class MemberService {
     public ResponseEntity<ResponseDto<MemberResponseDto>> signup(MemberRequestDto memberReqDto) {
 
         // username 중복 검사
-        usernameDuplicateCheck(memberReqDto);
-
+        validateCheck.usernameDuplicateCheck(memberReqDto);
+        // nickname 중복 검사
+        validateCheck.userNicknameDuplicateCheck(memberReqDto);
         // 비빌번호 확인 & 비빌번호 불일치
         if(!memberReqDto.getPassword().equals(memberReqDto.getPasswordConfirm())){
             throw new GlobalException(ErrorCode.BAD_PASSWORD_CONFIRM);
         }
-
         Member member = Member.builder()
                 .username(memberReqDto.getUsername())
                 .nickname(memberReqDto.getNickname())
@@ -76,12 +76,7 @@ public class MemberService {
         ));
 
     }
-    public void usernameDuplicateCheck(MemberRequestDto memberReqDto) {
-        if(memberRepository.findByUsername(memberReqDto.getUsername()).isPresent()){
-            throw new GlobalException(ErrorCode.DUPLICATE_MEMBER_ID);
-            // ex) return ResponseDto.fail()
-        }
-    }
+
 
     //로그인
     @Transactional
