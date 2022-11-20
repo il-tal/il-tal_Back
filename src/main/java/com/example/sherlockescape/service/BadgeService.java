@@ -88,7 +88,7 @@ public class BadgeService {
         return badgeResponseDtoList;
     }
     //뱃지 부여
-    public ResponseDto<?> giveBadge(Long memberId, BadgeGiveRequestDto badgeGiveRequestDto) {
+    public ResponseDto<BadgeResponseDto> giveBadge(Long memberId, BadgeGiveRequestDto badgeGiveRequestDto) {
         Member member = validateCheck.getMember(memberId);
         List<Badge> badgeList = badgeRepository.findAll();
         MemberBadge memberBadge = memberBadgeRepository.findByBadgeId(Long.parseLong(badgeGiveRequestDto.getBadgeId()));

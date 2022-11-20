@@ -44,7 +44,7 @@ public class BadgeController {
     * badge 부여
     * */
     @PostMapping("/badge/give")
-    public ResponseDto<?> giveBadge(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+    public ResponseDto<BadgeResponseDto> giveBadge(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
                                                    @RequestBody BadgeGiveRequestDto badgeGiveRequestDto){
         return badgeService.giveBadge(userDetailsImpl.getMember().getId(), badgeGiveRequestDto);
     }
