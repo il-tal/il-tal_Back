@@ -45,4 +45,9 @@ public class Member extends BaseTimeEntity {
         this.nickname = nickname;
     }
 
+    public void updateBadge(String badgeImg, String badgeName){
+        this.mainBadgeImg = badgeImg;
+        this.mainBadgeName = badgeName;
+    }
+
 }

@@ -6,7 +6,6 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
-import com.example.sherlockescape.domain.*;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.BadgeCreateRequestDto;
 import com.example.sherlockescape.dto.request.BadgeGiveRequestDto;
@@ -17,6 +16,10 @@ import com.example.sherlockescape.repository.MemberBadgeRepository;
 import com.example.sherlockescape.repository.ReviewRepository;
 import com.example.sherlockescape.utils.CommonUtils;
 import com.example.sherlockescape.utils.ValidateCheck;
+import com.example.sherlockescape.domain.Badge;
+import com.example.sherlockescape.domain.Member;
+import com.example.sherlockescape.domain.MemberBadge;
+import com.example.sherlockescape.domain.Review;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,7 +30,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

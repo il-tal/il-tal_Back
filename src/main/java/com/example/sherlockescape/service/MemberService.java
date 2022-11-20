@@ -1,6 +1,5 @@
 package com.example.sherlockescape.service;
 
-import com.example.sherlockescape.domain.*;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.LoginRequestDto;
 import com.example.sherlockescape.dto.request.MemberRequestDto;
@@ -17,6 +16,10 @@ import com.example.sherlockescape.repository.*;
 import com.example.sherlockescape.security.jwt.JwtUtil;
 import com.example.sherlockescape.security.jwt.TokenDto;
 import com.example.sherlockescape.utils.ValidateCheck;
+import com.example.sherlockescape.domain.Member;
+import com.example.sherlockescape.domain.RefreshToken;
+import com.example.sherlockescape.domain.Review;
+import com.example.sherlockescape.domain.Tendency;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
