@@ -82,7 +82,7 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
         } else {
             Integer minDifficulty = Collections.min(difficulty);
             Integer maxDifficulty = Collections.max(difficulty);
-            return theme.themeScore.goe(minDifficulty).and(theme.themeScore.lt(maxDifficulty+1));
+            return theme.difficulty.goe(minDifficulty).and(theme.difficulty.lt(maxDifficulty+1));
         }
     }
 
