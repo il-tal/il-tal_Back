@@ -1,7 +1,6 @@
 package com.example.sherlockescape.dto.response;
 
 
-import com.example.sherlockescape.domain.MemberBadge;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
