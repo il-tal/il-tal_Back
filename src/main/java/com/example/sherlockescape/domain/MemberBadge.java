@@ -1,5 +1,6 @@
 package com.example.sherlockescape.domain;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,30 +10,26 @@ import javax.persistence.*;
 
 import static javax.persistence.FetchType.LAZY;
 
-
-@Builder
 @Entity
-@Getter
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
-public class Badge {
-
+@NoArgsConstructor
+@Getter
+public class MemberBadge {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "badge_id")
     private Long id;
 
-    @Column(nullable = false)
-    private String badgeImgUrl;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-    @Column(nullable = false)
-    private String badgeName;
-    //긴 글을 작성할때 사용함
-    @Lob
-    private String badgeExplain;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "badge_id")
+    private Badge badge;
 
-    public Badge(Long badgeId){
-        this.id = badgeId;
+    public MemberBadge(Member member, Badge badge){
+        this.member = member;
+        this.badge = badge;
     }
-
 }

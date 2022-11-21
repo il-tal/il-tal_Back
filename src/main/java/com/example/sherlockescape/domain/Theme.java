@@ -1,10 +1,7 @@
 package com.example.sherlockescape.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -41,7 +38,6 @@ public class Theme {
     @Column
     private String genreFilter;
 
-
     @Column(nullable = false)
     private int playTime;
 
@@ -49,7 +45,7 @@ public class Theme {
     private String synopsis;
 
     @Column
-    private Double themeScore;
+    private double themeScore;
 
     @Column(nullable = false)
     private String themeUrl;
@@ -62,8 +58,16 @@ public class Theme {
 
     @Column(nullable = false)
     private int price;
+    @Column
+    private int totalLikeCnt;
+
     public Theme(Long themeId){
         this.id = themeId;
     }
-
+    public void updateTotalLikeCnt(int totalLikeCnt){
+        this.totalLikeCnt = totalLikeCnt;
+    }
+    public void updateThemeScore(double themeScore){
+        this.themeScore = themeScore;
+    }
 }

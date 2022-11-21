@@ -18,10 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -37,7 +37,7 @@ public class ReviewService {
 
 	// 테마 후기 작성
 	@Transactional
-	public ResponseDto<?> createReview(Long themeId, ReviewRequestDto reviewRequestDto, Long memberId) {
+	public ResponseDto<MyReviewResponseDto> createReview(Long themeId, ReviewRequestDto reviewRequestDto, Long memberId) {
 
 		// 로그인이 필요합니다.
 		Member member = memberRepository.findById(memberId).orElseThrow(
@@ -60,19 +60,46 @@ public class ReviewService {
 				.comment(reviewRequestDto.getComment())
 				.build();
 		reviewRepository.save(review);
-		return ResponseDto.success("리뷰 등록 성공!");
+
+		//리뷰 점수 테마 평점에 반영하기
+		setThemeScore(themeId);
+
+		//totalAchieveCnt, totalFailCnt 보내주기
+		List<Review> reviews = reviewRepository.findReviewsByMember(member);
+		int totalAchieveCnt = 0;
+		int totalFailCnt = 0;
+		for(Review reviewCnt: reviews){
+			if(reviewCnt.isSuccess()){
+				totalAchieveCnt += 1;
+			}else{
+				totalFailCnt += 1;
+			}
+		}
+		MyReviewResponseDto myReviewResponseDto =
+				MyReviewResponseDto.builder()
+						.id(review.getId())
+						.themeName(review.getTheme().getThemeName())
+						.playTime(review.getTheme().getPlayTime())
+						.score(review.getScore())
+						.comment(review.getComment())
+						.success(review.isSuccess())
+						.difficulty(review.getDifficulty())
+						.totalAchieveCnt(totalAchieveCnt)
+						.totalFailCnt(totalFailCnt)
+						.build();
+		return ResponseDto.success(myReviewResponseDto);
 	}
 
 	// 해당 테마 후기 조회
 	@Transactional
 	public ResponseDto<?> getReview(Long themeId) {
-
 		themeRepository.findById(themeId);
 		List<ReviewResponseDto> reviewAllList = new ArrayList<>();
 		List<Review> reviewList = reviewRepository.findAllByThemeId(themeId);
-		for(Review review: reviewList){
+		for(Review review: reviewList) {
 			reviewAllList.add(
 					ReviewResponseDto.builder()
+							.id(review.getId())
 							.nickname(review.getMember().getNickname())
 							.playDate(review.getPlayDate())
 							.score(review.getScore())
@@ -120,16 +147,19 @@ public class ReviewService {
 	}
 
 	//내가 작성한 후기 조회
-	public List<MyReviewResponseDto> getAllReviews(Member member) {
+	public List<MyReviewResponseDto> getMyReviews(Member member) {
+
 		List<Review> reviewList = reviewRepository.findReviewsByMember(member);
 
 		List<MyReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
 		for(Review review: reviewList){
 
 			MyReviewResponseDto myReviewResponseDtoList = MyReviewResponseDto.builder()
+					.id(review.getId())
 					.themeName(review.getTheme().getThemeName())
-					.playTime(review.getPlayDate())
+					.playTime(review.getTheme().getPlayTime())
 					.score(review.getScore())
+					.success(review.isSuccess())
 					.difficulty(review.getDifficulty())
 					.comment(review.getComment())
 					.build();
@@ -137,4 +167,29 @@ public class ReviewService {
 		}
 		return reviewResponseDtoList;
 	}
+
+	//테마 평점 계산
+	private void setThemeScore(Long themeId){
+		Theme updateThemeScore = themeRepository.findById(themeId).orElseThrow(
+				() -> new IllegalArgumentException("테마를 찾을수 없습니다."));
+
+		List<Review> reviewList = reviewRepository.findAllByThemeId(themeId);
+
+		//리뷰에서 score 컬럼 값들 리스트로 변환
+		List<Double> scoreList = reviewList.stream()
+				.map(Review::getScore)
+				.collect(Collectors.toList());
+
+		//리스트 평균 구하기
+		double average = scoreList.stream()
+				.mapToDouble(Double::doubleValue)
+				.average().orElse(0);
+		double themeScore = Math.round(average*100)/100.0;
+
+		//해당 테마의 score로 저장하기
+		updateThemeScore.updateThemeScore(themeScore);
+		themeRepository.save(updateThemeScore);
+
+	}
+
 }

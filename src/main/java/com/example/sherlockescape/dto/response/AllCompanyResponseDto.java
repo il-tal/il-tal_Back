@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AllResponseDto {
+public class AllCompanyResponseDto {
 
     private Long id;
     private String companyImgUrl;
@@ -24,14 +24,14 @@ public class AllResponseDto {
     private String companyUrl;
 
     private Long companyLikeCnt;
-
-    private boolean companyLikeCheck;
     private String address;
     private String phoneNumber;
     private String workHour;
+
+    private int totalReviewCnt;
     private List<Theme> themeList;
 
-    public AllResponseDto(Company company){
+    public AllCompanyResponseDto(Company company){
         this.id = company.getId();
         this.companyImgUrl =company.getCompanyImgUrl();
         this.companyScore = company.getCompanyScore();

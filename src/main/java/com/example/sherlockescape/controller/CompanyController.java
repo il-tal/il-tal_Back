@@ -2,7 +2,8 @@ package com.example.sherlockescape.controller;
 
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.CompanyRequestDto;
-import com.example.sherlockescape.dto.response.AllResponseDto;
+import com.example.sherlockescape.dto.response.AllCompanyResponseDto;
+import com.example.sherlockescape.dto.response.CompanyDetailResponseDto;
 import com.example.sherlockescape.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -32,24 +33,24 @@ public class CompanyController {
 
     /*
      *
-     * 업체 정보 조회
+     * 업체 상세 페이지
      * *
      */
-//    @GetMapping("/company")
-//    public ResponseDto<List<CompanyResponseDto>> getAll(){
-//        List<CompanyResponseDto> resDto = companyService.getAll();
-//        return ResponseDto.success(resDto);
-//    }
+    @GetMapping("/company/{companyId}")
+    public ResponseDto<CompanyDetailResponseDto> getAll(@PathVariable Long companyId){
+        return companyService.getCompanyDetail(companyId);
+    }
 
     /*
      *
      *업체,테마 정보 전체
      */
     @GetMapping("/companies")
-    public ResponseDto<List<AllResponseDto>> getAllCompany(@PageableDefault(size = 5) Pageable pageable,
-                                                           @RequestParam(value = "location", required = false) String location){
-        List<AllResponseDto> resDto = companyService.getAllCompany(pageable, location);
+    public ResponseDto<List<AllCompanyResponseDto>> getAllCompany(@PageableDefault(size = 5) Pageable pageable,
+                                                                  @RequestParam(value = "location", required = false) String location){
+        List<AllCompanyResponseDto> resDto = companyService.getAllCompany(pageable, location);
         return ResponseDto.success(resDto);
     }
+
 
 }

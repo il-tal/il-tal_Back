@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ReviewResponseDto {
 
+	private Long id;
 	private String nickname;
 	private LocalDate playDate;
 	private double score;
