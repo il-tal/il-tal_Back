@@ -140,7 +140,6 @@ public class MemberService {
                 .build();
         return ResponseDto.success(nicknameResponseDto);
     }
-
     /*
     *
     * 내 성향 등록하기
