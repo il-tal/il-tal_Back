@@ -45,7 +45,6 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
                 .orderBy(theme.id.desc())
                 .fetchResults();
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());
-
     }
 
     private BooleanExpression eqLocation(List<String> location) {
@@ -83,7 +82,7 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
         } else {
             Integer minDifficulty = Collections.min(difficulty);
             Integer maxDifficulty = Collections.max(difficulty);
-            return theme.themeScore.goe(minDifficulty).and(theme.themeScore.lt(maxDifficulty+1));
+            return theme.difficulty.goe(minDifficulty).and(theme.difficulty.lt(maxDifficulty+1));
         }
     }
 

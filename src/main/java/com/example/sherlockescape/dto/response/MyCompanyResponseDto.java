@@ -5,32 +5,21 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 @Getter
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class CompanyResponseDto {
-
+@NoArgsConstructor
+@Builder
+public class MyCompanyResponseDto {
     private Long id;
-
+    private String companyName;
     private String companyImgUrl;
-
-    private String location;
-
     private double companyScore;
-
     private String companyUrl;
-
-    private Long companyLikeCnt;
-
-    private boolean companyLikeCheck;
-
+    private String location;
     private String address;
-
     private String phoneNumber;
-
     private String workHour;
-
-//    private Long ReviewCnt;
-
+    private int totalReviewCnt;
+    private int totalLikeCnt;
 }

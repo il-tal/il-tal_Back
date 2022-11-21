@@ -1,20 +1,18 @@
-package com.example.sherlockescape.dto.request;
+package com.example.sherlockescape.dto.response;
 
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-public class BadgeRequestDto {
-
-    @NotBlank
+@Builder
+public class AllBadgeResponseDto {
+    private Long id;
+    private String badgeImgUrl;
     private String badgeName;
-
-    @NotBlank
     private String badgeExplain;
 }
