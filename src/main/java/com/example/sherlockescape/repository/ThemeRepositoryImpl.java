@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -66,24 +67,20 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
 
 
     private BooleanExpression eqThemeScore(List<Integer> themeScore) {
-        if (themeScore == null) {
-            return null;
-        } else {
+        if (themeScore != null) {
             Integer minScore = Collections.min(themeScore);
             Integer maxScore = Collections.max(themeScore);
-            return theme.themeScore.goe(minScore).and(theme.themeScore.lt(maxScore+1));
-        }
+            return theme.themeScore.goe(minScore).and(theme.themeScore.lt(maxScore + 1));
+        }  else { return null; }
     }
 
 
     private BooleanExpression eqDifficulty(List<Integer> difficulty) {
-        if (difficulty == null) {
-            return null;
-        } else {
+        if (difficulty != null) {
             Integer minDifficulty = Collections.min(difficulty);
             Integer maxDifficulty = Collections.max(difficulty);
-            return theme.difficulty.goe(minDifficulty).and(theme.difficulty.lt(maxDifficulty+1));
-        }
+            return theme.difficulty.goe(minDifficulty).and(theme.difficulty.lt(maxDifficulty + 1));
+        }  else {  return null; }
     }
 
     private BooleanExpression eqPeople(List<Integer> people) {

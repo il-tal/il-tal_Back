@@ -19,6 +19,8 @@ public class ThemeDetailResponseDto {
 
     private String companyName;
 
+    private Long companyId;
+
     private String genre;
 
     private double difficulty;

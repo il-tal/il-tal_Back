@@ -129,6 +129,7 @@ public class ThemeService {
                         .id(theme.getId())
                         .themeImgUrl(theme.getThemeImgUrl())
                         .themeName(theme.getThemeName())
+                        .companyId(theme.getCompany().getId())
                         .companyName(theme.getCompany().getCompanyName())
                         .genre(theme.getGenre())
                         .difficulty(theme.getDifficulty())
