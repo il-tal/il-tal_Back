@@ -48,4 +48,8 @@ public class BadgeController {
                                                    @RequestBody BadgeGiveRequestDto badgeGiveRequestDto){
         return badgeService.giveBadge(userDetailsImpl.getMember().getId(), badgeGiveRequestDto);
     }
+    /*
+    *
+    * test
+    * */
 }
