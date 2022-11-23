@@ -15,4 +15,5 @@ public class AllBadgeResponseDto {
     private String badgeImgUrl;
     private String badgeName;
     private String badgeExplain;
+    private int badgeGoal;
 }

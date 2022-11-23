@@ -31,6 +31,9 @@ public class Badge {
     @Lob
     private String badgeExplain;
 
+    @Column
+    private int badgeGoal;
+
     public Badge(Long badgeId){
         this.id = badgeId;
     }
