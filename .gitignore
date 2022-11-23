@@ -184,3 +184,8 @@ gradle-app.setting
 .vscode/
 
 # appication files
+**/application.yml
+**/application.properties
+*.properties
+application.properties
+!application-h2.yaml
