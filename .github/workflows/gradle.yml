@@ -95,11 +95,14 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
       run: aws s3 cp --region $S3_REGION --acl private ./$PROJECT_NAME.zip s3://$S3_BUCKET_NAME/
-    # deploy
-    - name: deploy with AWS codeDeploy
-      run: aws deploy create-deployment
+   
+   # Deploy
+    - name: Deploy
+      env:
+          AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
+      run: aws deploy create-deployment 
         --application-name githubaction-sherlock
-        --deployment-config-name CodeDeployDefault.OneAtATime
-        --deployment-group-name githubaction-sherlok-group
-        --s3-location bucket=$S3_BUCKET_NAME,bundleType=tgz,key=archive/drcloud.tar.gz
-
+        --deployment-group-name githubaction-sherlock-group
+        --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME.zip 
+        --region $S3_REGION
