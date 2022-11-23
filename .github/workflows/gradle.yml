@@ -105,4 +105,3 @@ jobs:
         --deployment-group-name my-codedeploy-deployment-group
         --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME.zip 
         --region $S3_REGION
-#
