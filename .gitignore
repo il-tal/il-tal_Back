@@ -188,3 +188,4 @@ gradle-app.setting
 **/application.properties
 *.properties
 application.properties
+!application-h2.yaml
