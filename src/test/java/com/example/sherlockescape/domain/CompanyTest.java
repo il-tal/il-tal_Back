@@ -37,13 +37,4 @@ class CompanyTest {
             assertThat(company1.getLocation().equals("강남"));
         }
     }
-    //업체 상세 조회
-    @Test
-    public void showCompanyDetail(Long id){
-        jpaQueryFactory = new JPAQueryFactory(em);
-        Company findCompany = jpaQueryFactory
-                .selectFrom(company)
-                .where(company.id.eq(id))
-                .fetchOne();
-    }
 }

@@ -92,11 +92,3 @@ configurations {
     }
     querydsl.extendsFrom compileClasspath
 }
-
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src/main/java', querydslDir]
-        }
-    }
-}
