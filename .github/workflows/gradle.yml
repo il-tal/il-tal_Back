@@ -16,6 +16,23 @@ on:
 permissions:
   contents: read
 
+env:
+  RESOURCE_PATH: ./src/main/resources/application.yml
+  PROJECT_NAME: sherlock
+  # Database
+  DB_URL: ${{ secrets.DB_URL }}
+  DB_USERNAME: ${{ secrets.DB_USERNAME }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  
+  # JWT Secret
+  JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+
+  # AWS S3
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+  S3_REGION: ${{ secrets.S3_REGION }}
+  
 jobs:
   build:
     # 실행 환경 지정
@@ -34,9 +51,24 @@ jobs:
     #  uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
     # with:
     #   arguments: build
+    - name: Generate Environment Variables File for Properties
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: ${{ env.RESOURCE_PATH }}
+      env:
+        spring.datasource.url: ${{ env.DB_URL }}
+        spring.datasource.username: ${{ env.DB_USERNAME }}
+        spring.datasource.password: ${{ env.DB_PASSWORD }}
+        jwt.secretKey: ${{ env.JWT_SECRET_KEY }}
+        cloud.aws.credentials.access-key: ${{ env.AWS_ACCESS_KEY_ID }}
+        cloud.aws.credentials.secret-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        cloud.aws.s3.bucket: ${{ env.S3_BUCKET_NAME }}
+        cloud.aws.region.static: ${{ env.S3_REGION }}
+        
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    
+      
+    # Build
     - name: Build with Gradle
       run: ./gradlew clean build
     
