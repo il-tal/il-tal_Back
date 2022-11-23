@@ -16,6 +16,13 @@ on:
 permissions:
   contents: read
 
+env:
+  RESOURCE_PATH: ./src/main/resources/application.yml
+  PROJECT_NAME: sherlock
+  # AWS S3
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
 jobs:
   build:
     # 실행 환경 지정
@@ -34,6 +41,26 @@ jobs:
     #  uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
     # with:
     #   arguments: build
+    - name: Generate Environment Variables File for Properties
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: ${{ env.RESOURCE_PATH }}
+      env:
+        spring.datasource.url: ${{ env.DB_URL }}
+        spring.datasource.username: ${{ env.DB_USERNAME }}
+        spring.datasource.password: ${{ env.DB_PASSWORD }}
+        jwt.secretKey: ${{ env.JWT_SECRET_KEY }}
+        kakao.client-id: ${{ env.KAKAO_CLIENT_ID }}
+        kakao.redirect-uri: ${{ env.KAKAO_REDIRECT_URL }}
+        twitter.consumer-id: ${{ env.TWITTER_CONSUMER_ID }}
+        twitter.consumer-secretkey: ${{ env.TWITTER_CONSUMER_SECRET_KEY }}
+        twitter.redirect-uri: ${{ env.TWITTER_REDIRECT_URL }}
+        cloud.aws.credentials.access-key: ${{ env.AWS_ACCESS_KEY_ID }}
+        cloud.aws.credentials.secret-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        cloud.aws.s3.bucket: ${{ env.S3_BUCKET_NAME }}
+        cloud.aws.region.static: ${{ env.S3_REGION }}
+        logging.slack.webhook-uri: ${{ env.SLACK_WEBHOOK_URL }}
+        
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     
