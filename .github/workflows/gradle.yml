@@ -106,8 +106,8 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
       run: aws deploy create-deployment 
-        --application-name githubaction-sherlock
-        --deployment-group-name githubaction-sherlock-group
+        --application-name my-codedeploy-app
+        --deployment-group-name my-codedeploy-deployment-group
         --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME.zip 
         --region $S3_REGION
 #
