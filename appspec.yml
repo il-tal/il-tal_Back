@@ -1,18 +1,11 @@
 version: 0.0
 os: linux
-files:
-  - source:  /
-    destination: /home/ubuntu/app/deploy
-    overwrite: yes
 
+files:
+  - source: /
+    destination: /home/ubuntu/drcloud-deploy
 permissions:
-  - object: /
-    pattern: "**"
+  - object: /home/ubuntu/drcloud-deploy
     owner: ubuntu
     group: ubuntu
-
-hooks:
-  ApplicationStart:
-    - location: deploy.sh
-      timeout: 60
-      runas: ubuntu
+    mode: 755
