@@ -101,5 +101,5 @@ jobs:
         --application-name githubaction-sherlock
         --deployment-config-name CodeDeployDefault.OneAtATime
         --deployment-group-name githubaction-sherlok-group
-        --s3-location bucket=github-action-codedeploy-s3,bundleType=tgz,key=archive/drcloud.tar.gz
+        --s3-location bucket=$S3_BUCKET_NAME,bundleType=tgz,key=archive/drcloud.tar.gz
 
