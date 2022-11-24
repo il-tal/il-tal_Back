@@ -1,7 +1,6 @@
 package com.example.sherlockescape.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.example.sherlockescape.domain.*;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.CompanyRequestDto;
 import com.example.sherlockescape.dto.response.AllCompanyResponseDto;
@@ -9,6 +8,10 @@ import com.example.sherlockescape.dto.response.CompanyDetailResponseDto;
 import com.example.sherlockescape.dto.response.MyCompanyResponseDto;
 import com.example.sherlockescape.repository.*;
 import com.example.sherlockescape.utils.CommonUtils;
+import com.example.sherlockescape.domain.Company;
+import com.example.sherlockescape.domain.CompanyLike;
+import com.example.sherlockescape.domain.Member;
+import com.example.sherlockescape.domain.Theme;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,6 +60,8 @@ public class CompanyService {
         return ResponseDto.success("업체 등록 성공");
     }
 
+
+    //업체 상세 페이지 조회
     public ResponseDto<CompanyDetailResponseDto> getCompanyDetail(Long companyId) {
         Company company = companyRepository.findById(companyId).orElseThrow(
                 () -> new IllegalArgumentException("해당 업체가 존재하지 않습니다.")
@@ -71,6 +76,7 @@ public class CompanyService {
         CompanyDetailResponseDto companyDetailResponseDto =
                 CompanyDetailResponseDto.builder()
                         .id(companyId)
+                        .companyName(company.getCompanyName())
                         .companyImgUrl(company.getCompanyImgUrl())
                         .location(company.getLocation())
                         .companyScore(company.getCompanyScore())
@@ -88,7 +94,6 @@ public class CompanyService {
     /*업체 정보 조회*/
     public List<AllCompanyResponseDto> getAllCompany(Pageable pageable, String location){
 
-
         List<Company> companyList = companyRepository.getCompanyList(pageable, location);
         List<AllCompanyResponseDto> allResponseDtoList = new ArrayList<>();
         for(Company company: companyList){
@@ -105,6 +110,7 @@ public class CompanyService {
             AllCompanyResponseDto allResponseDto =
                     AllCompanyResponseDto.builder()
                             .id(companyId)
+                            .companyName(company.getCompanyName())
                             .companyImgUrl(company.getCompanyImgUrl())
                             .location(company.getLocation())
                             .companyScore(company.getCompanyScore())

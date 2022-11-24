@@ -6,7 +6,6 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
-import com.example.sherlockescape.domain.*;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.BadgeCreateRequestDto;
 import com.example.sherlockescape.dto.request.BadgeGiveRequestDto;
@@ -17,6 +16,10 @@ import com.example.sherlockescape.repository.MemberBadgeRepository;
 import com.example.sherlockescape.repository.ReviewRepository;
 import com.example.sherlockescape.utils.CommonUtils;
 import com.example.sherlockescape.utils.ValidateCheck;
+import com.example.sherlockescape.domain.Badge;
+import com.example.sherlockescape.domain.Member;
+import com.example.sherlockescape.domain.MemberBadge;
+import com.example.sherlockescape.domain.Review;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,7 +30,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -60,6 +62,7 @@ public class BadgeService {
                 .badgeName(badgeCreateRequestDto.getBadgeName())
                 .badgeExplain(badgeCreateRequestDto.getBadgeExplain())
                 .badgeImgUrl(imgurl)
+                .badgeGoal(badgeCreateRequestDto.getBadgeGoal())
                 .build();
         badgeRepository.save(badge);
         return ResponseDto.success(BadgeResponseDto.builder()
@@ -67,6 +70,7 @@ public class BadgeService {
                 .badgeImgUrl(badge.getBadgeImgUrl())
                 .badgeName(badge.getBadgeName())
                 .badgeExplain(badge.getBadgeExplain())
+                .badgeGoal(badge.getBadgeGoal())
                 .build());
     }
 
@@ -80,16 +84,18 @@ public class BadgeService {
                     .badgeImgUrl(badge.getBadgeImgUrl())
                     .badgeName(badge.getBadgeName())
                     .badgeExplain(badge.getBadgeExplain())
+                    .badgeGoal(badge.getBadgeGoal())
                     .build();
             badgeResponseDtoList.add(allBadgeResponseDto);
         }
         return badgeResponseDtoList;
     }
     //뱃지 부여
-    public ResponseDto<?> giveBadge(Long memberId, BadgeGiveRequestDto badgeGiveRequestDto) {
+    public ResponseDto<BadgeResponseDto> giveBadge(Long memberId, BadgeGiveRequestDto badgeGiveRequestDto) {
         Member member = validateCheck.getMember(memberId);
         List<Badge> badgeList = badgeRepository.findAll();
         MemberBadge memberBadge = memberBadgeRepository.findByBadgeId(Long.parseLong(badgeGiveRequestDto.getBadgeId()));
+
         //totalAchieveCnt, totalFailCnt 보내주기
         List<Review> reviews = reviewRepository.findReviewsByMember(member);
         int totalAchieveCnt = 0;
@@ -101,9 +107,10 @@ public class BadgeService {
                 totalFailCnt += 1;
             }
         }
+        //성공뱃지
         MemberBadge createBadge = null;
         if(badgeList.get(0).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())){
-            if(null == memberBadge && totalAchieveCnt >= 10 && totalAchieveCnt < 20){
+            if(null == memberBadge && totalAchieveCnt >= 1){
                 createBadge = new MemberBadge(member, badgeList.get(0));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
@@ -112,7 +119,7 @@ public class BadgeService {
                 throw new IllegalArgumentException("성공 횟수가 부족합니다.");
             }
         }else if(badgeList.get(1).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())){
-            if(totalAchieveCnt >= 20 && totalAchieveCnt <30){
+            if(totalAchieveCnt >= 3){
                 createBadge = new MemberBadge(member, badgeList.get(1));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
@@ -121,13 +128,82 @@ public class BadgeService {
                 throw new IllegalArgumentException("성공 횟수가 부족합니다.");
             }
         }else if(badgeList.get(2).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
-            if (totalAchieveCnt >= 30 && totalAchieveCnt < 40) {
+            if (totalAchieveCnt >= 7 ) {
                 createBadge = new MemberBadge(member, badgeList.get(2));
                 memberBadgeRepository.save(createBadge);
-            }else{
+            }else if(null != memberBadge){
                 throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+            }else{
+                throw new IllegalArgumentException("성공 횟수가 부족합니다.");
+            }
+        }else if(badgeList.get(3).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
+            if (totalAchieveCnt >= 20) {
+                createBadge = new MemberBadge(member, badgeList.get(3));
+                memberBadgeRepository.save(createBadge);
+            }else if(null != memberBadge){
+                throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+            }else{
+                throw new IllegalArgumentException("성공 횟수가 부족합니다.");
+            }
+        }else if(badgeList.get(4).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
+            if (totalAchieveCnt >= 50) {
+                createBadge = new MemberBadge(member, badgeList.get(4));
+                memberBadgeRepository.save(createBadge);
+            }else if(null != memberBadge){
+                throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+            }else{
+                throw new IllegalArgumentException("성공 횟수가 부족합니다.");
             }
         }
+
+        //실패뱃지
+        if(badgeList.get(5).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())){
+            if(null == memberBadge && totalAchieveCnt >= 1 ){
+                createBadge = new MemberBadge(member, badgeList.get(5));
+                memberBadgeRepository.save(createBadge);
+            }else if(null != memberBadge){
+                throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+            }else{
+                throw new IllegalArgumentException("실패 횟수가 부족합니다.");
+            }
+        }else if(badgeList.get(6).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())){
+            if(totalAchieveCnt >= 7){
+                createBadge = new MemberBadge(member, badgeList.get(6));
+                memberBadgeRepository.save(createBadge);
+            }else if(null != memberBadge){
+                throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+            }else{
+                throw new IllegalArgumentException("실패 횟수가 부족합니다.");
+            }
+        }else if(badgeList.get(7).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
+            if (totalAchieveCnt >= 10) {
+                createBadge = new MemberBadge(member, badgeList.get(7));
+                memberBadgeRepository.save(createBadge);
+            }else if(null != memberBadge){
+                throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+            }else{
+                throw new IllegalArgumentException("실패 횟수가 부족합니다.");
+            }
+        }else if(badgeList.get(8).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
+            if (totalAchieveCnt >= 30) {
+                createBadge = new MemberBadge(member, badgeList.get(8));
+                memberBadgeRepository.save(createBadge);
+            }else if(null != memberBadge){
+                throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+            }else{
+                throw new IllegalArgumentException("실패 횟수가 부족합니다.");
+            }
+        }else if(badgeList.get(9).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
+            if (totalAchieveCnt + totalFailCnt >= 50) {
+                createBadge = new MemberBadge(member, badgeList.get(9));
+                memberBadgeRepository.save(createBadge);
+            }else if(null != memberBadge){
+                throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+            }else{
+                throw new IllegalArgumentException("도전 횟수가 부족합니다.");
+            }
+        }
+
         assert createBadge != null;
         BadgeResponseDto badgeResponseDto =
                     BadgeResponseDto.builder()
@@ -135,6 +211,8 @@ public class BadgeService {
                             .badgeImgUrl(createBadge.getBadge().getBadgeImgUrl())
                             .badgeName(createBadge.getBadge().getBadgeName())
                             .badgeExplain(createBadge.getBadge().getBadgeExplain())
+                            .badgeGoal(createBadge.getBadge().getBadgeGoal())
+                            .gotBadge(true)
                             .build();
             return ResponseDto.success(badgeResponseDto);
     }

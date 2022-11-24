@@ -1,6 +1,5 @@
 package com.example.sherlockescape.service;
 
-import com.example.sherlockescape.domain.*;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.LoginRequestDto;
 import com.example.sherlockescape.dto.request.MemberRequestDto;
@@ -17,6 +16,10 @@ import com.example.sherlockescape.repository.*;
 import com.example.sherlockescape.security.jwt.JwtUtil;
 import com.example.sherlockescape.security.jwt.TokenDto;
 import com.example.sherlockescape.utils.ValidateCheck;
+import com.example.sherlockescape.domain.Member;
+import com.example.sherlockescape.domain.RefreshToken;
+import com.example.sherlockescape.domain.Review;
+import com.example.sherlockescape.domain.Tendency;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,13 +51,13 @@ public class MemberService {
     public ResponseEntity<ResponseDto<MemberResponseDto>> signup(MemberRequestDto memberReqDto) {
 
         // username 중복 검사
-        usernameDuplicateCheck(memberReqDto);
-
+        validateCheck.usernameDuplicateCheck(memberReqDto);
+        // nickname 중복 검사
+        validateCheck.userNicknameDuplicateCheck(memberReqDto);
         // 비빌번호 확인 & 비빌번호 불일치
         if(!memberReqDto.getPassword().equals(memberReqDto.getPasswordConfirm())){
             throw new GlobalException(ErrorCode.BAD_PASSWORD_CONFIRM);
         }
-
         Member member = Member.builder()
                 .username(memberReqDto.getUsername())
                 .nickname(memberReqDto.getNickname())
@@ -73,12 +76,7 @@ public class MemberService {
         ));
 
     }
-    public void usernameDuplicateCheck(MemberRequestDto memberReqDto) {
-        if(memberRepository.findByUsername(memberReqDto.getUsername()).isPresent()){
-            throw new GlobalException(ErrorCode.DUPLICATE_MEMBER_ID);
-            // ex) return ResponseDto.fail()
-        }
-    }
+
 
     //로그인
     @Transactional
@@ -142,7 +140,6 @@ public class MemberService {
                 .build();
         return ResponseDto.success(nicknameResponseDto);
     }
-
     /*
     *
     * 내 성향 등록하기

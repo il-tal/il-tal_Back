@@ -18,6 +18,7 @@ import java.util.List;
 public class AllCompanyResponseDto {
 
     private Long id;
+    private String companyName;
     private String companyImgUrl;
     private String location;
     private double companyScore;

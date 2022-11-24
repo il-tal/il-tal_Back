@@ -23,7 +23,7 @@ public enum ErrorCode {
 	/* CONFLICT 409 error*/
 	BAD_PASSWORD_CONFIRM(HttpStatus.CONFLICT.value(), "Password and PasswordConfirm don't match", "비밀번호와 비밀번호 확인이 다릅니다."),
 	DUPLICATE_MEMBER_ID(HttpStatus.CONFLICT.value(), "Member is duplicated", "중복된 사용자 ID가 존재합니다."),
-
+	DUPLICATE_MEMBER_NICKNAME(HttpStatus.CONFLICT.value(), "Nickname is duplicated", "중복된 닉네임 ID가 존재합니다."),
 	/*500 server error*/
 	MEMBER_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Member not found", "멤버를 찾을 수 없습니다.");
 

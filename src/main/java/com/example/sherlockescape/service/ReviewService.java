@@ -20,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -81,6 +80,7 @@ public class ReviewService {
 						.id(review.getId())
 						.themeName(review.getTheme().getThemeName())
 						.playTime(review.getTheme().getPlayTime())
+						.playDate(review.getPlayDate())
 						.score(review.getScore())
 						.comment(review.getComment())
 						.success(review.isSuccess())
@@ -169,6 +169,7 @@ public class ReviewService {
 					.id(review.getId())
 					.themeName(review.getTheme().getThemeName())
 					.playTime(review.getTheme().getPlayTime())
+					.playDate(review.getPlayDate())
 					.score(review.getScore())
 					.success(review.isSuccess())
 					.difficulty(review.getDifficulty())
