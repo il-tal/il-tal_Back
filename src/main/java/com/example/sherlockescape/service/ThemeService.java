@@ -124,23 +124,27 @@ public class ThemeService {
                 () -> new IllegalArgumentException("테마가 존재하지 않습니다"));
 
         int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
-        return ThemeDetailResponseDto.builder()
-                .id(theme.getId())
-                .themeImgUrl(theme.getThemeImgUrl())
-                .themeName(theme.getThemeName())
-                .companyName(theme.getCompany().getCompanyName())
-                .genre(theme.getGenre())
-                .difficulty(theme.getDifficulty())
-                .minPeople(theme.getMinPeople())
-                .maxPeople(theme.getMaxPeople())
-                .playTime(theme.getPlayTime())
-                .price(theme.getPrice())
-                .themeUrl(theme.getThemeUrl())
-                .themeScore(theme.getThemeScore())
-                .synopsis((theme.getSynopsis()))
-                .totalLikeCnt(theme.getTotalLikeCnt())
-                .reviewCnt(reviewCnt)
-                .build();
+        ThemeDetailResponseDto themeDetailResponseDto =
+                ThemeDetailResponseDto.builder()
+                        .id(theme.getId())
+                        .themeImgUrl(theme.getThemeImgUrl())
+                        .themeName(theme.getThemeName())
+                        .companyId(theme.getCompany().getId())
+                        .companyName(theme.getCompany().getCompanyName())
+                        .genre(theme.getGenre())
+                        .difficulty(theme.getDifficulty())
+                        .minPeople(theme.getMinPeople())
+                        .maxPeople(theme.getMaxPeople())
+                        .playTime(theme.getPlayTime())
+                        .price(theme.getPrice())
+                        .themeUrl(theme.getThemeUrl())
+                        .themeScore(theme.getThemeScore())
+                        .synopsis((theme.getSynopsis()))
+                        .totalLikeCnt(theme.getTotalLikeCnt())
+                        .reviewCnt(reviewCnt)
+                        .build();
+        return themeDetailResponseDto;
+
     }
 
     //내가 찜한 테마 목록
@@ -223,7 +227,8 @@ public class ThemeService {
         }
 
         Collections.shuffle(randomThemes);
-        return new ArrayList<>(randomThemes.subList(0,10));
+        List<ThemeResponseDto> randomThemeList = new ArrayList<>(randomThemes.subList(0,10));
+        return randomThemeList;
     }
 
 
