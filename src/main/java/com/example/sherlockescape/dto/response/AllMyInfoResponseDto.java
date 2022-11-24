@@ -2,15 +2,11 @@ package com.example.sherlockescape.dto.response;
 
 
 import com.example.sherlockescape.domain.Member;
-import com.example.sherlockescape.domain.MemberBadge;
 import com.example.sherlockescape.domain.Tendency;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.Collections;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
