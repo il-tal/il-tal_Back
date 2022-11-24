@@ -1,7 +1,10 @@
 package com.example.sherlockescape.service;
 
 import com.example.sherlockescape.domain.Member;
-import com.example.sherlockescape.dto.request.SocialUserInfoDto;
+import com.example.sherlockescape.domain.RefreshToken;
+import com.example.sherlockescape.dto.request.KakaoUserInfoDto;
+import com.example.sherlockescape.dto.request.MemberDto;
+import com.example.sherlockescape.dto.request.SocialUserDto;
 import com.example.sherlockescape.repository.MemberRepository;
 import com.example.sherlockescape.security.jwt.JwtUtil;
 import com.example.sherlockescape.security.jwt.TokenDto;
@@ -25,30 +28,38 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class KakaoUserService {
+
+//	@Value("${kakao.client-id}")
+//	String kakaoClientId;
+//	@Value("${kakao.redirect-uri}")
+//	String redirectUri;
+
 	private final PasswordEncoder passwordEncoder;
 	private final MemberRepository memberRepository;
+	private final MemberService memberService;
+	private final JwtUtil jwtUtil;
 
-	public SocialUserInfoDto kakaoLogin(String code, TokenDto tokenDto, HttpServletResponse response) throws JsonProcessingException {
+	public KakaoUserInfoDto kakaoLogin(String code, TokenDto tokenDto, HttpServletResponse response) throws JsonProcessingException {
+
 		// 1. "인가 코드"로 "액세스 토큰" 요청
 		String accessToken = getAccessToken(code);
 
 		// 2. 토큰으로 카카오 API 호출
-		SocialUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
+		KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
 
 		// 3. 카카오ID로 회원가입 처리
-		Member kakaoUser = registerKakaoUserIfNeed(kakaoUserInfo);
+		Member kakaoUser = signupKakaoUser(kakaoUserInfo);
 
-		// 4. 강제 로그인 처리
-		Authentication authentication = forceLogin(kakaoUser);
-
-		// 5. response Header에 JWT 토큰 추가
-		kakaoUsersAuthorizationInput(response, tokenDto);
-		return kakaoUserInfo;
+		TokenDto tokenDto = memberService.saveToken(kakaoUser);
+		MemberDto memberDto = new MemberDto(kakaoUser.getId(),kakaoUser.getNickname());
+		SocialUserDto socialUserDto = new SocialUserDto(memberDto, tokenDto);
+		return socialUserDto;
 	}
 
 	// 1. "인가 코드"로 "액세스 토큰" 요청
@@ -56,14 +67,12 @@ public class KakaoUserService {
 		// HTTP Header 생성
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
 		// HTTP Body 생성
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 		body.add("grant_type", "authorization_code");
-		body.add("client_id", "...");
+		body.add("client_id", "38400076c414f86c381ed021d394daaa");
 		body.add("redirect_uri", "http://localhost:8080/kakao/callback");
 		body.add("code", code);
-
 		// HTTP 요청 보내기
 		HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
 		RestTemplate rt = new RestTemplate();
@@ -73,7 +82,6 @@ public class KakaoUserService {
 				kakaoTokenRequest,
 				String.class
 		);
-
 		// HTTP 응답 (JSON) -> 액세스 토큰 파싱
 		String responseBody = response.getBody();
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -82,12 +90,11 @@ public class KakaoUserService {
 	}
 
 	// 2. 토큰으로 카카오 API 호출
-	private SocialUserInfoDto getKakaoUserInfo(String accessToken) throws JsonProcessingException {
+	private KakaoUserInfoDto getKakaoUserInfo(String accessToken) throws JsonProcessingException {
 		// HTTP Header 생성
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", "Bearer " + accessToken);
 		headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
 		// HTTP 요청 보내기
 		HttpEntity<MultiValueMap<String, String>> kakaoUserInfoRequest = new HttpEntity<>(headers);
 		RestTemplate rt = new RestTemplate();
@@ -97,42 +104,38 @@ public class KakaoUserService {
 				kakaoUserInfoRequest,
 				String.class
 		);
-
 		// responseBody에 있는 정보를 꺼냄
 		String responseBody = response.getBody();
 		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode jsonNode = objectMapper.readTree(responseBody);
 
 		Long id = jsonNode.get("id").asLong();
-		String email = jsonNode.get("kakao_account").get("email").asText();
 		String nickname = jsonNode.get("properties")
 				.get("nickname").asText();
 
-		return new SocialUserInfoDto(id, nickname, email);
+		return new KakaoUserInfoDto(id, nickname);
 	}
 
-	// 3. 카카오ID로 회원가입 처리
-	private Member registerKakaoUserIfNeed (SocialUserInfoDto kakaoUserInfo) {
-		// DB 에 중복된 email이 있는지 확인
-		String kakaoEmail = kakaoUserInfo.getEmail();
-		String nickname = kakaoUserInfo.getNickname();
-		Member kakaoUser = memberRepository.findByUsername(kakaoEmail)
-				.orElse(null);
+    // 3. 카카오ID로 회원가입 처리
+    private Member signupKakaoUser (KakaoUserInfoDto kakaoUserInfo) {
+        // DB 에 중복된 email이 있는지 확인
+		Long kakaoId = kakaoUserInfo.getKakaoId();
+        String nickname = kakaoUserInfo.getNickname();
+        Member kakaoUser = memberRepository.findByKakaoId(kakaoId)
+                .orElse(null);
 
-		if (kakaoUser == null) {
-			// 회원가입
-			// password: random UUID
-			String password = UUID.randomUUID().toString();
-			String encodedPassword = passwordEncoder.encode(password);
+        if (kakaoUser == null) {
+            // 회원가입
+            // password: random UUID
+            String password = UUID.randomUUID().toString();
+            String encodedPassword = passwordEncoder.encode(password);
 
-			String profile = "https://ossack.s3.ap-northeast-2.amazonaws.com/basicprofile.png";
+            kakaoUser = new Member(kakaoId, nickname, encodedPassword);
+            memberRepository.save(kakaoUser);
 
-			kakaoUser = new Member(kakaoEmail, nickname, profile, encodedPassword);
-			memberRepository.save(kakaoUser);
-
-		}
-		return kakaoUser;
-	}
+        }
+        return kakaoUser;
+    }
 
 	// 4. 강제 로그인 처리
 	private Authentication forceLogin(Member kakaoUser) {
@@ -146,6 +149,6 @@ public class KakaoUserService {
 	private void kakaoUsersAuthorizationInput(HttpServletResponse response, TokenDto tokenDto) {
 		response.addHeader(JwtUtil.ACCESS_TOKEN, tokenDto.getAccessToken());
 		response.addHeader(JwtUtil.REFRESH_TOKEN, tokenDto.getRefreshToken());
-	}
 
+	}
 }

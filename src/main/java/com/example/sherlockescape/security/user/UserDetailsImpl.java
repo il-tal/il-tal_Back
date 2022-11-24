@@ -9,8 +9,7 @@ import java.util.Collections;
 
 public class UserDetailsImpl implements UserDetails {
 
-    private final Member member;
-
+    private Member member;
 
     public UserDetailsImpl(Member member) {
         this.member = member;

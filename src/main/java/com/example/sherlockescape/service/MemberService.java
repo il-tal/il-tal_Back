@@ -259,4 +259,19 @@ public class MemberService {
             return ResponseDto.success(new AllMyInfoResponseDto(member, findTendency, totalAchieveCnt, totalFailCnt));
         }
     }
+//
+//    public TokenDto saveToken(Member member, String username) {
+//
+//        TokenDto tokenDto = jwtUtil.createAllToken(username);
+//
+//        RefreshToken refreshTokenObject = RefreshToken.builder()
+//                .id(member.getId())
+//                .member(member)
+//                .refreshToken(tokenDto.getRefreshToken())
+//                .build();
+//
+//        refreshTokenRepository.save(refreshTokenObject);
+//
+//        return tokenDto;
+//    }
 }

@@ -34,7 +34,6 @@ public class ReviewService {
 	private final MemberRepository memberRepository;
 	private final ValidateCheck validateCheck;
 
-
 	// 테마 후기 작성
 	@Transactional
 	public ResponseDto<MyReviewResponseDto> createReview(Long themeId, ReviewRequestDto reviewRequestDto, Long memberId) {
@@ -130,7 +129,6 @@ public class ReviewService {
 	}
 
 
-
 	// 테마 후기 삭제
 	@Transactional
 	public ResponseDto<String> deleteReview (Long reviewId, Member member){
@@ -191,5 +189,4 @@ public class ReviewService {
 		themeRepository.save(updateThemeScore);
 
 	}
-
 }
