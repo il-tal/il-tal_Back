@@ -17,9 +17,6 @@ group = 'com.sparta'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
-
-
-
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -53,7 +50,6 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 
-
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
@@ -63,6 +59,8 @@ dependencies {
 
     // redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1'
 }
 
 tasks.named('test') {
@@ -93,4 +91,7 @@ configurations {
         extendsFrom annotationProcessor
     }
     querydsl.extendsFrom compileClasspath
+}
+jar {
+    enabled = false
 }
