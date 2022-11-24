@@ -15,6 +15,7 @@ import java.util.List;
 public class CompanyDetailResponseDto {
     private Long id;
 
+    private String companyName;
     private String companyImgUrl;
 
     private String location;

@@ -17,4 +17,7 @@ public class BadgeCreateRequestDto {
 
     @NotBlank
     private String badgeExplain;
+
+    @NotBlank
+    private int badgeGoal;
 }

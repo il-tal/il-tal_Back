@@ -15,6 +15,7 @@ public class MyReviewResponseDto {
     private Long id;
     private String themeName;
     private int playTime;
+    private LocalDate playDate;
     private int difficulty;
     private double score;
     private String comment;

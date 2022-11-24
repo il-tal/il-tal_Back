@@ -77,6 +77,7 @@ public class CompanyService {
         CompanyDetailResponseDto companyDetailResponseDto =
                 CompanyDetailResponseDto.builder()
                         .id(companyId)
+                        .companyName(company.getCompanyName())
                         .companyImgUrl(company.getCompanyImgUrl())
                         .location(company.getLocation())
                         .companyScore(company.getCompanyScore())
@@ -93,7 +94,6 @@ public class CompanyService {
 
     /*업체 정보 조회*/
     public List<AllCompanyResponseDto> getAllCompany(Pageable pageable, String location){
-
 
         List<Company> companyList = companyRepository.getCompanyList(pageable, location);
         List<AllCompanyResponseDto> allResponseDtoList = new ArrayList<>();
@@ -114,6 +114,7 @@ public class CompanyService {
             AllCompanyResponseDto allResponseDto =
                     AllCompanyResponseDto.builder()
                             .id(companyId)
+                            .companyName(company.getCompanyName())
                             .companyImgUrl(company.getCompanyImgUrl())
                             .location(company.getLocation())
                             .companyScore(company.getCompanyScore())
