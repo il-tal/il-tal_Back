@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface MemberBadgeRepository extends JpaRepository<MemberBadge, Long> {
     MemberBadge findByBadgeId(Long badgeId);
-    List<MemberBadge> findAllByMemberId(Long memberId);
-
+    List<MemberBadge> findAllByMemberUsername(String username);
 }

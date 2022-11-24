@@ -16,6 +16,7 @@ import com.example.sherlockescape.dto.response.ThemeDetailResponseDto;
 import com.example.sherlockescape.dto.response.ThemeResponseDto;
 import com.example.sherlockescape.repository.*;
 import com.example.sherlockescape.utils.CommonUtils;
+import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,8 @@ public class ThemeService {
     private final AmazonS3Client amazonS3Client;
 
     private final MemberRepository memberRepository;
+
+    private final ValidateCheck validateCheck;
 
     private final ReviewRepository reviewRepository;
     private final ThemeLikeRepository themeLikeRepository;
@@ -93,12 +96,18 @@ public class ThemeService {
 //    }
 
     //테마 필터링
-    public List<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people){
+    public List<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people, String username){
 
         Page<Theme> filteredTheme = themeRepository.findFilter(pageable, location, genreFilter, themeScore, difficulty, people);
 
+
         List<ThemeResponseDto> themeLists = new ArrayList<>();
         for(Theme theme: filteredTheme) {
+            Optional<ThemeLike> themeLike = themeLikeRepository.findByThemeIdAndMemberUsername(theme.getId(), username);
+
+            //테마 좋아요 확인
+            boolean themeLikeCheck = themeLike.isPresent();
+
             int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
             ThemeResponseDto themeResponseDto =
                     ThemeResponseDto.builder()
@@ -108,6 +117,7 @@ public class ThemeService {
                             .companyName(theme.getCompany().getCompanyName())
                             .genre(theme.getGenre())
                             .themeScore(theme.getThemeScore())
+                            .themeLikeCheck(themeLikeCheck)
                             .totalLikeCnt(theme.getTotalLikeCnt())
                             .reviewCnt(reviewCnt)
                             .build();
@@ -118,11 +128,13 @@ public class ThemeService {
 
 
     //테마 상세조회
-    public ThemeDetailResponseDto findTheme(Long themeId) {
+    public ThemeDetailResponseDto findTheme(Long themeId, String username) {
 
         Theme theme = themeRepository.findById(themeId).orElseThrow(
                 () -> new IllegalArgumentException("테마가 존재하지 않습니다"));
+        Optional<ThemeLike> themeLike = themeLikeRepository.findByThemeIdAndMemberUsername(themeId, username);
 
+        boolean themeLikeCheck = themeLike.isPresent();
         int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
         ThemeDetailResponseDto themeDetailResponseDto =
                 ThemeDetailResponseDto.builder()
@@ -141,6 +153,7 @@ public class ThemeService {
                         .themeScore(theme.getThemeScore())
                         .synopsis((theme.getSynopsis()))
                         .totalLikeCnt(theme.getTotalLikeCnt())
+                        .themeLikeCheck(themeLikeCheck)
                         .reviewCnt(reviewCnt)
                         .build();
         return themeDetailResponseDto;
@@ -148,10 +161,8 @@ public class ThemeService {
     }
 
     //내가 찜한 테마 목록
-    public List<MyThemeResponseDto> getMyThemes(Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new IllegalArgumentException("사용자를 찾을 수 없습니다.")
-        );
+    public List<MyThemeResponseDto> getMyThemes(String username) {
+        Member member = validateCheck.getMember(username);
 
         List<ThemeLike> themeLikeList = themeLikeRepository.findThemeLikesByMember(member);
         List<MyThemeResponseDto> responseDtoList = new ArrayList<>();
