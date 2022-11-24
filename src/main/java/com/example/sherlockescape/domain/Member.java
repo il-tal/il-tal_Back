@@ -1,6 +1,7 @@
 package com.example.sherlockescape.domain;
 
 import com.example.sherlockescape.domain.base.BaseTimeEntity;
+import com.example.sherlockescape.dto.request.KakaoUserInfoDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +26,9 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @Column(unique = true)
+    private Long kakaoId;
+
     @Column(nullable = false)
     private String nickname;
 
@@ -32,15 +36,14 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String kakaoEmail;
+    @Column(/*nullable = false*/)
+    private String encodedPassword;
 
     @Column(nullable = false)
-    private String profile;
+    private String mainBadgeImg;
 
-//    @Column(nullable = false)
-//    private PasswordEncoder passwordEncoder;
-
+    @Column(nullable = false)
+    private String mainBadgeName;
 
 
 
@@ -48,11 +51,30 @@ public class Member extends BaseTimeEntity {
         return passwordEncoder.matches(password, this.password);
     }
 
-    public Member(String kakaoEmail, String nickname, String profile, String encodedPassword) {
-        this.kakaoEmail = kakaoEmail;
+    public void updateNickname(String nickname) {
         this.nickname = nickname;
-        this.profile = profile;
-//        this.passwordEncoder = encodedPassword;
     }
-//    kakaoEmail, nickname, profile, encodedPassword
+
+    public void updateBadge(String badgeImg, String badgeName) {
+        this.mainBadgeImg = badgeImg;
+        this.mainBadgeName = badgeName;
+    }
+
+    public Member(Long kakaoId, String nickname, String encodedPassword) {
+        this.kakaoId = kakaoId;
+        this.nickname = nickname;
+        this.encodedPassword = encodedPassword;
+
+    }
+
+
+    public static Member of(KakaoUserInfoDto kakaoUserInfoDto) {
+
+        return Member.builder()
+                .nickname(kakaoUserInfoDto.getNickname())
+                .kakaoId(kakaoUserInfoDto.getKakaoId())
+                .build();
+    }
+
+
 }

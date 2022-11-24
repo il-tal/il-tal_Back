@@ -1,14 +1,18 @@
 package com.example.sherlockescape.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
+@Builder
 @Getter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 public class RefreshToken {
 
     @Id
@@ -18,6 +22,10 @@ public class RefreshToken {
     private String refreshToken;
     @NotBlank
     private String memberUsername;
+
+    @JoinColumn(name = "member_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    private Member member;
 
     public RefreshToken(String token, String username) {
         this.refreshToken = token;
