@@ -62,9 +62,6 @@ public class ReviewService {
 				.build();
 		reviewRepository.save(review);
 
-		//리뷰 점수 테마 평점에 반영하기
-		setThemeScore(themeId);
-
 		//totalAchieveCnt, totalFailCnt 보내주기
 		List<Review> reviews = reviewRepository.findReviewsByMember(member);
 		int totalAchieveCnt = 0;
@@ -111,6 +108,10 @@ public class ReviewService {
 							.build()
 			);
 		}
+
+		//리뷰 점수 테마 평점에 반영하기
+		setThemeScore(themeId);
+
 		return ResponseDto.success(reviewAllList);
 	}
 
