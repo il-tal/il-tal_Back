@@ -7,6 +7,7 @@ import com.example.sherlockescape.security.user.UserDetailsImpl;
 import com.example.sherlockescape.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,8 +23,8 @@ public class ReviewController {
 	@PostMapping("/{themeId}/review")
 	public ResponseDto<MyReviewResponseDto> createReview(@PathVariable Long themeId,
 														 @RequestBody @Valid ReviewRequestDto requestDto,
-														 @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-		return reviewService.createReview(themeId, requestDto, userDetailsImpl.getMember().getId());
+														 @AuthenticationPrincipal UserDetails userDetails) {
+		return reviewService.createReview(themeId, requestDto, userDetails.getUsername());
 	}
 
 	// 테마 후기 조회
@@ -34,17 +35,17 @@ public class ReviewController {
 
 	// 테마 후기 수정
 	@PutMapping("/review/{reviewId}")
-	public ResponseDto<?> updateReview(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+	public ResponseDto<?> updateReview(@AuthenticationPrincipal UserDetails userDetails,
 										@PathVariable Long reviewId,
 										@RequestBody @Valid ReviewRequestDto requestDto) {
-		return reviewService.updateReview(userDetailsImpl.getMember(), reviewId, requestDto);
+		return reviewService.updateReview(userDetails.getUsername(), reviewId, requestDto);
 	}
 
 	// 테마 후기 삭제
 	@DeleteMapping("/review/{reviewId}")
 	public ResponseDto<String> deleteReview(@PathVariable Long reviewId,
-											@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
-		return reviewService.deleteReview(reviewId, userDetailsImpl.getMember());
+											@AuthenticationPrincipal UserDetails userDetails) {
+		return reviewService.deleteReview(reviewId, userDetails.getUsername());
 	}
 
 }

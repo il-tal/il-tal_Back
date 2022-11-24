@@ -9,6 +9,7 @@ import com.example.sherlockescape.security.user.UserDetailsImpl;
 import com.example.sherlockescape.service.BadgeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,9 +45,9 @@ public class BadgeController {
     * badge 부여
     * */
     @PostMapping("/badge/give")
-    public ResponseDto<BadgeResponseDto> giveBadge(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+    public ResponseDto<BadgeResponseDto> giveBadge(@AuthenticationPrincipal UserDetails userDetails,
                                                    @RequestBody BadgeGiveRequestDto badgeGiveRequestDto){
-        return badgeService.giveBadge(userDetailsImpl.getMember().getId(), badgeGiveRequestDto);
+        return badgeService.giveBadge(userDetails.getUsername(), badgeGiveRequestDto);
     }
     /*
     *

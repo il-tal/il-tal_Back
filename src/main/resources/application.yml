@@ -27,8 +27,6 @@ spring:
       org.hibernate.SQL: debug
       org.hibernate.type: trace
 
-
-
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher

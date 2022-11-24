@@ -7,6 +7,7 @@ import com.example.sherlockescape.security.user.UserDetailsImpl;
 import com.example.sherlockescape.service.ThemeLikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,7 @@ public class ThemeLikeController {
 
     @PostMapping
     public ResponseDto<ThemeLikeResponseDto> themeLikeUp(@RequestBody @Valid ThemeLikeRequestDto themeLikeRequestDto,
-                                                         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
-        return themeLikeService.themeLikeUp(themeLikeRequestDto, userDetailsImpl.getMember().getId());
+                                                         @AuthenticationPrincipal UserDetails userDetails){
+        return themeLikeService.themeLikeUp(themeLikeRequestDto, userDetails.getUsername());
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,9 +56,9 @@ public class MemberController {
     * 닉네임 수정하기
     * */
     @PutMapping("/nickname")
-    public ResponseDto<NicknameResponseDto> updateNickname(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+    public ResponseDto<NicknameResponseDto> updateNickname(@AuthenticationPrincipal UserDetails userDetails,
                                                            @RequestBody NicknameRequestDto nicknameRequestDto){
-        return memberService.updateNickname(userDetailsImpl.getMember().getId(), nicknameRequestDto);
+        return memberService.updateNickname(userDetails.getUsername(), nicknameRequestDto);
     }
 
 }

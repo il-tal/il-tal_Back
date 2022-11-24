@@ -41,5 +41,7 @@ public class ThemeDetailResponseDto {
 
     private int totalLikeCnt;
 
+    private boolean themeLikeCheck;
+
     private int reviewCnt;
 }
