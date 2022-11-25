@@ -34,7 +34,6 @@ public class ReviewService {
 	private final ThemeRepository themeRepository;
 	private final CompanyRepository companyRepository;
 	private final ReviewRepository reviewRepository;
-	private final MemberRepository memberRepository;
 	private final ValidateCheck validateCheck;
 
 
@@ -46,7 +45,7 @@ public class ReviewService {
 		Member member = validateCheck.getMember(username);
 
 		Theme theme = themeRepository.findById(themeId).orElseThrow(
-				() -> new IllegalArgumentException("테마를 찾을수 없습니다.")
+				() -> new GlobalException(ErrorCode.THEME_NOT_FOUND)
 		);
 
 		Review review = Review.builder()
@@ -109,13 +108,13 @@ public class ReviewService {
 							.build()
 			);
 		}
-
 		//리뷰 점수 테마 평점에 반영하기
 		setThemeScore(themeId);
 
 		//리뷰 점수 업체 평점에 반영하기
 		Theme theme = themeRepository.findById(themeId).orElseThrow(
-				() -> new IllegalArgumentException("테마를 찾을수 없습니다."));
+				() -> new GlobalException(ErrorCode.THEME_NOT_FOUND)
+		);
 		Long companyId = theme.getCompany().getId();
 		setCompanyScore(companyId);
 
@@ -127,7 +126,8 @@ public class ReviewService {
 	public ResponseDto<?> updateReview(String username, Long reviewId, ReviewRequestDto requestDto) {
 
 		Review review = reviewRepository.findById(reviewId).orElseThrow(
-				() -> new IllegalArgumentException("리뷰가 존재하지 않습니다"));
+				() -> new GlobalException(ErrorCode.REVIEW_NOT_FOUND)
+		);
 
 		// 회원님이 작성한 글이 아닙니다.
 		if (!username.equals(review.getMember().getUsername())) {
@@ -181,7 +181,8 @@ public class ReviewService {
 	//테마 평점 계산
 	private void setThemeScore(Long themeId){
 		Theme updateThemeScore = themeRepository.findById(themeId).orElseThrow(
-				() -> new IllegalArgumentException("테마를 찾을수 없습니다."));
+				() -> new GlobalException(ErrorCode.THEME_NOT_FOUND)
+		);
 
 		List<Review> reviewList = reviewRepository.findAllByThemeId(themeId);
 
@@ -205,7 +206,8 @@ public class ReviewService {
 	//업체 평점 계산
 	private void setCompanyScore(Long companyId) {
 		Company updateCompanyScore = companyRepository.findById(companyId).orElseThrow(
-				() -> new IllegalArgumentException("업체를 찾을수 없습니다."));
+				() -> new GlobalException(ErrorCode.COMPANY_NOT_FOUND)
+		);
 
 		List<Theme> theme = themeRepository.findAllByCompanyId(companyId);
 

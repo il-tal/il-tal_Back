@@ -6,6 +6,8 @@ import com.example.sherlockescape.domain.ThemeLike;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ThemeLikeRequestDto;
 import com.example.sherlockescape.dto.response.ThemeLikeResponseDto;
+import com.example.sherlockescape.exception.ErrorCode;
+import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.ThemeLikeRepository;
 import com.example.sherlockescape.repository.ThemeRepository;
 import com.example.sherlockescape.utils.ValidateCheck;
@@ -29,7 +31,7 @@ public class ThemeLikeService {
         Theme theme = new Theme(Long.parseLong(themeLikeRequestDto.getThemeId()));
 
         Theme updateTheme = themeRepository.findById(theme.getId()).orElseThrow(
-                () -> new IllegalArgumentException("테마가 존재하지 않습니다.")
+                () -> new GlobalException(ErrorCode.THEME_NOT_FOUND)
         );
 
         boolean themeLikeCheck;

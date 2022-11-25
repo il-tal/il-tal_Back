@@ -11,6 +11,8 @@ import com.example.sherlockescape.dto.request.BadgeCreateRequestDto;
 import com.example.sherlockescape.dto.request.BadgeGiveRequestDto;
 import com.example.sherlockescape.dto.response.AllBadgeResponseDto;
 import com.example.sherlockescape.dto.response.BadgeResponseDto;
+import com.example.sherlockescape.exception.ErrorCode;
+import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.BadgeRepository;
 import com.example.sherlockescape.repository.MemberBadgeRepository;
 import com.example.sherlockescape.repository.ReviewRepository;
@@ -115,45 +117,45 @@ public class BadgeService {
                 createBadge = new MemberBadge(member, badgeList.get(0));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
-                throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+                throw new GlobalException(ErrorCode.MEMBER_BADGE_ALREADY_EXIST);
             }else{
-                throw new IllegalArgumentException("성공 횟수가 부족합니다.");
+                throw new GlobalException(ErrorCode.SUCCESS_NOT_ENOUGH);
             }
         }else if(badgeList.get(1).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())){
             if(totalAchieveCnt >= 3){
                 createBadge = new MemberBadge(member, badgeList.get(1));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
-                throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+                throw new GlobalException(ErrorCode.MEMBER_BADGE_ALREADY_EXIST);
             }else{
-                throw new IllegalArgumentException("성공 횟수가 부족합니다.");
+                throw new GlobalException(ErrorCode.SUCCESS_NOT_ENOUGH);
             }
         }else if(badgeList.get(2).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
             if (totalAchieveCnt >= 7 ) {
                 createBadge = new MemberBadge(member, badgeList.get(2));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
-                throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+                throw new GlobalException(ErrorCode.MEMBER_BADGE_ALREADY_EXIST);
             }else{
-                throw new IllegalArgumentException("성공 횟수가 부족합니다.");
+                throw new GlobalException(ErrorCode.SUCCESS_NOT_ENOUGH);
             }
         }else if(badgeList.get(3).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
             if (totalAchieveCnt >= 20) {
                 createBadge = new MemberBadge(member, badgeList.get(3));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
-                throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+                throw new GlobalException(ErrorCode.MEMBER_BADGE_ALREADY_EXIST);
             }else{
-                throw new IllegalArgumentException("성공 횟수가 부족합니다.");
+                throw new GlobalException(ErrorCode.SUCCESS_NOT_ENOUGH);
             }
         }else if(badgeList.get(4).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
             if (totalAchieveCnt >= 50) {
                 createBadge = new MemberBadge(member, badgeList.get(4));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
-                throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+                throw new GlobalException(ErrorCode.MEMBER_BADGE_ALREADY_EXIST);
             }else{
-                throw new IllegalArgumentException("성공 횟수가 부족합니다.");
+                throw new GlobalException(ErrorCode.SUCCESS_NOT_ENOUGH);
             }
         }
 
@@ -163,45 +165,45 @@ public class BadgeService {
                 createBadge = new MemberBadge(member, badgeList.get(5));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
-                throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+                throw new GlobalException(ErrorCode.MEMBER_BADGE_ALREADY_EXIST);
             }else{
-                throw new IllegalArgumentException("실패 횟수가 부족합니다.");
+                throw new GlobalException(ErrorCode.FAIL_NOT_ENOUGH);
             }
         }else if(badgeList.get(6).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())){
             if(totalAchieveCnt >= 7){
                 createBadge = new MemberBadge(member, badgeList.get(6));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
-                throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+                throw new GlobalException(ErrorCode.MEMBER_BADGE_ALREADY_EXIST);
             }else{
-                throw new IllegalArgumentException("실패 횟수가 부족합니다.");
+                throw new GlobalException(ErrorCode.FAIL_NOT_ENOUGH);
             }
         }else if(badgeList.get(7).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
             if (totalAchieveCnt >= 10) {
                 createBadge = new MemberBadge(member, badgeList.get(7));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
-                throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+                throw new GlobalException(ErrorCode.MEMBER_BADGE_ALREADY_EXIST);
             }else{
-                throw new IllegalArgumentException("실패 횟수가 부족합니다.");
+                throw new GlobalException(ErrorCode.FAIL_NOT_ENOUGH);
             }
         }else if(badgeList.get(8).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
             if (totalAchieveCnt >= 30) {
                 createBadge = new MemberBadge(member, badgeList.get(8));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
-                throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+                throw new GlobalException(ErrorCode.MEMBER_BADGE_ALREADY_EXIST);
             }else{
-                throw new IllegalArgumentException("실패 횟수가 부족합니다.");
+                throw new GlobalException(ErrorCode.FAIL_NOT_ENOUGH);
             }
         }else if(badgeList.get(9).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
             if (totalAchieveCnt + totalFailCnt >= 50) {
                 createBadge = new MemberBadge(member, badgeList.get(9));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
-                throw new IllegalArgumentException("해당 뱃지를 이미 획득하셨습니다.");
+                throw new GlobalException(ErrorCode.MEMBER_BADGE_ALREADY_EXIST);
             }else{
-                throw new IllegalArgumentException("도전 횟수가 부족합니다.");
+                throw new GlobalException(ErrorCode.FAIL_NOT_ENOUGH);
             }
         }
 
