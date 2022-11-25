@@ -111,12 +111,4 @@ public class JwtUtil {
 
     // 토큰 삭제
 
-
-//    public String generateToken(UserDetails userDetails) {
-//        Claims claims = Jwts.claims();
-//        claims.put("username", userDetails.getUsername());
-////        return createToken(claims, userDetails.getUsername()); // username을 subject로 해서 token 생성
-//        return createToken(claims, userDetails.getUsername());
-//    }
-
 }
