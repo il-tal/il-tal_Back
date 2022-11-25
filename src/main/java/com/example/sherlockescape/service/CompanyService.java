@@ -1,6 +1,7 @@
 package com.example.sherlockescape.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.example.sherlockescape.domain.*;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.CompanyRequestDto;
 import com.example.sherlockescape.dto.response.AllCompanyResponseDto;
@@ -8,11 +9,6 @@ import com.example.sherlockescape.dto.response.CompanyDetailResponseDto;
 import com.example.sherlockescape.dto.response.MyCompanyResponseDto;
 import com.example.sherlockescape.repository.*;
 import com.example.sherlockescape.utils.CommonUtils;
-import com.example.sherlockescape.domain.Company;
-import com.example.sherlockescape.domain.CompanyLike;
-import com.example.sherlockescape.domain.Member;
-import com.example.sherlockescape.domain.Theme;
-import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +30,6 @@ public class CompanyService {
     private final AmazonS3Client amazonS3Client;
     private final ThemeRepository themeRepository;
     private final MemberRepository memberRepository;
-    private final ValidateCheck validateCheck;
     private final CompanyLikeRepository companyLikeRepository;
     private final ReviewRepository reviewRepository;
 
@@ -64,24 +58,12 @@ public class CompanyService {
         return ResponseDto.success("업체 등록 성공");
     }
 
-
-    //업체 상세 페이지 조회
-    public ResponseDto<CompanyDetailResponseDto> getCompanyDetail(Long companyId, String username) {
+    public ResponseDto<CompanyDetailResponseDto> getCompanyDetail(Long companyId) {
         Company company = companyRepository.findById(companyId).orElseThrow(
                 () -> new IllegalArgumentException("해당 업체가 존재하지 않습니다.")
         );
-
-        Optional<CompanyLike> companyLike = companyLikeRepository
-                .findByCompanyIdAndMemberUsername(companyId, username);
-
-        //사용자 좋아요 체크 여부
-        boolean companyLikeCheck = companyLike.isPresent();
-        //좋아요 개수 카운트
-        int companyLikeCnt = Math.toIntExact(companyLikeRepository.countByCompanyId(companyId));
-
+        int companyLike = Math.toIntExact(companyLikeRepository.countByCompanyId(companyId));
         List<Theme> themeList = themeRepository.findAllByCompanyId(companyId);
-
-        //리뷰 개수 카운트
         int totalReviewCnt = 0;
         for(Theme theme: themeList){
             int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
@@ -107,18 +89,13 @@ public class CompanyService {
     }
 
     /*업체 정보 조회*/
-    public List<AllCompanyResponseDto> getAllCompany(Pageable pageable, String location, String username){
+    public List<AllCompanyResponseDto> getAllCompany(Pageable pageable, String location){
+
 
         List<Company> companyList = companyRepository.getCompanyList(pageable, location);
         List<AllCompanyResponseDto> allResponseDtoList = new ArrayList<>();
-
         for(Company company: companyList){
             Long companyId = company.getId();
-            Optional<CompanyLike> companyLike = companyLikeRepository
-                    .findByCompanyIdAndMemberUsername(companyId, username);
-
-            //좋아요 여부 체크
-            boolean companyLikeCheck = companyLike.isPresent();
 
             List<Theme> themeList = themeRepository.findAllByCompanyId(companyId);
             Long companyLikeCnt = companyLikeRepository.countByCompanyId(companyId);
@@ -134,7 +111,6 @@ public class CompanyService {
             AllCompanyResponseDto allResponseDto =
                     AllCompanyResponseDto.builder()
                             .id(companyId)
-                            .companyName(company.getCompanyName())
                             .companyImgUrl(company.getCompanyImgUrl())
                             .location(company.getLocation())
                             .companyScore(company.getCompanyScore())
@@ -143,7 +119,6 @@ public class CompanyService {
                             .phoneNumber(company.getPhoneNumber())
                             .address(company.getAddress())
                             .companyLikeCnt(companyLikeCnt)
-                            .companyLikeCheck(companyLikeCheck)
                             .totalReviewCnt(totalReviewCnt)
                             .themeList(themeList).build();
             allResponseDtoList.add(allResponseDto);
@@ -212,4 +187,5 @@ public class CompanyService {
         updateCompanyScore.updateCompanyScore(companyScore);
         companyRepository.save(updateCompanyScore);
     }
+
 }

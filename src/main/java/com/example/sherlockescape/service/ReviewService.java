@@ -1,5 +1,6 @@
 package com.example.sherlockescape.service;
 
+import com.example.sherlockescape.domain.Company;
 import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.domain.Review;
 import com.example.sherlockescape.domain.Theme;
@@ -9,6 +10,7 @@ import com.example.sherlockescape.dto.response.MyReviewResponseDto;
 import com.example.sherlockescape.dto.response.ReviewResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
+import com.example.sherlockescape.repository.CompanyRepository;
 import com.example.sherlockescape.repository.MemberRepository;
 import com.example.sherlockescape.repository.ReviewRepository;
 import com.example.sherlockescape.repository.ThemeRepository;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
 public class ReviewService {
 
 	private final ThemeRepository themeRepository;
+	private final CompanyRepository companyRepository;
 	private final ReviewRepository reviewRepository;
 	private final MemberRepository memberRepository;
 	private final ValidateCheck validateCheck;
@@ -109,6 +112,12 @@ public class ReviewService {
 
 		//리뷰 점수 테마 평점에 반영하기
 		setThemeScore(themeId);
+
+		//리뷰 점수 업체 평점에 반영하기
+		Theme theme = themeRepository.findById(themeId).orElseThrow(
+				() -> new IllegalArgumentException("테마를 찾을수 없습니다."));
+		Long companyId = theme.getCompany().getId();
+		setCompanyScore(companyId);
 
 		return ResponseDto.success(reviewAllList);
 	}
@@ -190,7 +199,33 @@ public class ReviewService {
 		//해당 테마의 score로 저장하기
 		updateThemeScore.updateThemeScore(themeScore);
 		themeRepository.save(updateThemeScore);
-
 	}
 
+
+	//업체 평점 계산
+	private void setCompanyScore(Long companyId) {
+		Company updateCompanyScore = companyRepository.findById(companyId).orElseThrow(
+				() -> new IllegalArgumentException("업체를 찾을수 없습니다."));
+
+		List<Theme> theme = themeRepository.findAllByCompanyId(companyId);
+
+		//해당 업체의 테마에서 score 컬럼 값들 리스트로 변환
+		List<Double> themeScoreList = theme.stream()
+				.map(Theme::getThemeScore)
+				.collect(Collectors.toList());
+
+		//리스트 평균 구하기(평점 0점인 경우 제외)
+		List<Double> zeroScore = new ArrayList<>();
+		zeroScore.add(0.0);
+		themeScoreList.removeAll(zeroScore);
+
+		double average = themeScoreList.stream()
+				.mapToDouble(Double::doubleValue)
+				.average().orElse(0);
+		double companyScore = Math.round(average*100)/100.0;
+
+		//해당 테마의 score로 저장하기
+		updateCompanyScore.updateCompanyScore(companyScore);
+		companyRepository.save(updateCompanyScore);
+	}
 }
