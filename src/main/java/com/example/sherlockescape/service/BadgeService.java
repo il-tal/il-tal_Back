@@ -94,7 +94,8 @@ public class BadgeService {
     public ResponseDto<BadgeResponseDto> giveBadge(String username, BadgeGiveRequestDto badgeGiveRequestDto) {
         Member member = validateCheck.getMember(username);
         List<Badge> badgeList = badgeRepository.findAll();
-        MemberBadge memberBadge = memberBadgeRepository.findByBadgeId(Long.parseLong(badgeGiveRequestDto.getBadgeId()));
+        MemberBadge memberBadge = memberBadgeRepository.
+                findByBadgeIdAndMemberUsername(Long.parseLong(badgeGiveRequestDto.getBadgeId()), username);
 
         //totalAchieveCnt, totalFailCnt 보내주기
         List<Review> reviews = reviewRepository.findReviewsByMember(member);
