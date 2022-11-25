@@ -148,7 +148,7 @@ public class MemberService {
         // else 성향 등록
         Optional<Tendency> tendency = Optional.ofNullable(tendencyRepository.findByMember(member));
         if(tendency.isPresent()){
-            throw new IllegalArgumentException("성향을 이미 등록하셨습니다.");
+            throw new GlobalException(ErrorCode.TENDENCY_ALREADY_EXIST);
         }
         Tendency createTendency = Tendency.builder()
                 .member(member).device(myTendencyRequestDto.getDevice())
@@ -174,7 +174,7 @@ public class MemberService {
         Member member = validateCheck.getMember(username);
         Optional<Tendency> tendency = Optional.ofNullable(tendencyRepository.findByMember(member));
         if(tendency.isEmpty()) {
-            throw new IllegalArgumentException("성향을 등록해주세요");
+            throw new GlobalException(ErrorCode.TENDENCY_NOT_FOUND);
         }else{
             Tendency createdTendency = tendencyRepository.findByMember(member);
             createdTendency.updateTendency(myTendencyRequestDto.getGenrePreference(), myTendencyRequestDto.getStylePreference(),
