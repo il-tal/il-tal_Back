@@ -1,9 +1,79 @@
+#spring:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: ${DB_URL}
+#    username: ${DB_USERNAME}
+#    password: ${DB_PASSWORD}
+#
+#
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2-console
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: none
+#    #          ddl-auto: create
+#    properties:
+#      hibernate:
+#        show_sql: true
+#        format_sql: true
+#        use_sql_comments: true
+#
+#  logging:
+#    level:
+#      org.apache.coyote.http11: debug
+#      org.hibernate.SQL: debug
+#      org.hibernate.type: trace
+#
+#  mvc:
+#    pathmatch:
+#      matching-strategy: ant_path_matcher
+#
+#  jackson:
+#    serialization:
+#      fail-on-empty-beans: false
+#
+#server:
+#  servlet:
+#    encoding:
+#      charset: utf-8
+#      enabled: true
+#      force: true
+#  multipart:
+#    max-file-size: 30MB
+#    max-request-size: 30MB
+#
+#cloud:
+#  aws:
+#    s3:
+#      bucket: ${S3_BUCKET_NAME}
+#    credentials:
+#      access-key: ${AWS_ACCESS_KEY_ID}
+#      secret-key: ${AWS_SECRET_ACCESS_KEY}
+#    region:
+#      static: ${S3_REGION}
+#      auto: false
+#    stack:
+#      auto: false
+#logging:
+#  level:
+#    com:
+#      amazonaws:
+#        util:
+#          EC2MetadataUtils: ERROR
+#
+#jwt:
+#  secret:
+#    key: ${JWT_SECRET_KEY}
+#
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://mykeedatabase.c3ici960koc9.ap-northeast-2.rds.amazonaws.com:3306/sherlock?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: admin
+    password: thfwlrgkssk1!
 
 
   h2:
@@ -23,6 +93,7 @@ spring:
 
   logging:
     level:
+      #     nohub jar ???? ???? ???? ?? ???
       org.apache.coyote.http11: debug
       org.hibernate.SQL: debug
       org.hibernate.type: trace
@@ -48,12 +119,12 @@ server:
 cloud:
   aws:
     s3:
-      bucket: ${S3_BUCKET_NAME}
+      bucket: mykeejaebucket
     credentials:
-      access-key: ${AWS_ACCESS_KEY_ID}
-      secret-key: ${AWS_SECRET_ACCESS_KEY}
+      access-key: AKIAX7NMZQZGOTZPEI5D
+      secret-key: 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
     region:
-      static: ${S3_REGION}
+      static: ap-northeast-2
       auto: false
     stack:
       auto: false
@@ -66,4 +137,4 @@ logging:
 
 jwt:
   secret:
-    key: ${JWT_SECRET_KEY}
+    key: 7J2064W467Kg7J207IWY7Lqg7ZSE7IiY6rCV7IOd67aE65Ok7ZmU7J207YyF7ZWY7IS47JqU7KKL7J2A7ZqM7IKs7JeQ66qo65GQ7Leo7JeF7ISx6rO17ZWY7Iuk6rGw652866+/7Iq164uI64uk65287J2067iM7IS47IWY65Ok7Ja07KO87IWU7ISc6rCQ7IKs7ZWp64uI64uk64+E7JuA7J2065CY7JeI7Jy866m07KKL6rKg7Iq164uI64uk
