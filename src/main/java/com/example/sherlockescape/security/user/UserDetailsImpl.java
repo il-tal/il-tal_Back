@@ -12,19 +12,22 @@ public class UserDetailsImpl implements UserDetails {
     private Member member;
 
     public UserDetailsImpl(Member member) {
+
         this.member = member;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+
+        return null;
     }
-
-
     public Member getMember() {
+
         return member;
     }
-
+    public Long getId() {
+        return member.getId();
+    }
     @Override
     public String getPassword() {
         return member.getPassword();

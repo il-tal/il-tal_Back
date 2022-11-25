@@ -19,6 +19,8 @@ public class ThemeDetailResponseDto {
 
     private String companyName;
 
+    private Long companyId;
+
     private String genre;
 
     private double difficulty;
@@ -38,6 +40,8 @@ public class ThemeDetailResponseDto {
     private String synopsis;
 
     private int totalLikeCnt;
+
+    private boolean themeLikeCheck;
 
     private int reviewCnt;
 }

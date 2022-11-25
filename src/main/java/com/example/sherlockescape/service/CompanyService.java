@@ -12,6 +12,7 @@ import com.example.sherlockescape.domain.Company;
 import com.example.sherlockescape.domain.CompanyLike;
 import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.domain.Theme;
+import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +35,7 @@ public class CompanyService {
     private final AmazonS3Client amazonS3Client;
     private final ThemeRepository themeRepository;
     private final MemberRepository memberRepository;
+    private final ValidateCheck validateCheck;
     private final CompanyLikeRepository companyLikeRepository;
     private final ReviewRepository reviewRepository;
 
@@ -63,12 +66,22 @@ public class CompanyService {
 
 
     //업체 상세 페이지 조회
-    public ResponseDto<CompanyDetailResponseDto> getCompanyDetail(Long companyId) {
+    public ResponseDto<CompanyDetailResponseDto> getCompanyDetail(Long companyId, String username) {
         Company company = companyRepository.findById(companyId).orElseThrow(
                 () -> new IllegalArgumentException("해당 업체가 존재하지 않습니다.")
         );
-        int companyLike = Math.toIntExact(companyLikeRepository.countByCompanyId(companyId));
+
+        Optional<CompanyLike> companyLike = companyLikeRepository
+                .findByCompanyIdAndMemberUsername(companyId, username);
+
+        //사용자 좋아요 체크 여부
+        boolean companyLikeCheck = companyLike.isPresent();
+        //좋아요 개수 카운트
+        int companyLikeCnt = Math.toIntExact(companyLikeRepository.countByCompanyId(companyId));
+
         List<Theme> themeList = themeRepository.findAllByCompanyId(companyId);
+
+        //리뷰 개수 카운트
         int totalReviewCnt = 0;
         for(Theme theme: themeList){
             int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
@@ -82,7 +95,8 @@ public class CompanyService {
                         .location(company.getLocation())
                         .companyScore(company.getCompanyScore())
                         .companyUrl(company.getCompanyUrl())
-                        .companyLikeCnt(companyLike)
+                        .companyLikeCnt(companyLikeCnt)
+                        .companyLikeCheck(companyLikeCheck)
                         .address(company.getAddress())
                         .phoneNumber(company.getPhoneNumber())
                         .workHour(company.getWorkHour())
@@ -93,12 +107,18 @@ public class CompanyService {
     }
 
     /*업체 정보 조회*/
-    public List<AllCompanyResponseDto> getAllCompany(Pageable pageable, String location){
+    public List<AllCompanyResponseDto> getAllCompany(Pageable pageable, String location, String username){
 
         List<Company> companyList = companyRepository.getCompanyList(pageable, location);
         List<AllCompanyResponseDto> allResponseDtoList = new ArrayList<>();
+
         for(Company company: companyList){
             Long companyId = company.getId();
+            Optional<CompanyLike> companyLike = companyLikeRepository
+                    .findByCompanyIdAndMemberUsername(companyId, username);
+
+            //좋아요 여부 체크
+            boolean companyLikeCheck = companyLike.isPresent();
 
             List<Theme> themeList = themeRepository.findAllByCompanyId(companyId);
             Long companyLikeCnt = companyLikeRepository.countByCompanyId(companyId);
@@ -123,6 +143,7 @@ public class CompanyService {
                             .phoneNumber(company.getPhoneNumber())
                             .address(company.getAddress())
                             .companyLikeCnt(companyLikeCnt)
+                            .companyLikeCheck(companyLikeCheck)
                             .totalReviewCnt(totalReviewCnt)
                             .themeList(themeList).build();
             allResponseDtoList.add(allResponseDto);
@@ -134,11 +155,9 @@ public class CompanyService {
     *
     * 내가 찜한 업체 조회
     * */
-    public List<MyCompanyResponseDto> getMyCompanies(Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new IllegalArgumentException("사용자를 찾을 수 없습니다.")
-        );
-        List<CompanyLike> companyLikeList = companyLikeRepository.findCompanyLikesByMemberId(memberId);
+    public List<MyCompanyResponseDto> getMyCompanies(String username) {
+        Member member = validateCheck.getMember(username);
+        List<CompanyLike> companyLikeList = companyLikeRepository.findCompanyLikesByMemberUsername(username);
         List<MyCompanyResponseDto> myCompanyResponseDtoList = new ArrayList<>();
 
         for(CompanyLike like: companyLikeList){

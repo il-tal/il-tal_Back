@@ -32,9 +32,9 @@ public class MemberBadgeService {
 
     //대표 뱃지 수정
     @Transactional
-    public ResponseDto<UpdateBadgeResponseDto> updateBadge(Long memberId, Long badgeId) {
+    public ResponseDto<UpdateBadgeResponseDto> updateBadge(String username, Long badgeId) {
 
-        Member member = validateCheck.getMember(memberId);
+        Member member = validateCheck.getMember(username);
 
         Badge badge = badgeRepository.findById(badgeId).orElseThrow(
                 () -> new IllegalArgumentException("뱃지가 존재하지 않습니다.")
@@ -51,11 +51,11 @@ public class MemberBadgeService {
     }
 
     //main achieve 전체 조회
-    public ResponseDto<MainAchieveResponseDto> getAchieve(Long memberId) {
-        Member member = validateCheck.getMember(memberId);
+    public ResponseDto<MainAchieveResponseDto> getAchieve(String username) {
+        Member member = validateCheck.getMember(username);
 
         List<Review> reviewList = reviewRepository.findReviewsByMember(member);
-        List<MemberBadge> memberBadgeList = memberBadgeRepository.findAllByMemberId(memberId);
+        List<MemberBadge> memberBadgeList = memberBadgeRepository.findAllByMemberUsername(username);
         int totalAchieveCnt = 0;
         int totalFailCnt = 0;
         for(Review review: reviewList){

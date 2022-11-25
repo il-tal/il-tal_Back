@@ -26,6 +26,13 @@ public class ValidateCheck {
                 );
     }
 
+    public Member getMember(String username){
+        return memberRepository.findByUsername(username)
+                .orElseThrow(
+                        () -> new IllegalArgumentException("사용자를 찾을 수 없습니다.")
+                );
+    }
+
     public Member isPresentMember(String username){
         Optional<Member> optionalMember = memberRepository.findByUsername(username);
         return optionalMember.orElse(null);

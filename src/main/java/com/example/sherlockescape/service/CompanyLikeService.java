@@ -20,11 +20,11 @@ public class CompanyLikeService {
     private final CompanyLikeRepository companyLikeRepository;
     private final ValidateCheck validateCheck;
 
-    public ResponseDto<CompanyLikeResponseDto> companyLikeUp(CompanyLikeRequestDto companyLikeRequestDto, Long memberId) {
+    public ResponseDto<CompanyLikeResponseDto> companyLikeUp(CompanyLikeRequestDto companyLikeRequestDto, String username) {
         Optional<CompanyLike> likes = companyLikeRepository
-                .findByCompanyIdAndMemberId(Long.parseLong(companyLikeRequestDto.getCompanyId()), memberId);
+                .findByCompanyIdAndMemberUsername(Long.parseLong(companyLikeRequestDto.getCompanyId()), username);
 
-        Member member = validateCheck.getMember(memberId);
+        Member member = validateCheck.getMember(username);
 
         Company company = new Company(Long.parseLong(companyLikeRequestDto.getCompanyId()));
         boolean companyLikeCheck;

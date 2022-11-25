@@ -36,12 +36,10 @@ public class ReviewService {
 
 	// 테마 후기 작성
 	@Transactional
-	public ResponseDto<MyReviewResponseDto> createReview(Long themeId, ReviewRequestDto reviewRequestDto, Long memberId) {
+	public ResponseDto<MyReviewResponseDto> createReview(Long themeId, ReviewRequestDto reviewRequestDto, String username) {
 
 		// 로그인이 필요합니다.
-		Member member = memberRepository.findById(memberId).orElseThrow(
-				() -> new GlobalException(ErrorCode.NEED_TO_LOGIN)
-		);
+		Member member = validateCheck.getMember(username);
 
 		Theme theme = themeRepository.findById(themeId).orElseThrow(
 				() -> new IllegalArgumentException("테마를 찾을수 없습니다.")
@@ -59,9 +57,6 @@ public class ReviewService {
 				.comment(reviewRequestDto.getComment())
 				.build();
 		reviewRepository.save(review);
-
-		//리뷰 점수 테마 평점에 반영하기
-		setThemeScore(themeId);
 
 		//totalAchieveCnt, totalFailCnt 보내주기
 		List<Review> reviews = reviewRepository.findReviewsByMember(member);
@@ -110,18 +105,22 @@ public class ReviewService {
 							.build()
 			);
 		}
+
+		//리뷰 점수 테마 평점에 반영하기
+		setThemeScore(themeId);
+
 		return ResponseDto.success(reviewAllList);
 	}
 
 	// 테마 후기 수정
 	@Transactional
-	public ResponseDto<?> updateReview(Member member, Long reviewId, ReviewRequestDto requestDto) {
+	public ResponseDto<?> updateReview(String username, Long reviewId, ReviewRequestDto requestDto) {
 
 		Review review = reviewRepository.findById(reviewId).orElseThrow(
 				() -> new IllegalArgumentException("리뷰가 존재하지 않습니다"));
 
 		// 회원님이 작성한 글이 아닙니다.
-		if (!member.getUsername().equals(review.getMember().getUsername())) {
+		if (!username.equals(review.getMember().getUsername())) {
 		throw new GlobalException(ErrorCode.AUTHOR_IS_DIFFERENT);
 		}
 
@@ -132,12 +131,12 @@ public class ReviewService {
 
 	// 테마 후기 삭제
 	@Transactional
-	public ResponseDto<String> deleteReview (Long reviewId, Member member){
+	public ResponseDto<String> deleteReview (Long reviewId, String username){
 
 		Optional<Review> review = reviewRepository.findById(reviewId);
 
 		// 회원님이 작성한 글이 아닙니다.
-		if (!member.getUsername().equals(review.get().getMember().getUsername())) {
+		if (!username.equals(review.get().getMember().getUsername())) {
 			throw new GlobalException(ErrorCode.AUTHOR_IS_DIFFERENT);
 		}
 
@@ -146,9 +145,9 @@ public class ReviewService {
 	}
 
 	//내가 작성한 후기 조회
-	public List<MyReviewResponseDto> getMyReviews(Member member) {
+	public List<MyReviewResponseDto> getMyReviews(String username) {
 
-		List<Review> reviewList = reviewRepository.findReviewsByMember(member);
+		List<Review> reviewList = reviewRepository.findReviewsByMemberUsername(username);
 
 		List<MyReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
 		for(Review review: reviewList){

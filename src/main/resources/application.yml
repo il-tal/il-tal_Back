@@ -26,10 +26,6 @@ spring:
       org.apache.coyote.http11: debug
       org.hibernate.SQL: debug
       org.hibernate.type: trace
-      org.springframework.nodeValue: debug
-      org.springframework.web: debug
-
-
 
   mvc:
     pathmatch:
