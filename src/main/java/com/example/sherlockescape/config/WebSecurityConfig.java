@@ -62,7 +62,7 @@ public class WebSecurityConfig {
         http.authorizeRequests()
                 .antMatchers("/signup").permitAll()
                 .antMatchers( "/login").permitAll()
-
+                .antMatchers( "/kakao/callback").permitAll()
 //                .antMatchers(HttpMethod.GET, "/post/**").permitAll()
 //                .antMatchers(HttpMethod.GET, "/post/{postId}/comment/**").permitAll()
                 .anyRequest().permitAll()
