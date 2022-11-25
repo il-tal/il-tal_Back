@@ -42,7 +42,7 @@ public class ThemeController {
 
     //테마 필터링
     @GetMapping("/themes")
-    public ResponseDto<List<ThemeResponseDto>> findFilter(@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+    public ResponseDto<List<ThemeResponseDto>> findFilter(@PageableDefault(size = 9, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                                                           @RequestParam(value = "location", required = false) List<String> location,
                                                           @RequestParam(value = "genreFilter", required = false) List<String> genreFilter,
                                                           @RequestParam(value = "themeScore", required = false) List<Integer> themeScore,
