@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,13 +49,17 @@ public class ThemeController {
                                                           @RequestParam(value = "difficulty", required = false) List<Integer> difficulty,
                                                           @RequestParam(value = "people", required = false) List<Integer> people
     ) {
-        return ResponseDto.success(themeService.filter(pageable, location, genreFilter, themeScore, difficulty, people));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return ResponseDto.success(themeService.filter(pageable, location, genreFilter, themeScore, difficulty, people, username));
     }
 
     //테마 상세페이지
     @GetMapping("/theme/{themeId}")
     public ResponseDto<?> getTheme(@PathVariable Long themeId) {
-        return ResponseDto.success(themeService.findTheme(themeId));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return ResponseDto.success(themeService.findTheme(themeId, username));
     }
 
     //메인 페이지 인기테마

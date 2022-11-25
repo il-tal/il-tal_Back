@@ -74,6 +74,7 @@ tasks.named('test') {
 def querydslDir = "$buildDir/generated/querydsl"
 // JPA 사용 여부와 사용할 경로를 설정
 querydsl {
+    library = "com.querydsl:querydsl-apt"
     jpa = true
     querydslSourcesDir = querydslDir
 }
@@ -94,4 +95,8 @@ configurations {
 }
 jar {
     enabled = false
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
 }

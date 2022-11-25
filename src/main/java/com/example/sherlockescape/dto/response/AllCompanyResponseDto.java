@@ -18,6 +18,7 @@ import java.util.List;
 public class AllCompanyResponseDto {
 
     private Long id;
+
     private String companyName;
     private String companyImgUrl;
     private String location;
@@ -29,8 +30,11 @@ public class AllCompanyResponseDto {
     private String phoneNumber;
     private String workHour;
 
+    private boolean companyLikeCheck;
+
     private int totalReviewCnt;
     private List<Theme> themeList;
+
 
     public AllCompanyResponseDto(Company company){
         this.id = company.getId();

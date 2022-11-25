@@ -6,8 +6,13 @@ import com.example.sherlockescape.dto.response.AllCompanyResponseDto;
 import com.example.sherlockescape.dto.response.CompanyDetailResponseDto;
 import com.example.sherlockescape.service.CompanyService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class CompanyController {
 
     private final CompanyService companyService;
@@ -38,7 +44,10 @@ public class CompanyController {
      */
     @GetMapping("/company/{companyId}")
     public ResponseDto<CompanyDetailResponseDto> getAll(@PathVariable Long companyId){
-        return companyService.getCompanyDetail(companyId);
+        //가입회원 비가입회원 구분
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return companyService.getCompanyDetail(companyId, username);
     }
 
     /*
@@ -48,7 +57,11 @@ public class CompanyController {
     @GetMapping("/companies")
     public ResponseDto<List<AllCompanyResponseDto>> getAllCompany(@PageableDefault(size = 5) Pageable pageable,
                                                                   @RequestParam(value = "location", required = false) String location){
-        List<AllCompanyResponseDto> resDto = companyService.getAllCompany(pageable, location);
+
+        //가입회원 비가입회원 구분
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        List<AllCompanyResponseDto> resDto = companyService.getAllCompany(pageable, location, username);
         return ResponseDto.success(resDto);
     }
 

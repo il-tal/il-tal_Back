@@ -40,8 +40,6 @@ public class MemberService {
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
     private final ReviewRepository reviewRepository;
-    //    private final StylePreferenceRepository stylePreferenceRepository;
-    //    private final GenrePreferenceRepository genrePreferenceRepository;
     private final TendencyRepository tendencyRepository;
     private final MemberBadgeRepository memberBadgeRepository;
     private BadgeRepository badgeRepository;
@@ -128,10 +126,8 @@ public class MemberService {
 
     //닉네임 수정하기
     @Transactional
-    public ResponseDto<NicknameResponseDto> updateNickname(Long memberId,NicknameRequestDto nicknameRequestDto) {
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                ()-> new IllegalArgumentException("사용자를 찾을 수 없습니다.")
-        );
+    public ResponseDto<NicknameResponseDto> updateNickname(String username,NicknameRequestDto nicknameRequestDto) {
+        Member member = validateCheck.getMember(username);
         member.updateNickname(nicknameRequestDto.getNickname());
         memberRepository.save(member);
         NicknameResponseDto nicknameResponseDto = NicknameResponseDto.builder()
@@ -140,15 +136,14 @@ public class MemberService {
                 .build();
         return ResponseDto.success(nicknameResponseDto);
     }
+
     /*
     *
     * 내 성향 등록하기
     * */
     @Transactional
-    public String createMyTendency(Long memberId, MyTendencyRequestDto myTendencyRequestDto) {
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new GlobalException(ErrorCode.NEED_TO_LOGIN)
-        );
+    public String createMyTendency(String username, MyTendencyRequestDto myTendencyRequestDto) {
+        Member member = validateCheck.getMember(username);
         //성향 등록 로직
         // Tendency.findByMember
         // Tendency.ispresent() ->
@@ -169,20 +164,6 @@ public class MemberService {
                 .surprise(myTendencyRequestDto.getSurprise())
                 .build();
         tendencyRepository.save(createTendency);
-//            for(GenrePreference preference: myTendencyRequestDto.getGenrePreference()){
-//                GenrePreference genrePreference = GenrePreference.builder()
-//                        .genrePreference(preference.getGenrePreference())
-//                        .tendency(tendency)
-//                        .build();
-//                genrePreferenceRepository.save(genrePreference);
-//            }
-//            for(StylePreference preference: myTendencyRequestDto.getStylePreference()){
-//                StylePreference stylePreference = StylePreference.builder()
-//                        .stylePreference(preference.getStylePreference())
-//                        .tendency(tendency)
-//                        .build();
-//                stylePreferenceRepository.save(stylePreference);
-//            }
         return "성향 등록 성공";
     }
 
@@ -191,10 +172,8 @@ public class MemberService {
     * 내 성향 수정
     * */
     @Transactional
-    public String updateMyTendency(Long memberId, MyTendencyRequestDto myTendencyRequestDto) {
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new GlobalException(ErrorCode.NEED_TO_LOGIN)
-        );
+    public String updateMyTendency(String username, MyTendencyRequestDto myTendencyRequestDto) {
+        Member member = validateCheck.getMember(username);
         Optional<Tendency> tendency = Optional.ofNullable(tendencyRepository.findByMember(member));
         if(tendency.isEmpty()) {
             throw new IllegalArgumentException("성향을 등록해주세요");
@@ -207,19 +186,6 @@ public class MemberService {
                     myTendencyRequestDto.getSurprise());
             tendencyRepository.save(createdTendency);
         }
-
-//        List<GenrePreference> genrePreferenceList = genrePreferenceRepository.findAllByTendencyId(tendency.getId());
-//        for(GenrePreference preference: myTendencyRequestDto.getGenrePreference()){
-//            GenrePreference genrePreference = genrePreferenceRepository.findByTendencyId(tendency.getId());
-//            genrePreference.updateGenrePreference(preference.getGenrePreference());
-//            genrePreferenceRepository.save(genrePreference);
-//        }
-//        List<StylePreference> stylePreferenceList = stylePreferenceRepository.findAllByTendencyId(tendency.getId());
-//        for(StylePreference preference: myTendencyRequestDto.getStylePreference()){
-//            StylePreference stylePreference = stylePreferenceRepository.findByTendencyId(tendency.getId());
-//            stylePreference.updateStylePreference(preference.getStylePreference());
-//            stylePreferenceRepository.save(stylePreference);
-//        }
         return "성향 수정 성공";
     }
 
@@ -227,16 +193,16 @@ public class MemberService {
     *
     * 내정보 전체 불러오기
     * */
-    public ResponseDto<AllMyInfoResponseDto> getAllMyInfo(Long memberId) {
-        Member member = memberRepository.findById(memberId).
+    public ResponseDto<AllMyInfoResponseDto> getAllMyInfo(String username) {
+        Member member = memberRepository.findByUsername(username).
                 orElse(null);
         Optional<Tendency> tendency = Optional.ofNullable(tendencyRepository.findByMember(member));
-//        Optional<Review> findReview = reviewRepository.findByMember(member);
+
         assert member != null;
-        if(tendency.isEmpty() /*&& badge.isEmpty() && findReview.isEmpty()*/){
+        if(tendency.isEmpty()){
             AllMyInfoResponseDto allMyInfoResponseDto
                     = AllMyInfoResponseDto.builder()
-                    .id(memberId).nickname(member.getNickname())
+                    .id(member.getId()).nickname(member.getNickname())
                     .mainBadgeName(member.getMainBadgeName()).mainBadgeImg(member.getMainBadgeImg())
                     .device(0).excitePreference(0).device(0)
                     .lockStyle(0).lessScare(0).roomSize(0)

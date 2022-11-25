@@ -21,11 +21,11 @@ public class ThemeLikeService {
     private final ThemeLikeRepository themeLikeRepository;
     private final ThemeRepository themeRepository;
     private final ValidateCheck validateCheck;
-    public ResponseDto<ThemeLikeResponseDto> themeLikeUp(ThemeLikeRequestDto themeLikeRequestDto, Long memberId) {
+    public ResponseDto<ThemeLikeResponseDto> themeLikeUp(ThemeLikeRequestDto themeLikeRequestDto, String username) {
         Optional<ThemeLike> likes = themeLikeRepository
-                .findByThemeIdAndMemberId(Long.parseLong(themeLikeRequestDto.getThemeId()), memberId);
+                .findByThemeIdAndMemberUsername(Long.parseLong(themeLikeRequestDto.getThemeId()), username);
 
-        Member member = validateCheck.getMember(memberId);
+        Member member = validateCheck.getMember(username);
         Theme theme = new Theme(Long.parseLong(themeLikeRequestDto.getThemeId()));
 
         Theme updateTheme = themeRepository.findById(theme.getId()).orElseThrow(

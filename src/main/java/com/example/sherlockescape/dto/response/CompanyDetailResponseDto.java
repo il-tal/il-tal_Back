@@ -34,5 +34,7 @@ public class CompanyDetailResponseDto {
 
     private int totalReviewCnt;
 
+    private boolean companyLikeCheck;
+
     private List<Theme> themeList;
 }
