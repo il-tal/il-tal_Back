@@ -22,14 +22,14 @@ public class ValidateCheck {
     public Member getMember(Long memberId){
         return memberRepository.findById(memberId)
                 .orElseThrow(
-                        () -> new IllegalArgumentException("사용자를 찾을 수 없습니다.")
+                        () -> new GlobalException(ErrorCode.MEMBER_NOT_FOUND)
                 );
     }
 
     public Member getMember(String username){
         return memberRepository.findByUsername(username)
                 .orElseThrow(
-                        () -> new IllegalArgumentException("사용자를 찾을 수 없습니다.")
+                        () -> new GlobalException(ErrorCode.MEMBER_NOT_FOUND)
                 );
     }
 
@@ -52,6 +52,5 @@ public class ValidateCheck {
             throw new GlobalException(ErrorCode.DUPLICATE_MEMBER_NICKNAME);
         }
     }
-
 
 }

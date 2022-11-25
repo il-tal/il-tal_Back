@@ -14,6 +14,8 @@ import com.example.sherlockescape.dto.request.ThemeRequestDto;
 import com.example.sherlockescape.dto.response.MyThemeResponseDto;
 import com.example.sherlockescape.dto.response.ThemeDetailResponseDto;
 import com.example.sherlockescape.dto.response.ThemeResponseDto;
+import com.example.sherlockescape.exception.ErrorCode;
+import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.*;
 import com.example.sherlockescape.utils.CommonUtils;
 import com.example.sherlockescape.utils.ValidateCheck;
@@ -131,7 +133,8 @@ public class ThemeService {
     public ThemeDetailResponseDto findTheme(Long themeId, String username) {
 
         Theme theme = themeRepository.findById(themeId).orElseThrow(
-                () -> new IllegalArgumentException("테마가 존재하지 않습니다"));
+                () -> new GlobalException(ErrorCode.THEME_NOT_FOUND)
+        );
         Optional<ThemeLike> themeLike = themeLikeRepository.findByThemeIdAndMemberUsername(themeId, username);
 
         boolean themeLikeCheck = themeLike.isPresent();
@@ -170,7 +173,7 @@ public class ThemeService {
 
             Theme theme = themeRepository.findById(like.getTheme().getId())
                     .orElseThrow(
-                            ()-> new IllegalArgumentException("테마를 찾을 수 없습니다.")
+                            ()-> new GlobalException(ErrorCode.THEME_NOT_FOUND)
                     );
 
             Long reviewCnt = reviewRepository.countByThemeId(like.getTheme().getId());

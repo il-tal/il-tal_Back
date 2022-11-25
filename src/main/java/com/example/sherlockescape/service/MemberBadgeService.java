@@ -7,6 +7,8 @@ import com.example.sherlockescape.domain.Review;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.response.MainAchieveResponseDto;
 import com.example.sherlockescape.dto.response.UpdateBadgeResponseDto;
+import com.example.sherlockescape.exception.ErrorCode;
+import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.BadgeRepository;
 import com.example.sherlockescape.repository.MemberBadgeRepository;
 import com.example.sherlockescape.repository.MemberRepository;
@@ -37,7 +39,7 @@ public class MemberBadgeService {
         Member member = validateCheck.getMember(username);
 
         Badge badge = badgeRepository.findById(badgeId).orElseThrow(
-                () -> new IllegalArgumentException("뱃지가 존재하지 않습니다.")
+                () -> new GlobalException(ErrorCode.BADGE_NOT_FOUND)
         );
 
         member.updateBadge(badge.getBadgeImgUrl(), badge.getBadgeName());
