@@ -41,8 +41,6 @@ public class MemberService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final ReviewRepository reviewRepository;
     private final TendencyRepository tendencyRepository;
-    private final MemberBadgeRepository memberBadgeRepository;
-    private BadgeRepository badgeRepository;
 
     //회원가입
     @org.springframework.transaction.annotation.Transactional
@@ -197,31 +195,40 @@ public class MemberService {
         Member member = memberRepository.findByUsername(username).
                 orElse(null);
         Optional<Tendency> tendency = Optional.ofNullable(tendencyRepository.findByMember(member));
-
+        List<Review> reviews = reviewRepository.findReviewsByMember(member);
+        int totalAchieveCnt = 0;
+        int totalFailCnt = 0;
+        for(Review review: reviews){
+            if(review.isSuccess()){
+                totalAchieveCnt += 1;
+            }else{
+                totalFailCnt += 1;
+            }
+        }
         assert member != null;
         if(tendency.isEmpty()){
             AllMyInfoResponseDto allMyInfoResponseDto
                     = AllMyInfoResponseDto.builder()
-                    .id(member.getId()).nickname(member.getNickname())
-                    .mainBadgeName(member.getMainBadgeName()).mainBadgeImg(member.getMainBadgeImg())
-                    .device(0).excitePreference(0).device(0)
-                    .lockStyle(0).lessScare(0).roomSize(0)
-                    .surprise(0).interior(0).genrePreference(null)
-                    .stylePreference(null).totalAchieveCnt(0)
+                    .id(member.getId())
+                    .nickname(member.getNickname())
+                    .mainBadgeName(member.getMainBadgeName())
+                    .mainBadgeImg(member.getMainBadgeImg())
+                    .device(0)
+                    .excitePreference(0)
+                    .device(0)
+                    .lockStyle(0)
+                    .lessScare(0)
+                    .roomSize(0)
+                    .surprise(0)
+                    .interior(0)
+                    .genrePreference(null)
+                    .stylePreference(null)
+                    .totalAchieveCnt(totalAchieveCnt)
+                    .totalFailCnt(totalFailCnt)
                     .build();
             return ResponseDto.success(allMyInfoResponseDto);
         }else{
             Tendency findTendency = tendencyRepository.findByMember(member);
-            List<Review> reviews = reviewRepository.findReviewsByMember(member);
-            int totalAchieveCnt = 0;
-            int totalFailCnt = 0;
-            for(Review review: reviews){
-                if(review.isSuccess()){
-                    totalAchieveCnt += 1;
-                }else{
-                    totalFailCnt += 1;
-                }
-            }
             return ResponseDto.success(new AllMyInfoResponseDto(member, findTendency, totalAchieveCnt, totalFailCnt));
         }
     }

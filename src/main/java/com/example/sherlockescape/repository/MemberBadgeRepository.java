@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface MemberBadgeRepository extends JpaRepository<MemberBadge, Long> {
-    MemberBadge findByBadgeId(Long badgeId);
     List<MemberBadge> findAllByMemberUsername(String username);
+
+    MemberBadge findByBadgeIdAndMemberUsername(long parseLong, String username);
 }
