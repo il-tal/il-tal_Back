@@ -38,17 +38,11 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private String mainBadgeName;
 
-//    @Column(unique = true)
-    private String memberId;
-
-//    @Column(unique = true)
+        @Column(unique = true)
     private String kakaoId;
 
-//    @Column(unique = true /*nullable = false*/)
-//    private String kakaoEmail;
-
 //    @Column(/*nullable = false*/)
-    private String passwordCheck;
+//    private String passwordCheck;
 
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
@@ -64,11 +58,12 @@ public class Member extends BaseTimeEntity {
         this.mainBadgeName = badgeName;
     }
 
-    public Member(String kakaoId, String password, String passwordCheck) {
-        this.memberId = kakaoId;
+    public Member(String kakaoId, String password) {
+        this.kakaoId = kakaoId;
         this.username = kakaoId;
         this.password = password;
-        this.passwordCheck = passwordCheck;
+//        this.passwordCheck = passwordCheck;
+
     }
 
 }

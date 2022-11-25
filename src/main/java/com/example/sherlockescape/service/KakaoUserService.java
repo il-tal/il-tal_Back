@@ -54,13 +54,13 @@ public class KakaoUserService {
 		// 2. 토큰으로 카카오 API 호출
 		KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
 
-		// 3. 카카오ID로 회원가입 처리
+		// 3. 카카오 ID 로 회원가입 처리
 		Member kakaoUser = signupKakaoUser(kakaoUserInfo);
 
 		// 4. 강제 로그인 처리
 		Authentication authentication = forceLogin(kakaoUser);
 
-		// 5. response Header에 JWT 토큰 추가
+		// 5. response Header 에 JWT 토큰 추가
 		TokenDto tokenDto = jwtUtil.createAllToken(kakaoUserInfo.getId().toString());
 
 		Optional<RefreshToken> refreshToken = refreshTokenRepository.findById(kakaoUser.getId());
@@ -118,23 +118,21 @@ public class KakaoUserService {
 				kakaoUserInfoRequest,
 				String.class
 		);
-		// responseBody에 있는 정보를 꺼냄
+		// responseBody 에 있는 정보를 꺼냄
 		String responseBody = response.getBody();
 		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode jsonNode = objectMapper.readTree(responseBody);
 
 		Long id = jsonNode.get("id").asLong();
-//		String email = jsonNode.get("kakao_account").get("email").asText();
 		String nickname = jsonNode.get("properties").get("nickname").asText();
 
 		return new KakaoUserInfoDto(id, nickname);
 	}
 
-    // 3. 카카오ID로 회원가입 처리
+    // 3. 카카오 ID 로 회원가입 처리
     private Member signupKakaoUser (KakaoUserInfoDto kakaoUserInfo) {
-        // DB 에 중복된 email이 있는지 확인
+        // DB 에 중복된 email 이 있는지 확인
 		String kakaoId = kakaoUserInfo.getId().toString();
-//        String nickname = kakaoUserInfo.getNickname();
         Member kakaoUser = memberRepository.findByKakaoId(kakaoId)
                 .orElse(null);
 
@@ -144,9 +142,8 @@ public class KakaoUserService {
             String password = UUID.randomUUID().toString();
             String encodedPassword = passwordEncoder.encode(password);
 
-            kakaoUser = new Member(kakaoId, encodedPassword, encodedPassword);
+            kakaoUser = new Member(kakaoId, encodedPassword);
             memberRepository.save(kakaoUser);
-
         }
         return kakaoUser;
     }
@@ -159,7 +156,7 @@ public class KakaoUserService {
 		return authentication;
 	}
 
-	// 5. response Header에 JWT 토큰 추가
+	// 5. response Header 에 JWT 토큰 추가
 	private void setHeader(HttpServletResponse response, TokenDto tokenDto) {
 		response.addHeader(JwtUtil.ACCESS_TOKEN, tokenDto.getAccessToken());
 		response.addHeader(JwtUtil.REFRESH_TOKEN, tokenDto.getRefreshToken());
