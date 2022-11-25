@@ -10,9 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,7 +53,7 @@ public class CompanyController {
      *업체,테마 정보 전체
      */
     @GetMapping("/companies")
-    public ResponseDto<List<AllCompanyResponseDto>> getAllCompany(@PageableDefault(size = 5) Pageable pageable,
+    public ResponseDto<List<AllCompanyResponseDto>> getAllCompany(@PageableDefault(size = 9) Pageable pageable,
                                                                   @RequestParam(value = "location", required = false) String location){
 
         //가입회원 비가입회원 구분
@@ -64,6 +62,5 @@ public class CompanyController {
         List<AllCompanyResponseDto> resDto = companyService.getAllCompany(pageable, location, username);
         return ResponseDto.success(resDto);
     }
-
 
 }
