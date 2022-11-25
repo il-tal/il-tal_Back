@@ -155,7 +155,7 @@ public class ReviewService {
 		for(Review review: reviewList){
 
 			MyReviewResponseDto myReviewResponseDtoList = MyReviewResponseDto.builder()
-					.id(review.getId())
+					.id(review.getTheme().getId())
 					.themeName(review.getTheme().getThemeName())
 					.playTime(review.getTheme().getPlayTime())
 					.playDate(review.getPlayDate())
