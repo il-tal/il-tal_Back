@@ -2,7 +2,6 @@ package com.example.sherlockescape.repository;
 
 import com.example.sherlockescape.domain.QTheme;
 import com.example.sherlockescape.domain.Theme;
-import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -11,8 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -31,9 +28,23 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
 
         QTheme theme = QTheme.theme;
 
-        QueryResults<Theme> result = queryFactory
-                .from(theme)
-                .select(theme)
+//        QueryResults<Theme> result = queryFactory
+//                .selectFrom(theme)
+//                .where(
+//                        eqLocation(location),
+//                        eqGenres(genreFilter),
+//                        eqThemeScore(themeScore),
+//                        eqDifficulty(difficulty),
+//                        eqPeople(people)
+//                )
+//                .limit(pageable.getPageSize()) // 현재 제한한 갯수
+//                .offset(pageable.getOffset())
+//                .orderBy(theme.id.desc())
+//                .fetchResults();
+//        return new PageImpl<>(result.getResults(), pageable, result.getTotal());
+
+        List<Theme> result = queryFactory
+                .selectFrom(theme)
                 .where(
                         eqLocation(location),
                         eqGenres(genreFilter),
@@ -44,8 +55,20 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
                 .limit(pageable.getPageSize()) // 현재 제한한 갯수
                 .offset(pageable.getOffset())
                 .orderBy(theme.id.desc())
-                .fetchResults();
-        return new PageImpl<>(result.getResults(), pageable, result.getTotal());
+                .fetch();
+
+        long totalSize = queryFactory
+                .selectFrom(theme)
+                .where(
+                        eqLocation(location),
+                        eqGenres(genreFilter),
+                        eqThemeScore(themeScore),
+                        eqDifficulty(difficulty),
+                        eqPeople(people)
+                )
+                .fetch().size();
+
+        return new PageImpl<>(result, pageable, totalSize);
     }
 
     private BooleanExpression eqLocation(List<String> location) {
