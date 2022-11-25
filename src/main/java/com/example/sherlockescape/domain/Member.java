@@ -1,7 +1,6 @@
 package com.example.sherlockescape.domain;
 
 import com.example.sherlockescape.domain.base.BaseTimeEntity;
-import com.example.sherlockescape.dto.request.KakaoUserInfoDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,9 +25,6 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(unique = true)
-    private Long kakaoId;
-
     @Column(nullable = false)
     private String nickname;
 
@@ -36,15 +32,23 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(/*nullable = false*/)
-    private String encodedPassword;
-
     @Column(nullable = false)
     private String mainBadgeImg;
 
     @Column(nullable = false)
     private String mainBadgeName;
 
+//    @Column(unique = true)
+    private String memberId;
+
+//    @Column(unique = true)
+    private String kakaoId;
+
+//    @Column(unique = true /*nullable = false*/)
+//    private String kakaoEmail;
+
+//    @Column(/*nullable = false*/)
+    private String passwordCheck;
 
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
@@ -60,21 +64,11 @@ public class Member extends BaseTimeEntity {
         this.mainBadgeName = badgeName;
     }
 
-    public Member(Long kakaoId, String nickname, String encodedPassword) {
-        this.kakaoId = kakaoId;
-        this.nickname = nickname;
-        this.encodedPassword = encodedPassword;
-
+    public Member(String kakaoId, String password, String passwordCheck) {
+        this.memberId = kakaoId;
+        this.username = kakaoId;
+        this.password = password;
+        this.passwordCheck = passwordCheck;
     }
-
-
-    public static Member of(KakaoUserInfoDto kakaoUserInfoDto) {
-
-        return Member.builder()
-                .nickname(kakaoUserInfoDto.getNickname())
-                .kakaoId(kakaoUserInfoDto.getKakaoId())
-                .build();
-    }
-
 
 }

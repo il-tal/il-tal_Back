@@ -3,9 +3,8 @@ package com.example.sherlockescape.service;
 import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.domain.RefreshToken;
 import com.example.sherlockescape.dto.request.KakaoUserInfoDto;
-import com.example.sherlockescape.dto.request.MemberDto;
-import com.example.sherlockescape.dto.request.SocialUserDto;
 import com.example.sherlockescape.repository.MemberRepository;
+import com.example.sherlockescape.repository.RefreshTokenRepository;
 import com.example.sherlockescape.security.jwt.JwtUtil;
 import com.example.sherlockescape.security.jwt.TokenDto;
 import com.example.sherlockescape.security.user.UserDetailsImpl;
@@ -28,7 +27,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -42,10 +41,12 @@ public class KakaoUserService {
 
 	private final PasswordEncoder passwordEncoder;
 	private final MemberRepository memberRepository;
+	private final RefreshTokenRepository refreshTokenRepository;
+
 	private final MemberService memberService;
 	private final JwtUtil jwtUtil;
 
-	public KakaoUserInfoDto kakaoLogin(String code, TokenDto tokenDto, HttpServletResponse response) throws JsonProcessingException {
+	public KakaoUserInfoDto kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
 
 		// 1. "인가 코드"로 "액세스 토큰" 요청
 		String accessToken = getAccessToken(code);
@@ -56,10 +57,23 @@ public class KakaoUserService {
 		// 3. 카카오ID로 회원가입 처리
 		Member kakaoUser = signupKakaoUser(kakaoUserInfo);
 
-		TokenDto tokenDto = memberService.saveToken(kakaoUser);
-		MemberDto memberDto = new MemberDto(kakaoUser.getId(),kakaoUser.getNickname());
-		SocialUserDto socialUserDto = new SocialUserDto(memberDto, tokenDto);
-		return socialUserDto;
+		// 4. 강제 로그인 처리
+		Authentication authentication = forceLogin(kakaoUser);
+
+		// 5. response Header에 JWT 토큰 추가
+		TokenDto tokenDto = jwtUtil.createAllToken(kakaoUserInfo.getId().toString());
+
+		Optional<RefreshToken> refreshToken = refreshTokenRepository.findById(kakaoUser.getId());
+
+		if (refreshToken.isPresent()) {
+			refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
+		} else {
+			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), kakaoUserInfo.getId().toString());
+			refreshTokenRepository.save(newToken);
+		}
+		setHeader(response, tokenDto);
+		// 토큰 생성 후 tokenDto 에 저장
+		return kakaoUserInfo;
 	}
 
 	// 1. "인가 코드"로 "액세스 토큰" 요청
@@ -110,8 +124,8 @@ public class KakaoUserService {
 		JsonNode jsonNode = objectMapper.readTree(responseBody);
 
 		Long id = jsonNode.get("id").asLong();
-		String nickname = jsonNode.get("properties")
-				.get("nickname").asText();
+//		String email = jsonNode.get("kakao_account").get("email").asText();
+		String nickname = jsonNode.get("properties").get("nickname").asText();
 
 		return new KakaoUserInfoDto(id, nickname);
 	}
@@ -119,8 +133,8 @@ public class KakaoUserService {
     // 3. 카카오ID로 회원가입 처리
     private Member signupKakaoUser (KakaoUserInfoDto kakaoUserInfo) {
         // DB 에 중복된 email이 있는지 확인
-		Long kakaoId = kakaoUserInfo.getKakaoId();
-        String nickname = kakaoUserInfo.getNickname();
+		String kakaoId = kakaoUserInfo.getId().toString();
+//        String nickname = kakaoUserInfo.getNickname();
         Member kakaoUser = memberRepository.findByKakaoId(kakaoId)
                 .orElse(null);
 
@@ -130,7 +144,7 @@ public class KakaoUserService {
             String password = UUID.randomUUID().toString();
             String encodedPassword = passwordEncoder.encode(password);
 
-            kakaoUser = new Member(kakaoId, nickname, encodedPassword);
+            kakaoUser = new Member(kakaoId, encodedPassword, encodedPassword);
             memberRepository.save(kakaoUser);
 
         }
@@ -146,7 +160,7 @@ public class KakaoUserService {
 	}
 
 	// 5. response Header에 JWT 토큰 추가
-	private void kakaoUsersAuthorizationInput(HttpServletResponse response, TokenDto tokenDto) {
+	private void setHeader(HttpServletResponse response, TokenDto tokenDto) {
 		response.addHeader(JwtUtil.ACCESS_TOKEN, tokenDto.getAccessToken());
 		response.addHeader(JwtUtil.REFRESH_TOKEN, tokenDto.getRefreshToken());
 
