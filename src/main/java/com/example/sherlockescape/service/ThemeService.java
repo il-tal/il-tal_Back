@@ -110,10 +110,11 @@ public class ThemeService {
                             .themeScore(theme.getThemeScore())
                             .totalLikeCnt(theme.getTotalLikeCnt())
                             .reviewCnt(reviewCnt)
+                            .size(filteredTheme.getTotalElements())
                             .build();
             themeLists.add(themeResponseDto);
         }
-        return themeLists;
+        return  themeLists;
     }
 
 

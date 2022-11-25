@@ -26,4 +26,6 @@ public class ThemeResponseDto {
     private int totalLikeCnt;
 
     private int reviewCnt;
+
+    private long size;
 }
