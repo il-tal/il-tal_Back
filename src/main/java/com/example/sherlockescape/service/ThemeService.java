@@ -121,6 +121,7 @@ public class ThemeService {
                             .themeScore(theme.getThemeScore())
                             .themeLikeCheck(themeLikeCheck)
                             .totalLikeCnt(theme.getTotalLikeCnt())
+                            .size(filteredTheme.getSize())
                             .reviewCnt(reviewCnt)
                             .build();
             themeLists.add(themeResponseDto);
