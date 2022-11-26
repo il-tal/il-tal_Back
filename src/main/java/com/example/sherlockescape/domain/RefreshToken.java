@@ -23,10 +23,6 @@ public class RefreshToken {
     @NotBlank
     private String memberUsername;
 
-    @JoinColumn(name = "member_id", nullable = false)
-    @OneToOne(fetch = FetchType.LAZY)
-    private Member member;
-
     public RefreshToken(String token, String username) {
         this.refreshToken = token;
         this.memberUsername = username;

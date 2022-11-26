@@ -8,7 +8,7 @@ import com.example.sherlockescape.dto.request.NicknameRequestDto;
 import com.example.sherlockescape.dto.response.LoginResponseDto;
 import com.example.sherlockescape.dto.response.MemberResponseDto;
 import com.example.sherlockescape.dto.response.NicknameResponseDto;
-import com.example.sherlockescape.security.user.UserDetailsImpl;
+import com.example.sherlockescape.service.KakaoUserService;
 import com.example.sherlockescape.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 public class MemberController {
 
     private final MemberService memberService;
+    private final KakaoUserService kakaoUserService;
 
     //회원가입
     @PostMapping("/signup")
