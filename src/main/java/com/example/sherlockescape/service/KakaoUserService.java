@@ -42,8 +42,6 @@ public class KakaoUserService {
 	private final PasswordEncoder passwordEncoder;
 	private final MemberRepository memberRepository;
 	private final RefreshTokenRepository refreshTokenRepository;
-
-	private final MemberService memberService;
 	private final JwtUtil jwtUtil;
 
 	public KakaoUserInfoDto kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {

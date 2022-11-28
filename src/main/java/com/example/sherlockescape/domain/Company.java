@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.FetchType.LAZY;
 
 @Builder
 @Entity
@@ -47,7 +48,8 @@ public class Company {
     @Column
     private String workHour;
 
-    @OneToMany(mappedBy = "company", fetch = EAGER)
+    @Builder.Default
+    @OneToMany(mappedBy = "company", fetch = LAZY)
     private List<Theme> themeList = new ArrayList<>();
     public Company(Long companyId){
         this.id = companyId;
