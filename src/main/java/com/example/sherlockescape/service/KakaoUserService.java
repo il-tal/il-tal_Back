@@ -84,8 +84,8 @@ public class KakaoUserService {
 		// HTTP Body 생성
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 		body.add("grant_type", "authorization_code");
-		body.add("client_id", "38400076c414f86c381ed021d394daaa");
-		body.add("redirect_uri", "http://localhost:8080/kakao/callback");
+		body.add("client_id", "7555650f225a920f06012d44affc4f03");
+		body.add("redirect_uri", "http://localhost:3000/kakao/callback");
 		body.add("code", code);
 		// HTTP 요청 보내기
 		HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
@@ -132,6 +132,7 @@ public class KakaoUserService {
     private Member signupKakaoUser (KakaoUserInfoDto kakaoUserInfo) {
         // DB 에 중복된 email 이 있는지 확인
 		String kakaoId = kakaoUserInfo.getId().toString();
+		String nickname = kakaoUserInfo.getNickname();
         Member kakaoUser = memberRepository.findByKakaoId(kakaoId)
                 .orElse(null);
 
@@ -140,8 +141,10 @@ public class KakaoUserService {
             // password: random UUID
             String password = UUID.randomUUID().toString();
             String encodedPassword = passwordEncoder.encode(password);
+			String mainBadgeImg = "https://mykeejaebucket.s3.ap-northeast-2.amazonaws.com/Serverbasigbadge.1668884794370.png";
+			String mainBadgeName = "뱃지를 획득해 보세요!";
 
-            kakaoUser = new Member(kakaoId, encodedPassword);
+            kakaoUser = new Member(kakaoId, nickname, encodedPassword, mainBadgeImg, mainBadgeName);
             memberRepository.save(kakaoUser);
         }
         return kakaoUser;
