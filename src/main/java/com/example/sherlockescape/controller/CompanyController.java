@@ -1,9 +1,11 @@
 package com.example.sherlockescape.controller;
 
 import com.example.sherlockescape.dto.ResponseDto;
+import com.example.sherlockescape.dto.SizeResponseDto;
 import com.example.sherlockescape.dto.request.CompanyRequestDto;
 import com.example.sherlockescape.dto.response.AllCompanyResponseDto;
 import com.example.sherlockescape.dto.response.CompanyDetailResponseDto;
+import com.example.sherlockescape.dto.response.TotalSizeResponseDto;
 import com.example.sherlockescape.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,14 +55,16 @@ public class CompanyController {
      *업체,테마 정보 전체
      */
     @GetMapping("/companies")
-    public ResponseDto<List<AllCompanyResponseDto>> getAllCompany(@PageableDefault(size = 9) Pageable pageable,
-                                                                  @RequestParam(value = "location", required = false) String location){
-
+    public SizeResponseDto<TotalSizeResponseDto,List<AllCompanyResponseDto>> getAllCompany(@PageableDefault(size = 9) Pageable pageable,
+                                                                                      @RequestParam(value = "location", required = false) String location){
         //가입회원 비가입회원 구분
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
+
+        TotalSizeResponseDto totalSize = companyService.filteredCompanySize(pageable, location);
         List<AllCompanyResponseDto> resDto = companyService.getAllCompany(pageable, location, username);
-        return ResponseDto.success(resDto);
+        return SizeResponseDto.success(totalSize,resDto);
     }
+
 
 }
