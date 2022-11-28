@@ -66,5 +66,4 @@ public class CompanyController {
         return SizeResponseDto.success(totalSize,resDto);
     }
 
-
 }
