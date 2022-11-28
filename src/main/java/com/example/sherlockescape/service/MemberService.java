@@ -1,5 +1,9 @@
 package com.example.sherlockescape.service;
 
+import com.example.sherlockescape.repository.MemberRepository;
+import com.example.sherlockescape.repository.RefreshTokenRepository;
+import com.example.sherlockescape.repository.ReviewRepository;
+import com.example.sherlockescape.repository.TendencyRepository;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.LoginRequestDto;
 import com.example.sherlockescape.dto.request.MemberRequestDto;
@@ -12,7 +16,6 @@ import com.example.sherlockescape.dto.response.MemberResponseDto;
 import com.example.sherlockescape.dto.response.NicknameResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
-import com.example.sherlockescape.repository.*;
 import com.example.sherlockescape.security.jwt.JwtUtil;
 import com.example.sherlockescape.security.jwt.TokenDto;
 import com.example.sherlockescape.utils.ValidateCheck;

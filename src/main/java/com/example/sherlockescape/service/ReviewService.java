@@ -11,7 +11,6 @@ import com.example.sherlockescape.dto.response.ReviewResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.CompanyRepository;
-import com.example.sherlockescape.repository.MemberRepository;
 import com.example.sherlockescape.repository.ReviewRepository;
 import com.example.sherlockescape.repository.ThemeRepository;
 import com.example.sherlockescape.utils.ValidateCheck;
@@ -48,6 +47,8 @@ public class ReviewService {
 				() -> new GlobalException(ErrorCode.THEME_NOT_FOUND)
 		);
 
+
+
 		Review review = Review.builder()
 				.theme(theme)
 				.member(member)
@@ -72,6 +73,7 @@ public class ReviewService {
 				totalFailCnt += 1;
 			}
 		}
+
 		MyReviewResponseDto myReviewResponseDto =
 				MyReviewResponseDto.builder()
 						.id(review.getId())

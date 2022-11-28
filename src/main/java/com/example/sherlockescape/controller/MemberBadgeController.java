@@ -4,7 +4,6 @@ package com.example.sherlockescape.controller;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.response.MainAchieveResponseDto;
 import com.example.sherlockescape.dto.response.UpdateBadgeResponseDto;
-import com.example.sherlockescape.security.user.UserDetailsImpl;
 import com.example.sherlockescape.service.MemberBadgeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

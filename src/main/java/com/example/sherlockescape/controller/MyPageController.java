@@ -6,7 +6,6 @@ import com.example.sherlockescape.dto.response.AllMyInfoResponseDto;
 import com.example.sherlockescape.dto.response.MyCompanyResponseDto;
 import com.example.sherlockescape.dto.response.MyReviewResponseDto;
 import com.example.sherlockescape.dto.response.MyThemeResponseDto;
-import com.example.sherlockescape.security.user.UserDetailsImpl;
 import com.example.sherlockescape.service.CompanyService;
 import com.example.sherlockescape.service.MemberService;
 import com.example.sherlockescape.service.ReviewService;
