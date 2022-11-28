@@ -36,7 +36,6 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final AmazonS3Client amazonS3Client;
     private final ThemeRepository themeRepository;
-    private final MemberRepository memberRepository;
     private final CompanyLikeRepository companyLikeRepository;
     private final ReviewRepository reviewRepository;
     private final ValidateCheck validateCheck;
