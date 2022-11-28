@@ -3,7 +3,6 @@ package com.example.sherlockescape.controller;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.CompanyLikeRequestDto;
 import com.example.sherlockescape.dto.response.CompanyLikeResponseDto;
-import com.example.sherlockescape.security.user.UserDetailsImpl;
 import com.example.sherlockescape.service.CompanyLikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -122,7 +122,6 @@ public class KakaoUserService {
 		String responseBody = response.getBody();
 		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode jsonNode = objectMapper.readTree(responseBody);
-
 		Long id = jsonNode.get("id").asLong();
 		String nickname = jsonNode.get("properties").get("nickname").asText();
 
@@ -160,6 +159,5 @@ public class KakaoUserService {
 	private void setHeader(HttpServletResponse response, TokenDto tokenDto) {
 		response.addHeader(JwtUtil.ACCESS_TOKEN, tokenDto.getAccessToken());
 		response.addHeader(JwtUtil.REFRESH_TOKEN, tokenDto.getRefreshToken());
-
 	}
 }

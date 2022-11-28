@@ -5,7 +5,6 @@ import com.example.sherlockescape.dto.request.BadgeCreateRequestDto;
 import com.example.sherlockescape.dto.request.BadgeGiveRequestDto;
 import com.example.sherlockescape.dto.response.AllBadgeResponseDto;
 import com.example.sherlockescape.dto.response.BadgeResponseDto;
-import com.example.sherlockescape.security.user.UserDetailsImpl;
 import com.example.sherlockescape.service.BadgeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

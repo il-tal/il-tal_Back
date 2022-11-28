@@ -2,6 +2,7 @@ package com.example.sherlockescape.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.example.sherlockescape.domain.*;
+
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.CompanyRequestDto;
 import com.example.sherlockescape.dto.response.AllCompanyResponseDto;
@@ -10,6 +11,7 @@ import com.example.sherlockescape.dto.response.MyCompanyResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.*;
+
 import com.example.sherlockescape.utils.CommonUtils;
 import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
