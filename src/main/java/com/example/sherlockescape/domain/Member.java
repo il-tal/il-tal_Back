@@ -58,11 +58,14 @@ public class Member extends BaseTimeEntity {
         this.mainBadgeName = badgeName;
     }
 
-    public Member(String kakaoId, String password) {
+    public Member(String kakaoId, String nickname, String password, String mainBadgeImg, String mainBadgeName) {
         this.kakaoId = kakaoId;
         this.username = kakaoId;
+        this.nickname = nickname;
         this.password = password;
 //        this.passwordCheck = passwordCheck;
+        this.mainBadgeImg = mainBadgeImg;
+        this.mainBadgeName = mainBadgeName;
 
     }
 }
