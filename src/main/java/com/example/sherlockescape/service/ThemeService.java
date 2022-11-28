@@ -14,6 +14,7 @@ import com.example.sherlockescape.dto.request.ThemeRequestDto;
 import com.example.sherlockescape.dto.response.MyThemeResponseDto;
 import com.example.sherlockescape.dto.response.ThemeDetailResponseDto;
 import com.example.sherlockescape.dto.response.ThemeResponseDto;
+import com.example.sherlockescape.dto.response.TotalSizeResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.*;
@@ -121,7 +122,6 @@ public class ThemeService {
                             .themeScore(theme.getThemeScore())
                             .themeLikeCheck(themeLikeCheck)
                             .totalLikeCnt(theme.getTotalLikeCnt())
-                            .size(filteredTheme.getTotalElements())
                             .reviewCnt(reviewCnt)
                             .build();
             themeLists.add(themeResponseDto);
@@ -129,6 +129,16 @@ public class ThemeService {
         return themeLists;
     }
 
+    //테마 필터링 개수 반환
+    public TotalSizeResponseDto filteredThemeSize(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people) {
+
+        Page<Theme> filteredTheme = themeRepository.findFilter(pageable, location, genreFilter, themeScore, difficulty, people);
+
+        return TotalSizeResponseDto.builder()
+                .totalSize(filteredTheme.getTotalElements())
+                .totalPageSize(filteredTheme.getTotalPages())
+                .build();
+    }
 
     //테마 상세조회
     public ThemeDetailResponseDto findTheme(Long themeId, String username) {
@@ -140,27 +150,25 @@ public class ThemeService {
 
         boolean themeLikeCheck = themeLike.isPresent();
         int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
-        ThemeDetailResponseDto themeDetailResponseDto =
-                ThemeDetailResponseDto.builder()
-                        .id(theme.getId())
-                        .themeImgUrl(theme.getThemeImgUrl())
-                        .themeName(theme.getThemeName())
-                        .companyId(theme.getCompany().getId())
-                        .companyName(theme.getCompany().getCompanyName())
-                        .genre(theme.getGenre())
-                        .difficulty(theme.getDifficulty())
-                        .minPeople(theme.getMinPeople())
-                        .maxPeople(theme.getMaxPeople())
-                        .playTime(theme.getPlayTime())
-                        .price(theme.getPrice())
-                        .themeUrl(theme.getThemeUrl())
-                        .themeScore(theme.getThemeScore())
-                        .synopsis((theme.getSynopsis()))
-                        .totalLikeCnt(theme.getTotalLikeCnt())
-                        .themeLikeCheck(themeLikeCheck)
-                        .reviewCnt(reviewCnt)
-                        .build();
-        return themeDetailResponseDto;
+        return ThemeDetailResponseDto.builder()
+                .id(theme.getId())
+                .themeImgUrl(theme.getThemeImgUrl())
+                .themeName(theme.getThemeName())
+                .companyId(theme.getCompany().getId())
+                .companyName(theme.getCompany().getCompanyName())
+                .genre(theme.getGenre())
+                .difficulty(theme.getDifficulty())
+                .minPeople(theme.getMinPeople())
+                .maxPeople(theme.getMaxPeople())
+                .playTime(theme.getPlayTime())
+                .price(theme.getPrice())
+                .themeUrl(theme.getThemeUrl())
+                .themeScore(theme.getThemeScore())
+                .synopsis((theme.getSynopsis()))
+                .totalLikeCnt(theme.getTotalLikeCnt())
+                .themeLikeCheck(themeLikeCheck)
+                .reviewCnt(reviewCnt)
+                .build();
 
     }
 
@@ -242,8 +250,7 @@ public class ThemeService {
         }
 
         Collections.shuffle(randomThemes);
-        List<ThemeResponseDto> randomThemeList = new ArrayList<>(randomThemes.subList(0,10));
-        return randomThemeList;
+        return new ArrayList<>(randomThemes.subList(0,10));
     }
 
 

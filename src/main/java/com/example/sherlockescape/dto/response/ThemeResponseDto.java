@@ -28,6 +28,4 @@ public class ThemeResponseDto {
     private int reviewCnt;
 
     private boolean themeLikeCheck;
-
-    private long size;
 }
