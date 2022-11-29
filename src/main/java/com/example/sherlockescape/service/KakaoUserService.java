@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -34,10 +35,16 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class KakaoUserService {
 
-//	@Value("${kakao.client-id}")
-//	String kakaoClientId;
-//	@Value("${kakao.redirect-uri}")
-//	String redirectUri;
+	@Value("${Kakao.client-id}")
+	String clientId;
+	@Value("${Kakao.redirect-uri}")
+	String redirectUri;
+	@Value("${kakao.authorization-grant-type}")
+	String authorization_code;
+	@Value("${kakao.token-uri}")
+	String tokenUri;
+	@Value("${kakao.user-info-uri}")
+	String userInfoUri;
 
 	private final PasswordEncoder passwordEncoder;
 	private final MemberRepository memberRepository;
@@ -81,15 +88,15 @@ public class KakaoUserService {
 		headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 		// HTTP Body 생성
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-		body.add("grant_type", "authorization_code");
-		body.add("client_id", "7555650f225a920f06012d44affc4f03");
-		body.add("redirect_uri", "http://localhost:3000/kakao/callback");
+		body.add("grant_type", authorization_code);
+		body.add("client_id", clientId);
+		body.add("redirect_uri",redirectUri);
 		body.add("code", code);
 		// HTTP 요청 보내기
 		HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
 		RestTemplate rt = new RestTemplate();
 		ResponseEntity<String> response = rt.exchange(
-				"https://kauth.kakao.com/oauth/token",
+				tokenUri,
 				HttpMethod.POST,
 				kakaoTokenRequest,
 				String.class
@@ -111,7 +118,7 @@ public class KakaoUserService {
 		HttpEntity<MultiValueMap<String, String>> kakaoUserInfoRequest = new HttpEntity<>(headers);
 		RestTemplate rt = new RestTemplate();
 		ResponseEntity<String> response = rt.exchange(
-				"https://kapi.kakao.com/v2/user/me",
+				userInfoUri,
 				HttpMethod.POST,
 				kakaoUserInfoRequest,
 				String.class
