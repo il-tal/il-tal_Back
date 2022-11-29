@@ -45,6 +45,9 @@ public class Member extends BaseTimeEntity {
 //    private String passwordCheck;
 
 
+    @Column
+    private int achieveBadgeCnt;
+
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
     }
