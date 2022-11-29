@@ -23,6 +23,7 @@ import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -99,7 +100,7 @@ public class ThemeService {
 //    }
 
     //테마 필터링
-    public List<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people, String username){
+    public Page<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people, String username){
 
         Page<Theme> filteredTheme = themeRepository.findFilter(pageable, location, genreFilter, themeScore, difficulty, people);
 
@@ -126,7 +127,8 @@ public class ThemeService {
                             .build();
             themeLists.add(themeResponseDto);
         }
-        return themeLists;
+        Page<ThemeResponseDto> themes = new PageImpl<>(themeLists, pageable, themeLists.size());
+        return themes;
     }
 
     //테마 필터링 개수 반환
