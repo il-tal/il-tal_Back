@@ -1,10 +1,8 @@
 package com.example.sherlockescape.service;
 
-import com.example.sherlockescape.domain.Badge;
-import com.example.sherlockescape.domain.Member;
-import com.example.sherlockescape.domain.MemberBadge;
-import com.example.sherlockescape.domain.Review;
+import com.example.sherlockescape.domain.*;
 import com.example.sherlockescape.dto.ResponseDto;
+import com.example.sherlockescape.dto.response.MemberBadgeResponseDto;
 import com.example.sherlockescape.dto.response.MainAchieveResponseDto;
 import com.example.sherlockescape.dto.response.UpdateBadgeResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
@@ -18,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,4 +82,33 @@ public class MemberBadgeService {
                         .build();
         return ResponseDto.success(mainAchieveResponseDto);
     }
+
+    //  메인 badge 조회 + 획득한 badge 개수 조회
+    @Transactional(readOnly = true)
+    public ResponseDto<MemberBadgeResponseDto> getMemberRank(Pageable pageable, String username){
+
+        Member member = validateCheck.getMember(username);
+
+        List<MemberBadge> memberBadgeList = memberBadgeRepository.findAllByMemberUsername(pageable, username);
+
+        List<String> badgeImgUrl = new ArrayList<>();
+        for(MemberBadge memberBadge: memberBadgeList){
+            String badgeImg = memberBadge.getBadge().getBadgeImgUrl();
+            badgeImgUrl.add(badgeImg);
+        }
+
+        MemberBadgeResponseDto memberBadgeResponseDto =
+                MemberBadgeResponseDto.builder()
+                        .nickname(member.getNickname())
+                        .mainBadgeImg(member.getMainBadgeImg())
+                        .mainBadgeName(member.getMainBadgeName())
+                        .achieveBadgeCnt(memberBadgeList.size())
+                        .build();
+        return ResponseDto.success(memberBadgeResponseDto);
+    }
+
+    // main achieve 전체멤버 리스트로 조회 -> 획득한 뱃지 수 별로 나열
+    // 로그인 하지 않은 사람도 로그인 한 사람의 리스트를 볼 수 있음
+    // 획득한 뱃지 개수글 Cnt 해야함
+
 }
