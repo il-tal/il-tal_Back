@@ -111,7 +111,6 @@ public class ThemeService {
             //테마 좋아요 확인
             boolean themeLikeCheck = themeLike.isPresent();
 
-            int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
             ThemeResponseDto themeResponseDto =
                     ThemeResponseDto.builder()
                             .id(theme.getId())
@@ -122,7 +121,7 @@ public class ThemeService {
                             .themeScore(theme.getThemeScore())
                             .themeLikeCheck(themeLikeCheck)
                             .totalLikeCnt(theme.getTotalLikeCnt())
-                            .reviewCnt(reviewCnt)
+                            .reviewCnt(theme.getReviewCnt())
                             .build();
             themeLists.add(themeResponseDto);
         }
@@ -139,7 +138,6 @@ public class ThemeService {
         Optional<ThemeLike> themeLike = themeLikeRepository.findByThemeIdAndMemberUsername(themeId, username);
 
         boolean themeLikeCheck = themeLike.isPresent();
-        int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
         return ThemeDetailResponseDto.builder()
                 .id(theme.getId())
                 .themeImgUrl(theme.getThemeImgUrl())
@@ -157,7 +155,7 @@ public class ThemeService {
                 .synopsis((theme.getSynopsis()))
                 .totalLikeCnt(theme.getTotalLikeCnt())
                 .themeLikeCheck(themeLikeCheck)
-                .reviewCnt(reviewCnt)
+                .reviewCnt(theme.getReviewCnt())
                 .build();
 
     }
@@ -175,7 +173,6 @@ public class ThemeService {
                             ()-> new GlobalException(ErrorCode.THEME_NOT_FOUND)
                     );
 
-            Long reviewCnt = reviewRepository.countByThemeId(like.getTheme().getId());
             MyThemeResponseDto myThemeResponseDto =
                     MyThemeResponseDto.builder()
                             .id(theme.getId())
@@ -184,7 +181,7 @@ public class ThemeService {
                             .themeLikeCnt((long) theme.getTotalLikeCnt())
                             .themeImgUrl(theme.getThemeImgUrl())
                             .themeScore(theme.getThemeScore())
-                            .reviewCnt(reviewCnt)
+                            .reviewCnt(theme.getReviewCnt())
                             .build();
             responseDtoList.add(myThemeResponseDto);
         }
@@ -198,7 +195,6 @@ public class ThemeService {
 
         List<ThemeResponseDto> bestThemes = new ArrayList<>();
         for(Theme theme: BestTheme) {
-            int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
 
             ThemeResponseDto themeResponseDto =
                     ThemeResponseDto.builder()
@@ -209,7 +205,7 @@ public class ThemeService {
                             .genre(theme.getGenre())
                             .themeScore(theme.getThemeScore())
                             .totalLikeCnt(theme.getTotalLikeCnt())
-                            .reviewCnt(reviewCnt)
+                            .reviewCnt(theme.getReviewCnt())
                             .build();
             bestThemes.add(themeResponseDto);
         }
@@ -224,7 +220,6 @@ public class ThemeService {
 
         List<ThemeResponseDto> randomThemes = new ArrayList<>();
         for(Theme theme: randomTheme) {
-            int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
             ThemeResponseDto themeResponseDto =
                     ThemeResponseDto.builder()
                             .id(theme.getId())
@@ -234,7 +229,7 @@ public class ThemeService {
                             .genre(theme.getGenre())
                             .themeScore(theme.getThemeScore())
                             .totalLikeCnt(theme.getTotalLikeCnt())
-                            .reviewCnt(reviewCnt)
+                            .reviewCnt(theme.getReviewCnt())
                             .build();
             randomThemes.add(themeResponseDto);
         }
