@@ -14,7 +14,6 @@ import com.example.sherlockescape.dto.request.ThemeRequestDto;
 import com.example.sherlockescape.dto.response.MyThemeResponseDto;
 import com.example.sherlockescape.dto.response.ThemeDetailResponseDto;
 import com.example.sherlockescape.dto.response.ThemeResponseDto;
-import com.example.sherlockescape.dto.response.TotalSizeResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.*;
@@ -127,19 +126,8 @@ public class ThemeService {
                             .build();
             themeLists.add(themeResponseDto);
         }
-        Page<ThemeResponseDto> themes = new PageImpl<>(themeLists, pageable, themeLists.size());
+        Page<ThemeResponseDto> themes = new PageImpl<>(themeLists, pageable, filteredTheme.getTotalElements());
         return themes;
-    }
-
-    //테마 필터링 개수 반환
-    public TotalSizeResponseDto filteredThemeSize(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people) {
-
-        Page<Theme> filteredTheme = themeRepository.findFilter(pageable, location, genreFilter, themeScore, difficulty, people);
-
-        return TotalSizeResponseDto.builder()
-                .totalSize(filteredTheme.getTotalElements())
-                .totalPageSize(filteredTheme.getTotalPages())
-                .build();
     }
 
     //테마 상세조회
