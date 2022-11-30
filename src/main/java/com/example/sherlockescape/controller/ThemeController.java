@@ -2,9 +2,7 @@ package com.example.sherlockescape.controller;
 
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ThemeRequestDto;
-import com.example.sherlockescape.dto.SizeResponseDto;
 import com.example.sherlockescape.dto.response.ThemeResponseDto;
-import com.example.sherlockescape.dto.response.TotalSizeResponseDto;
 import com.example.sherlockescape.service.ThemeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,39 +35,14 @@ public class ThemeController {
 
     }
 
-//    //테마 전체 조회
-//    @GetMapping("/themes")
-//    public ResponseDto<List<ThemeResponseDto>> getAllTheme(@PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-//        return ResponseDto.success(themeService.findAllTheme(pageable));
-//    }
-
     //테마 필터링
     @GetMapping("/themes")
-    public SizeResponseDto<TotalSizeResponseDto,Page<ThemeResponseDto>> findFilter
-                            (@PageableDefault(size = 9, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-                              @RequestParam(value = "location", required = false) List<String> location,
-                              @RequestParam(value = "genreFilter", required = false) List<String> genreFilter,
-                              @RequestParam(value = "themeScore", required = false) List<Integer> themeScore,
-                              @RequestParam(value = "difficulty", required = false) List<Integer> difficulty,
-                              @RequestParam(value = "people", required = false) List<Integer> people) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        TotalSizeResponseDto totalSize = themeService.filteredThemeSize(pageable, location, genreFilter, themeScore, difficulty, people);
-        Page<ThemeResponseDto> themeList = themeService.filter(pageable, location, genreFilter, themeScore, difficulty, people, username);
-        return SizeResponseDto.success(totalSize,themeList);
-    }
-
-
-    //테마 평점순 정렬
-    @GetMapping("/themes/byScore")
-    public ResponseDto<Page<ThemeResponseDto>> getThemeByScore
-                        (@PageableDefault(size = 9, sort = "themeScore", direction = Sort.Direction.DESC) Pageable pageable,
-                           @RequestParam(value = "location", required = false) List<String> location,
-                           @RequestParam(value = "genreFilter", required = false) List<String> genreFilter,
-                           @RequestParam(value = "themeScore", required = false) List<Integer> themeScore,
-                           @RequestParam(value = "difficulty", required = false) List<Integer> difficulty,
-                           @RequestParam(value = "people", required = false) List<Integer> people) {
+    public ResponseDto<Page<ThemeResponseDto>> findFilter(@PageableDefault(size = 9, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                                              @RequestParam(value = "location", required = false) List<String> location,
+                                              @RequestParam(value = "genreFilter", required = false) List<String> genreFilter,
+                                              @RequestParam(value = "themeScore", required = false) List<Integer> themeScore,
+                                              @RequestParam(value = "difficulty", required = false) List<Integer> difficulty,
+                                              @RequestParam(value = "people", required = false) List<Integer> people) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
@@ -77,22 +50,6 @@ public class ThemeController {
         return ResponseDto.success(themeList);
     }
 
-    //테마 찜하기 순 정렬
-    @GetMapping("/themes/byLikeCnt")
-    public SizeResponseDto<TotalSizeResponseDto,Page<ThemeResponseDto>> getThemeByLikeCnt
-                    (@PageableDefault(size = 9, sort = "totalLikeCnt", direction = Sort.Direction.DESC) Pageable pageable,
-                     @RequestParam(value = "location", required = false) List<String> location,
-                     @RequestParam(value = "genreFilter", required = false) List<String> genreFilter,
-                     @RequestParam(value = "themeScore", required = false) List<Integer> themeScore,
-                     @RequestParam(value = "difficulty", required = false) List<Integer> difficulty,
-                     @RequestParam(value = "people", required = false) List<Integer> people) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        TotalSizeResponseDto totalSize = themeService.filteredThemeSize(pageable, location, genreFilter, themeScore, difficulty, people);
-        Page<ThemeResponseDto> themeList = themeService.filter(pageable, location, genreFilter, themeScore, difficulty, people, username);
-        return SizeResponseDto.success(totalSize, themeList);
-    }
 
     //테마 상세페이지
     @GetMapping("/theme/{themeId}")

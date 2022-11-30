@@ -1,7 +1,10 @@
 package com.example.sherlockescape.repository;
 
+import com.example.sherlockescape.domain.QReview;
 import com.example.sherlockescape.domain.QTheme;
 import com.example.sherlockescape.domain.Theme;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -9,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +58,7 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
                 )
                 .limit(pageable.getPageSize()) // 현재 제한한 갯수
                 .offset(pageable.getOffset())
-                .orderBy(theme.id.desc())
+                .orderBy(sort(pageable))
                 .fetch();
 
         long totalSize = queryFactory
@@ -113,6 +117,29 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
     private BooleanExpression isFilteredPeople(Integer people) {
         return theme.minPeople.loe(people).and(theme.maxPeople.goe(people));
     }
+
+
+    //정렬하기
+    private OrderSpecifier<?> sort(Pageable pageable) {
+        //서비스에서 보내준 Pageable 객체에 정렬조건 null 값 체크
+        if (!pageable.getSort().isEmpty()) {
+            //정렬값이 들어 있으면 for 사용하여 값을 가져온다
+            for (Sort.Order order : pageable.getSort()) {
+                // 서비스에서 넣어준 DESC or ASC 를 가져온다.
+                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+                // 서비스에서 넣어준 정렬 조건을 스위치 케이스 문을 활용하여 셋팅하여 준다.
+                switch (order.getProperty()) {
+                    case "themeScore":
+                        return new OrderSpecifier<>(direction, theme.themeScore);
+                    case "totalLikeCnt":
+                        return new OrderSpecifier<>(direction, theme.totalLikeCnt);
+                    case "themeName":
+                        return new OrderSpecifier<>(direction, theme.themeName);
+                    case "reviewCnt":
+                        return new OrderSpecifier<>(direction, theme.reviewCnt);
+                }
+            }
+        }
+        return new OrderSpecifier<>(Order.DESC, theme.id);
+    }
 }
-
-
