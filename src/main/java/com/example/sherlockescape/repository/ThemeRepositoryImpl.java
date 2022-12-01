@@ -1,5 +1,6 @@
 package com.example.sherlockescape.repository;
 
+import com.example.sherlockescape.domain.QReview;
 import com.example.sherlockescape.domain.QTheme;
 import com.example.sherlockescape.domain.Theme;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -26,7 +27,6 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
     @Override
     public Page<Theme> findFilter(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people) {
 
-        QTheme theme = QTheme.theme;
 
 //        QueryResults<Theme> result = queryFactory
 //                .selectFrom(theme)
