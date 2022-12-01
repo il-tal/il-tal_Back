@@ -63,7 +63,7 @@ public class KakaoUserService {
 		Member kakaoUser = signupKakaoUser(kakaoUserInfo);
 
 		// 4. 강제 로그인 처리
-		Authentication authentication = forceLogin(kakaoUser);
+		forceLogin(kakaoUser);
 
 		// 5. response Header 에 JWT 토큰 추가
 		TokenDto tokenDto = jwtUtil.createAllToken(kakaoUserInfo.getId().toString());
