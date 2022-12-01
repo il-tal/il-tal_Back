@@ -58,7 +58,7 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
                 )
                 .limit(pageable.getPageSize()) // 현재 제한한 갯수
                 .offset(pageable.getOffset())
-                .orderBy(sort(pageable))
+                .orderBy(sort(pageable),theme.id.desc())
                 .fetch();
 
         long totalSize = queryFactory
@@ -125,18 +125,15 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
         if (!pageable.getSort().isEmpty()) {
             //정렬값이 들어 있으면 for 사용하여 값을 가져온다
             for (Sort.Order order : pageable.getSort()) {
-                // 서비스에서 넣어준 DESC or ASC 를 가져온다.
-                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
-                // 서비스에서 넣어준 정렬 조건을 스위치 케이스 문을 활용하여 셋팅하여 준다.
                 switch (order.getProperty()) {
                     case "themeScore":
-                        return new OrderSpecifier<>(direction, theme.themeScore);
+                        return new OrderSpecifier<>(Order.DESC, theme.themeScore);
                     case "totalLikeCnt":
-                        return new OrderSpecifier<>(direction, theme.totalLikeCnt);
+                        return new OrderSpecifier<>(Order.DESC, theme.totalLikeCnt);
                     case "themeName":
-                        return new OrderSpecifier<>(direction, theme.themeName);
+                        return new OrderSpecifier<>(Order.ASC, theme.themeName);
                     case "reviewCnt":
-                        return new OrderSpecifier<>(direction, theme.reviewCnt);
+                        return new OrderSpecifier<>(Order.DESC, theme.reviewCnt);
                 }
             }
         }
