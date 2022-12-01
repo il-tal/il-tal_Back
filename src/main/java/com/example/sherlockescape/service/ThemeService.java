@@ -99,9 +99,9 @@ public class ThemeService {
 //    }
 
     //테마 필터링
-    public Page<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people, String username){
+    public Page<ThemeResponseDto> filter(Pageable pageable, String themeName, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people, String username){
 
-        Page<Theme> filteredTheme = themeRepository.findFilter(pageable, location, genreFilter, themeScore, difficulty, people);
+        Page<Theme> filteredTheme = themeRepository.findFilter(pageable, themeName, location, genreFilter, themeScore, difficulty, people);
 
 
         List<ThemeResponseDto> themeLists = new ArrayList<>();

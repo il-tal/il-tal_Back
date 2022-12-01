@@ -54,12 +54,13 @@ public class CompanyController {
      */
     @GetMapping("/companies")
     public ResponseDto<Page<AllCompanyResponseDto>> getAllCompany(@PageableDefault(size = 9) Pageable pageable,
-                                                                                            @RequestParam(value = "location", required = false) String location){
+                                                                  @RequestParam(value = "companyName", required = false) String companyName,
+                                                                  @RequestParam(value = "location", required = false) String location){
         //가입회원 비가입회원 구분
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        Page<AllCompanyResponseDto> resDto = companyService.getAllCompany(pageable, location, username);
+        Page<AllCompanyResponseDto> resDto = companyService.getAllCompany(pageable, companyName, location, username);
         return ResponseDto.success(resDto);
     }
 

@@ -38,6 +38,7 @@ public class ThemeController {
     //테마 필터링
     @GetMapping("/themes")
     public ResponseDto<Page<ThemeResponseDto>> findFilter(@PageableDefault(size = 9, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                                              @RequestParam(value = "themeName", required = false) String themeName,
                                               @RequestParam(value = "location", required = false) List<String> location,
                                               @RequestParam(value = "genreFilter", required = false) List<String> genreFilter,
                                               @RequestParam(value = "themeScore", required = false) List<Integer> themeScore,
@@ -46,7 +47,7 @@ public class ThemeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        Page<ThemeResponseDto> themeList = themeService.filter(pageable, location, genreFilter, themeScore, difficulty, people, username);
+        Page<ThemeResponseDto> themeList = themeService.filter(pageable, themeName, location, genreFilter, themeScore, difficulty, people, username);
         return ResponseDto.success(themeList);
     }
 

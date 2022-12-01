@@ -107,9 +107,9 @@ public class CompanyService {
     }
 
     /*업체 정보 조회*/
-    public Page<AllCompanyResponseDto> getAllCompany(Pageable pageable, String location, String username){
+    public Page<AllCompanyResponseDto> getAllCompany(Pageable pageable, String companyName, String location, String username){
 
-        Page<Company> companyList = companyRepository.getCompanyList(pageable, location);
+        Page<Company> companyList = companyRepository.getCompanyList(pageable, companyName, location);
         List<AllCompanyResponseDto> allResponseDtoList = new ArrayList<>();
 
         for(Company company: companyList){

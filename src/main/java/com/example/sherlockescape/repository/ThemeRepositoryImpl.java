@@ -28,7 +28,7 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
 
 
     @Override
-    public Page<Theme> findFilter(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people) {
+    public Page<Theme> findFilter(Pageable pageable, String themeName, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people) {
 
         QTheme theme = QTheme.theme;
 
@@ -50,6 +50,7 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
         List<Theme> result = queryFactory
                 .selectFrom(theme)
                 .where(
+                        eqThemeName(themeName),
                         eqLocation(location),
                         eqGenres(genreFilter),
                         eqThemeScore(themeScore),
@@ -64,6 +65,7 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
         long totalSize = queryFactory
                 .selectFrom(theme)
                 .where(
+                        eqThemeName(themeName),
                         eqLocation(location),
                         eqGenres(genreFilter),
                         eqThemeScore(themeScore),
@@ -73,6 +75,10 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
                 .fetch().size();
 
         return new PageImpl<>(result, pageable, totalSize);
+    }
+
+    private BooleanExpression eqThemeName(String themeName) {
+        return themeName != null ? theme.themeName.contains(themeName) : null;
     }
 
     private BooleanExpression eqLocation(List<String> location) {
