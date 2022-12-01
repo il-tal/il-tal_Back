@@ -18,16 +18,8 @@ public class SocialLoginController {
 	// 카카오 로그인
 	@GetMapping("/kakao/callback")
 	//-JIAlL23y9MDLlFj3QZ9d975eJujlOVm2iy_pzUItSE6xUvuVveeA-qwFio6P_wD3e4I9wo9dJcAAAGEwiHisg
-	public KakaoUserInfoDto kakaoLogin(@RequestParam(name="code") String code, HttpServletResponse response) throws JsonProcessingException {
+	public KakaoUserInfoDto kakaoLogin(@RequestParam(name="code") String code,
+									   HttpServletResponse response) throws JsonProcessingException {
 		return kakaoUserService.kakaoLogin(code, response);
 	}
-
-//	@GetMapping("/kakao/callback")
-//	public ResponseEntity<?> kakaoLogin(@RequestParam String code)
-//			throws IOException {
-//		SocialUserDto socialUserDto = kakaoUserService.kakaoLogin(code);
-//		return ResponseEntity.ok()
-//				.headers(MemberUtil.getTokenHeaders(socialUserDto.getTokenDto()))
-//				.body(socialUserDto.getMemberDto());
-//	}
 }
