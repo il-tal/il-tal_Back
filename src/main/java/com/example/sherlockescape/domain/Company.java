@@ -48,6 +48,7 @@ public class Company {
     @Column
     private String workHour;
 
+    //N + 1 문제 해결 EAGER -> LAZY
     @Builder.Default
     @OneToMany(mappedBy = "company", fetch = LAZY)
     private List<Theme> themeList = new ArrayList<>();
