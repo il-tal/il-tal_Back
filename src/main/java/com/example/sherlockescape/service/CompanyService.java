@@ -8,7 +8,6 @@ import com.example.sherlockescape.dto.request.CompanyRequestDto;
 import com.example.sherlockescape.dto.response.AllCompanyResponseDto;
 import com.example.sherlockescape.dto.response.CompanyDetailResponseDto;
 import com.example.sherlockescape.dto.response.MyCompanyResponseDto;
-import com.example.sherlockescape.dto.response.TotalSizeResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.*;
@@ -19,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -107,7 +107,7 @@ public class CompanyService {
     }
 
     /*업체 정보 조회*/
-    public List<AllCompanyResponseDto> getAllCompany(Pageable pageable, String location, String username){
+    public Page<AllCompanyResponseDto> getAllCompany(Pageable pageable, String location, String username){
 
         Page<Company> companyList = companyRepository.getCompanyList(pageable, location);
         List<AllCompanyResponseDto> allResponseDtoList = new ArrayList<>();
@@ -145,21 +145,8 @@ public class CompanyService {
                             .themeList(themeList).build();
             allResponseDtoList.add(allResponseDto);
         }
-        return allResponseDtoList;
+        return new PageImpl<>(allResponseDtoList, pageable, companyList.getTotalElements());
     }
-
-
-    //업체 필터링 개수 반환
-    public TotalSizeResponseDto filteredCompanySize(Pageable pageable, String location) {
-
-        Page<Company> filteredCompany = companyRepository.getCompanyList(pageable, location);
-
-        return TotalSizeResponseDto.builder()
-                .totalSize(filteredCompany.getTotalElements())
-                .totalPageSize(filteredCompany.getTotalPages())
-                .build();
-    }
-
 
     /*
      *
