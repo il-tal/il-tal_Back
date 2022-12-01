@@ -17,10 +17,13 @@ public class CompanyRepositoryImpl implements CompanyRepositoryCustom{
 
     private final JPAQueryFactory jpaQueryFactory;
     @Override
-    public Page<Company> getCompanyList(Pageable pageable, String location) {
+    public Page<Company> getCompanyList(Pageable pageable, String companyName, String location) {
         List<Company> result = jpaQueryFactory
                 .selectFrom(company)
-                .where(eqLocation(location))
+                .where(
+                        eqCompanyName(companyName),
+                        eqLocation(location)
+                )
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(company.id.asc())
@@ -28,11 +31,19 @@ public class CompanyRepositoryImpl implements CompanyRepositoryCustom{
 
         long totalSize = jpaQueryFactory
                 .selectFrom(company)
-                .where(eqLocation(location))
+                .where(
+                        eqCompanyName(companyName),
+                        eqLocation(location)
+                )
                 .fetch().size();
 
         return new PageImpl<> (result, pageable, totalSize);
     }
+
+    private BooleanExpression eqCompanyName(String companyName) {
+        return companyName != null ? company.companyName.contains(companyName) : null;
+    }
+
     private BooleanExpression eqLocation(String location) {
         return location != null ? company.location.eq(location) : null;
     }
