@@ -25,7 +25,7 @@ public class ThemeResponseDto {
 
     private int totalLikeCnt;
 
-    private int reviewCnt;
+    private Long reviewCnt;
 
     private boolean themeLikeCheck;
 }

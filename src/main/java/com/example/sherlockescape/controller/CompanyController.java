@@ -1,14 +1,13 @@
 package com.example.sherlockescape.controller;
 
 import com.example.sherlockescape.dto.ResponseDto;
-import com.example.sherlockescape.dto.SizeResponseDto;
 import com.example.sherlockescape.dto.request.CompanyRequestDto;
 import com.example.sherlockescape.dto.response.AllCompanyResponseDto;
 import com.example.sherlockescape.dto.response.CompanyDetailResponseDto;
-import com.example.sherlockescape.dto.response.TotalSizeResponseDto;
 import com.example.sherlockescape.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
@@ -18,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,15 +53,15 @@ public class CompanyController {
      *업체,테마 정보 전체
      */
     @GetMapping("/companies")
-    public SizeResponseDto<TotalSizeResponseDto,List<AllCompanyResponseDto>> getAllCompany(@PageableDefault(size = 9) Pageable pageable,
-                                                                                      @RequestParam(value = "location", required = false) String location){
+    public ResponseDto<Page<AllCompanyResponseDto>> getAllCompany(@PageableDefault(size = 9) Pageable pageable,
+                                                                  @RequestParam(value = "companyName", required = false) String companyName,
+                                                                  @RequestParam(value = "location", required = false) String location){
         //가입회원 비가입회원 구분
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        TotalSizeResponseDto totalSize = companyService.filteredCompanySize(pageable, location);
-        List<AllCompanyResponseDto> resDto = companyService.getAllCompany(pageable, location, username);
-        return SizeResponseDto.success(totalSize,resDto);
+        Page<AllCompanyResponseDto> resDto = companyService.getAllCompany(pageable, companyName, location, username);
+        return ResponseDto.success(resDto);
     }
 
 }
