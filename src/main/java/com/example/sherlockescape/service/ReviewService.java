@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true) //읽기 전용 쿼리의 성능 최적화
 public class ReviewService {
 
 	private final ThemeRepository themeRepository;
@@ -91,7 +92,6 @@ public class ReviewService {
 	}
 
 	// 해당 테마 후기 조회
-	@Transactional
 	public ResponseDto<?> getReview(Long themeId) {
 		themeRepository.findById(themeId);
 		List<ReviewResponseDto> reviewAllList = new ArrayList<>();

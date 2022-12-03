@@ -34,7 +34,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             setAuthentication(jwtUtil.getUsernameFromToken(accessToken));
         }else if(refreshToken != null) {
             if(!jwtUtil.refreshTokenValidation(refreshToken)){
-                jwtExceptionHandler(response, "RefreshToken Expired", HttpStatus.UNAUTHORIZED);
+                jwtExceptionHandler(response, "RefreshToken Expired", HttpStatus.BAD_REQUEST);
                 return;
             }
             setAuthentication(jwtUtil.getUsernameFromToken(refreshToken));

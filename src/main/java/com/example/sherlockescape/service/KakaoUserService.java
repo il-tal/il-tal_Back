@@ -13,10 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +25,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,16 +33,17 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class KakaoUserService {
 
-	@Value("${Kakao.client-id}")
-	String clientId;
-	@Value("${Kakao.redirect-uri}")
-	String redirectUri;
-	@Value("${kakao.authorization-grant-type}")
-	String authorization_code;
-	@Value("${kakao.token-uri}")
-	String tokenUri;
-	@Value("${kakao.user-info-uri}")
-	String userInfoUri;
+//	@Value("${kakao.client-id}")
+//	String clientId;
+//	@Value("${kakao.redirect-uri}")
+//	String redirectUri;
+//	@Value("${kakao.authorization-grant-type}")
+//	String authorization_code;
+//	@Value("${kakao.token-uri}")
+//	String tokenUri;
+//	@Value("${kakao.user-info-uri}")
+//	String userInfoUri;
+
 
 	private final PasswordEncoder passwordEncoder;
 	private final MemberRepository memberRepository;
@@ -63,7 +62,7 @@ public class KakaoUserService {
 		Member kakaoUser = signupKakaoUser(kakaoUserInfo);
 
 		// 4. 강제 로그인 처리
-		Authentication authentication = forceLogin(kakaoUser);
+		forceLogin(kakaoUser);
 
 		// 5. response Header 에 JWT 토큰 추가
 		TokenDto tokenDto = jwtUtil.createAllToken(kakaoUserInfo.getId().toString());
@@ -77,6 +76,7 @@ public class KakaoUserService {
 			refreshTokenRepository.save(newToken);
 		}
 		setHeader(response, tokenDto);
+
 		// 토큰 생성 후 tokenDto 에 저장
 		return kakaoUserInfo;
 	}
@@ -88,15 +88,15 @@ public class KakaoUserService {
 		headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 		// HTTP Body 생성
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-		body.add("grant_type", authorization_code);
-		body.add("client_id", clientId);
-		body.add("redirect_uri",redirectUri);
+		body.add("grant_type", "authorization_code");
+		body.add("client_id", "7555650f225a920f06012d44affc4f03");
+		body.add("redirect_uri","http://localhost:3000/kakao/callback");
 		body.add("code", code);
 		// HTTP 요청 보내기
 		HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
 		RestTemplate rt = new RestTemplate();
 		ResponseEntity<String> response = rt.exchange(
-				tokenUri,
+				"https://Kauth.Kakao.com/oauth/token",
 				HttpMethod.POST,
 				kakaoTokenRequest,
 				String.class
@@ -118,7 +118,7 @@ public class KakaoUserService {
 		HttpEntity<MultiValueMap<String, String>> kakaoUserInfoRequest = new HttpEntity<>(headers);
 		RestTemplate rt = new RestTemplate();
 		ResponseEntity<String> response = rt.exchange(
-				userInfoUri,
+				"https://kapi.kakao.com/v2/user/me",
 				HttpMethod.POST,
 				kakaoUserInfoRequest,
 				String.class
