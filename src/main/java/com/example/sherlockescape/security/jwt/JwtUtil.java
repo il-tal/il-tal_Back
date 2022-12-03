@@ -38,8 +38,6 @@ public class JwtUtil {
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "bearer";
 
-
-
     @Value("${jwt.secret.key}")
     private String secretKey;
     private Key key;

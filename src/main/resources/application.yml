@@ -14,6 +14,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+      dialect: org.hibernate.dialect.MySQL8InnoDBDialect
     #          ddl-auto: create
     properties:
       hibernate:
@@ -34,19 +35,6 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
-
-  security:
-    oauth2:
-      client:
-        registration:
-          Kakao:
-            authorization-grant-type: ${KAKAO_AUTHORIZATION_GRANT_TYPE}
-            client-id: ${KAKAO_CLIENT_ID}
-            redirect-uri: ${KAKAO_REDIRECT_URI}
-        provider:
-          Kakao:
-            token-uri: ${KAKAO_TOKEN_URI}
-            user-info-uri: ${KAKAO_USER_INFO_URI}
 
 server:
   servlet:
