@@ -96,11 +96,20 @@ public class ReviewService {
 	// 해당 테마 후기 조회
 	public ResponseDto<?> getReview(Long themeId, Pageable pageable) {
 
+		List<Review> reviewLists = reviewRepository.findAllByThemeId(themeId);
+
+		int totalReviewCnt = 0;
+		for(Review review: reviewLists){
+			int reviewCnt = Math.toIntExact(reviewRepository.countAllById(review.getId()));
+			totalReviewCnt += reviewCnt;
+		}
+
 		Page<Review> reviewList = reviewRepository.getReviewList(pageable, themeId);
 
 		themeRepository.findById(themeId);
 		List<ReviewResponseDto> reviewAllList = new ArrayList<>();
-//		List<Review> reviewList = reviewRepository.findAllByThemeId(themeId);
+
+
 		for(Review review: reviewList) {
 			reviewAllList.add(
 					ReviewResponseDto.builder()
@@ -112,6 +121,7 @@ public class ReviewService {
 							.difficulty(review.getDifficulty())
 							.hint(review.getHint())
 							.comment(review.getComment())
+							.reviewCnt(totalReviewCnt)
 							.build()
 			);
 		}

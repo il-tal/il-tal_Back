@@ -15,5 +15,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
     Long countByThemeId(Long id);
     List<Review> findReviewsByMemberUsername(String username);
 
+	Long countAllById (Long id);
 }
 
