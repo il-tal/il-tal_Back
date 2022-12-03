@@ -1,6 +1,5 @@
 package com.example.sherlockescape.repository;
 
-import com.example.sherlockescape.domain.QReview;
 import com.example.sherlockescape.domain.QTheme;
 import com.example.sherlockescape.domain.Theme;
 import com.querydsl.core.types.Order;
@@ -27,25 +26,11 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
     private final JPAQueryFactory queryFactory;
 
 
+    //테마 필터링
     @Override
     public Page<Theme> findFilter(Pageable pageable, String themeName, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people) {
 
         QTheme theme = QTheme.theme;
-
-//        QueryResults<Theme> result = queryFactory
-//                .selectFrom(theme)
-//                .where(
-//                        eqLocation(location),
-//                        eqGenres(genreFilter),
-//                        eqThemeScore(themeScore),
-//                        eqDifficulty(difficulty),
-//                        eqPeople(people)
-//                )
-//                .limit(pageable.getPageSize()) // 현재 제한한 갯수
-//                .offset(pageable.getOffset())
-//                .orderBy(theme.id.desc())
-//                .fetchResults();
-//        return new PageImpl<>(result.getResults(), pageable, result.getTotal());
 
         List<Theme> result = queryFactory
                 .selectFrom(theme)
@@ -57,7 +42,7 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
                         eqDifficulty(difficulty),
                         eqPeople(people)
                 )
-                .limit(pageable.getPageSize()) // 현재 제한한 갯수
+                .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(sort(pageable),theme.id.desc())
                 .fetch();
@@ -76,6 +61,27 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
 
         return new PageImpl<>(result, pageable, totalSize);
     }
+
+
+//    //테마 이름 검색
+//    @Override
+//    public Page<Theme> findByThemeName(Pageable pageable, String themeName) {
+//        List<Theme> result = queryFactory
+//                .selectFrom(theme)
+//                .where(eqThemeName(themeName))
+//                .limit(pageable.getPageSize())
+//                .offset(pageable.getOffset())
+//                .orderBy(sort(pageable),theme.id.desc())
+//                .fetch();
+//
+//        long totalSize = queryFactory
+//                .selectFrom(theme)
+//                .where(eqThemeName(themeName))
+//                .fetch().size();
+//
+//        return new PageImpl<>(result, pageable, totalSize);
+//    }
+
 
     private BooleanExpression eqThemeName(String themeName) {
         return themeName != null ? theme.themeName.contains(themeName) : null;
