@@ -54,14 +54,29 @@ public class CompanyController {
      */
     @GetMapping("/companies")
     public ResponseDto<Page<AllCompanyResponseDto>> getAllCompany(@PageableDefault(size = 9) Pageable pageable,
-                                                                  @RequestParam(value = "companyName", required = false) String companyName,
                                                                   @RequestParam(value = "location", required = false) String location){
         //가입회원 비가입회원 구분
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        Page<AllCompanyResponseDto> resDto = companyService.getAllCompany(pageable, companyName, location, username);
+        Page<AllCompanyResponseDto> resDto = companyService.getAllCompany(pageable, location, username);
         return ResponseDto.success(resDto);
     }
 
+
+    /*
+     *
+     *업체 이름 검색
+     */
+    @GetMapping("/companies/search")
+    public ResponseDto<Page<AllCompanyResponseDto>> searchCompany(@PageableDefault(size = 6) Pageable pageable,
+                                                                  @RequestParam(value = "companyName", required = false) String companyName){
+
+        //가입회원 비가입회원 구분
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        Page<AllCompanyResponseDto> resDto = companyService.searchCompany(pageable, companyName, username);
+        return ResponseDto.success(resDto);
+    }
 }

@@ -1,10 +1,5 @@
 package com.example.sherlockescape.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.util.IOUtils;
 import com.example.sherlockescape.domain.Company;
 import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.domain.Theme;
@@ -20,7 +15,6 @@ import com.example.sherlockescape.repository.*;
 import com.example.sherlockescape.utils.CommonUtils;
 import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -40,7 +33,6 @@ public class ThemeService {
     private final ThemeRepository themeRepository;
     private final CompanyRepository companyRepository;
     private final ValidateCheck validateCheck;
-    private final ReviewRepository reviewRepository;
     private final ThemeLikeRepository themeLikeRepository;
     private final CommonUtils commonUtils;
     /*
@@ -77,9 +69,9 @@ public class ThemeService {
     }
 
     //테마 필터링
-    public Page<ThemeResponseDto> filter(Pageable pageable, String themeName, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people, String username){
+    public Page<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people, String username){
 
-        Page<Theme> filteredTheme = themeRepository.findFilter(pageable, themeName, location, genreFilter, themeScore, difficulty, people);
+        Page<Theme> filteredTheme = themeRepository.findFilter(pageable, location, genreFilter, themeScore, difficulty, people);
 
 
         List<ThemeResponseDto> themeLists = new ArrayList<>();
@@ -108,39 +100,39 @@ public class ThemeService {
     }
 
     //테마 필터 결과 개수 반환
-    public Long countFilteredTheme(Pageable pageable, String themeName, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people) {
-        return themeRepository.findFilter(pageable, themeName, location, genreFilter, themeScore, difficulty, people).getTotalElements();
+    public Long countFilteredTheme(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people) {
+        return themeRepository.findFilter(pageable, location, genreFilter, themeScore, difficulty, people).getTotalElements();
     }
 
-//    //테마 이름 검색
-//    public Page<ThemeResponseDto> searchTheme(Pageable pageable, String themeName, String username){
-//
-//        Page<Theme> filteredTheme = themeRepository.findByThemeName(pageable, themeName);
-//
-//        List<ThemeResponseDto> themeLists = new ArrayList<>();
-//        for(Theme theme: filteredTheme) {
-//            Optional<ThemeLike> themeLike = themeLikeRepository.findByThemeIdAndMemberUsername(theme.getId(), username);
-//
-//            //테마 좋아요 확인
-//            boolean themeLikeCheck = themeLike.isPresent();
-//
-//            ThemeResponseDto themeResponseDto =
-//                    ThemeResponseDto.builder()
-//                            .id(theme.getId())
-//                            .themeImgUrl(theme.getThemeImgUrl())
-//                            .themeName(theme.getThemeName())
-//                            .companyName(theme.getCompany().getCompanyName())
-//                            .genre(theme.getGenre())
-//                            .themeScore(theme.getThemeScore())
-//                            .themeLikeCheck(themeLikeCheck)
-//                            .totalLikeCnt(theme.getTotalLikeCnt())
-//                            .reviewCnt(theme.getReviewCnt())
-//                            .build();
-//            themeLists.add(themeResponseDto);
-//        }
-//        Page<ThemeResponseDto> searchedThemes = new PageImpl<>(themeLists, pageable, filteredTheme.getTotalElements());
-//        return searchedThemes;
-//    }
+    //테마 이름 검색
+    public Page<ThemeResponseDto> searchTheme(Pageable pageable, String themeName, String username){
+
+        Page<Theme> filteredTheme = themeRepository.findByThemeName(pageable, themeName);
+
+        List<ThemeResponseDto> themeLists = new ArrayList<>();
+        for(Theme theme: filteredTheme) {
+            Optional<ThemeLike> themeLike = themeLikeRepository.findByThemeIdAndMemberUsername(theme.getId(), username);
+
+            //테마 좋아요 확인
+            boolean themeLikeCheck = themeLike.isPresent();
+
+            ThemeResponseDto themeResponseDto =
+                    ThemeResponseDto.builder()
+                            .id(theme.getId())
+                            .themeImgUrl(theme.getThemeImgUrl())
+                            .themeName(theme.getThemeName())
+                            .companyName(theme.getCompany().getCompanyName())
+                            .genre(theme.getGenre())
+                            .themeScore(theme.getThemeScore())
+                            .themeLikeCheck(themeLikeCheck)
+                            .totalLikeCnt(theme.getTotalLikeCnt())
+                            .reviewCnt(theme.getReviewCnt())
+                            .build();
+            themeLists.add(themeResponseDto);
+        }
+        Page<ThemeResponseDto> searchedThemes = new PageImpl<>(themeLists, pageable, filteredTheme.getTotalElements());
+        return searchedThemes;
+    }
 
 
     //테마 상세조회

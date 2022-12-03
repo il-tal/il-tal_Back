@@ -38,7 +38,6 @@ public class ThemeController {
     //테마 필터링
     @GetMapping("/themes")
     public ResponseDto<Page<ThemeResponseDto>> findFilter(@PageableDefault(size = 9, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-                                              @RequestParam(value = "themeName", required = false) String themeName,
                                               @RequestParam(value = "location", required = false) List<String> location,
                                               @RequestParam(value = "genreFilter", required = false) List<String> genreFilter,
                                               @RequestParam(value = "themeScore", required = false) List<Integer> themeScore,
@@ -47,32 +46,32 @@ public class ThemeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        Page<ThemeResponseDto> filteredThemeList = themeService.filter(pageable, themeName, location, genreFilter, themeScore, difficulty, people, username);
+        Page<ThemeResponseDto> filteredThemeList = themeService.filter(pageable, location, genreFilter, themeScore, difficulty, people, username);
         return ResponseDto.success(filteredThemeList);
     }
 
     //테마 필터링 결과 개수 반환
     @GetMapping("/themes/filterCnt")
     public ResponseDto<Long> filterCnt(Pageable pageable,
-                                       @RequestParam(value = "themeName", required = false) String themeName,
                                        @RequestParam(value = "location", required = false) List<String> location,
                                        @RequestParam(value = "genreFilter", required = false) List<String> genreFilter,
                                        @RequestParam(value = "themeScore", required = false) List<Integer> themeScore,
                                        @RequestParam(value = "difficulty", required = false) List<Integer> difficulty,
                                        @RequestParam(value = "people", required = false) List<Integer> people) {
-        return ResponseDto.success(themeService.countFilteredTheme(pageable, themeName, location, genreFilter, themeScore, difficulty, people));
+        return ResponseDto.success(themeService.countFilteredTheme(pageable, location, genreFilter, themeScore, difficulty, people));
     }
 
-//    //테마 이름 검색
-//    @GetMapping("/themes/search")
-//    public ResponseDto<Page<ThemeResponseDto>> findFilter(@PageableDefault(size = 6, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-//                                                          @RequestParam(value = "themeName", required = false) String themeName) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String username = authentication.getName();
-//
-//        Page<ThemeResponseDto> searchedThemeList = themeService.searchTheme(pageable, themeName, username);
-//        return ResponseDto.success(searchedThemeList);
-//    }
+
+    //테마 이름 검색
+    @GetMapping("/themes/search")
+    public ResponseDto<Page<ThemeResponseDto>> findFilter(@PageableDefault(size = 6, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                                                          @RequestParam(value = "themeName", required = false) String themeName) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        Page<ThemeResponseDto> searchedThemeList = themeService.searchTheme(pageable, themeName, username);
+        return ResponseDto.success(searchedThemeList);
+    }
 
 
     //테마 상세페이지
