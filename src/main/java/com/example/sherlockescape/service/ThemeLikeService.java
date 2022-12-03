@@ -13,6 +13,7 @@ import com.example.sherlockescape.repository.ThemeRepository;
 import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -23,6 +24,8 @@ public class ThemeLikeService {
     private final ThemeLikeRepository themeLikeRepository;
     private final ThemeRepository themeRepository;
     private final ValidateCheck validateCheck;
+
+    @Transactional
     public ResponseDto<ThemeLikeResponseDto> themeLikeUp(ThemeLikeRequestDto themeLikeRequestDto, String username) {
         Optional<ThemeLike> likes = themeLikeRepository
                 .findByThemeIdAndMemberUsername(Long.parseLong(themeLikeRequestDto.getThemeId()), username);

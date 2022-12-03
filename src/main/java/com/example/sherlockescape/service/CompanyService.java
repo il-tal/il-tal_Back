@@ -21,8 +21,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,31 +33,31 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true) //읽기 전용 쿼리의 성능 최적화
 public class CompanyService {
 
     private final CompanyRepository companyRepository;
-    private final AmazonS3Client amazonS3Client;
     private final ThemeRepository themeRepository;
     private final CompanyLikeRepository companyLikeRepository;
     private final ReviewRepository reviewRepository;
     private final ValidateCheck validateCheck;
-
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucketName;
+    private final CommonUtils commonUtils;
 
     /*
      *
      * 업체 DB 정보 등록
      * */
-    public ResponseDto<String> createCompany(MultipartFile multipartFile, CompanyRequestDto companyRequestDto) {
-        String fileName = CommonUtils.buildFileName(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-        String imgurl = amazonS3Client.getUrl(bucketName, fileName).toString();
+    @Transactional
+    public ResponseDto<String> createCompany(MultipartFile multipartFile, CompanyRequestDto companyRequestDto) throws IOException {
 
+        String imgUrl = commonUtils.createAll(multipartFile.getOriginalFilename(),
+                                              multipartFile.getContentType(),
+                                              multipartFile.getInputStream());
         Company company = Company.builder()
                 .companyName(companyRequestDto.getCompanyName())
                 .companyScore(companyRequestDto.getCompanyScore())
                 .location(companyRequestDto.getLocation())
-                .companyImgUrl(imgurl)
+                .companyImgUrl(imgUrl)
                 .companyUrl(companyRequestDto.getCompanyUrl())
                 .address(companyRequestDto.getAddress())
                 .phoneNumber(companyRequestDto.getPhoneNumber())

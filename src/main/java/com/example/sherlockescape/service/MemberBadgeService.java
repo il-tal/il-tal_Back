@@ -23,6 +23,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true) //읽기 전용 쿼리의 성능 최적화
 public class MemberBadgeService {
 
     private final ValidateCheck validateCheck;

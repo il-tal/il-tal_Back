@@ -1,11 +1,7 @@
 package com.example.sherlockescape.service;
 
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.util.IOUtils;
+
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.BadgeCreateRequestDto;
 import com.example.sherlockescape.dto.request.BadgeGiveRequestDto;
@@ -23,47 +19,42 @@ import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.domain.MemberBadge;
 import com.example.sherlockescape.domain.Review;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true) //읽기 전용 쿼리의 성능 최적화
 public class BadgeService {
 
     private final BadgeRepository badgeRepository;
-    private final AmazonS3Client amazonS3Client;
-
     private final ValidateCheck validateCheck;
     private final MemberBadgeRepository memberBadgeRepository;
     private final ReviewRepository reviewRepository;
+    private final CommonUtils commonUtils;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucketName;
 
     //뱃지 db 저장
+    @Transactional
     public ResponseDto<BadgeResponseDto> createBadge(MultipartFile multipartFile, BadgeCreateRequestDto badgeCreateRequestDto) throws IOException {
-        String fileName = CommonUtils.buildFileName(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(multipartFile.getContentType());
 
-        byte[] bytes = IOUtils.toByteArray(multipartFile.getInputStream());
-        objectMetadata.setContentLength(bytes.length);
-        ByteArrayInputStream byteArrayIs = new ByteArrayInputStream(bytes);
-        amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, byteArrayIs, objectMetadata)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
-        String imgurl = amazonS3Client.getUrl(bucketName, fileName).toString();
+       /*
+       * CommonUtils refactoring
+       * */
+       String imgUrl = commonUtils.createAll(multipartFile.getOriginalFilename(),
+                              multipartFile.getContentType(),
+                              multipartFile.getInputStream());
 
         Badge badge = Badge.builder()
                 .badgeName(badgeCreateRequestDto.getBadgeName())
                 .badgeExplain(badgeCreateRequestDto.getBadgeExplain())
-                .badgeImgUrl(imgurl)
+                .badgeImgUrl(imgUrl)
                 .badgeGoal(badgeCreateRequestDto.getBadgeGoal())
                 .build();
         badgeRepository.save(badge);
@@ -93,6 +84,7 @@ public class BadgeService {
         return badgeResponseDtoList;
     }
     //뱃지 부여
+    @Transactional
     public ResponseDto<BadgeResponseDto> giveBadge(String username, BadgeGiveRequestDto badgeGiveRequestDto) {
         Member member = validateCheck.getMember(username);
         List<Badge> badgeList = badgeRepository.findAll();
