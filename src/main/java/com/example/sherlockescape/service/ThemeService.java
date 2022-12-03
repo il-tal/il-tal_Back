@@ -89,15 +89,6 @@ public class ThemeService {
         return ResponseDto.success("테마 등록 성공");
     }
 
-//    //테마 전체 조회
-//    public List<ThemeResponseDto> findAllTheme(Pageable pageable) {
-//
-//        Page<Theme> allTheme = themeRepository.findAll(pageable);
-//        List<ThemeResponseDto> themeLists = allTheme.stream()
-//                .map(ThemeResponseDto::new).collect(Collectors.toList());
-//        return themeLists;
-//    }
-
     //테마 필터링
     public Page<ThemeResponseDto> filter(Pageable pageable, String themeName, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people, String username){
 
@@ -125,9 +116,45 @@ public class ThemeService {
                             .build();
             themeLists.add(themeResponseDto);
         }
-        Page<ThemeResponseDto> themes = new PageImpl<>(themeLists, pageable, filteredTheme.getTotalElements());
-        return themes;
+        Page<ThemeResponseDto> fiteredThemes = new PageImpl<>(themeLists, pageable, filteredTheme.getTotalElements());
+        return fiteredThemes;
     }
+
+    //테마 필터 결과 개수 반환
+    public Long countFilteredTheme(Pageable pageable, String themeName, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people) {
+        return themeRepository.findFilter(pageable, themeName, location, genreFilter, themeScore, difficulty, people).getTotalElements();
+    }
+
+//    //테마 이름 검색
+//    public Page<ThemeResponseDto> searchTheme(Pageable pageable, String themeName, String username){
+//
+//        Page<Theme> filteredTheme = themeRepository.findByThemeName(pageable, themeName);
+//
+//        List<ThemeResponseDto> themeLists = new ArrayList<>();
+//        for(Theme theme: filteredTheme) {
+//            Optional<ThemeLike> themeLike = themeLikeRepository.findByThemeIdAndMemberUsername(theme.getId(), username);
+//
+//            //테마 좋아요 확인
+//            boolean themeLikeCheck = themeLike.isPresent();
+//
+//            ThemeResponseDto themeResponseDto =
+//                    ThemeResponseDto.builder()
+//                            .id(theme.getId())
+//                            .themeImgUrl(theme.getThemeImgUrl())
+//                            .themeName(theme.getThemeName())
+//                            .companyName(theme.getCompany().getCompanyName())
+//                            .genre(theme.getGenre())
+//                            .themeScore(theme.getThemeScore())
+//                            .themeLikeCheck(themeLikeCheck)
+//                            .totalLikeCnt(theme.getTotalLikeCnt())
+//                            .reviewCnt(theme.getReviewCnt())
+//                            .build();
+//            themeLists.add(themeResponseDto);
+//        }
+//        Page<ThemeResponseDto> searchedThemes = new PageImpl<>(themeLists, pageable, filteredTheme.getTotalElements());
+//        return searchedThemes;
+//    }
+
 
     //테마 상세조회
     public ThemeDetailResponseDto findTheme(Long themeId, String username) {
@@ -237,18 +264,4 @@ public class ThemeService {
         Collections.shuffle(randomThemes);
         return new ArrayList<>(randomThemes.subList(0,10));
     }
-
-
-//    //랜덤 테마 조회
-//    public List<ThemeResponseDto> findRandomTheme(Pageable pageable) {
-//
-//        int qty = themeRepository.findAll().size();
-//        int idx = (int)(Math.random() * qty);
-//
-//        Page<Theme> randomTheme = themeRepository.findAll(PageRequest.of(idx,1));
-//        List<ThemeResponseDto> randomThemes = randomTheme.stream()
-//                .map(ThemeResponseDto::new).collect(Collectors.toList());
-//        return randomThemes;
-//    }
-
 }
