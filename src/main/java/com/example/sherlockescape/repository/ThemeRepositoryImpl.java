@@ -30,7 +30,6 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
     @Override
     public Page<Theme> findFilter(Pageable pageable, String themeName, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people) {
 
-        QTheme theme = QTheme.theme;
 
         List<Theme> result = queryFactory
                 .selectFrom(theme)

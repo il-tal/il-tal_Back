@@ -10,6 +10,7 @@ import com.example.sherlockescape.repository.CompanyLikeRepository;
 import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ public class CompanyLikeService {
     private final CompanyLikeRepository companyLikeRepository;
     private final ValidateCheck validateCheck;
 
+    @Transactional
     public ResponseDto<CompanyLikeResponseDto> companyLikeUp(CompanyLikeRequestDto companyLikeRequestDto, String username) {
         Optional<CompanyLike> likes = companyLikeRepository
                 .findByCompanyIdAndMemberUsername(Long.parseLong(companyLikeRequestDto.getCompanyId()), username);

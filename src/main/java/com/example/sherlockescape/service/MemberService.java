@@ -46,7 +46,7 @@ public class MemberService {
     private final TendencyRepository tendencyRepository;
 
     //회원가입
-    @org.springframework.transaction.annotation.Transactional
+    @Transactional
     public ResponseEntity<ResponseDto<MemberResponseDto>> signup(MemberRequestDto memberReqDto) {
 
         // username 중복 검사
@@ -73,9 +73,7 @@ public class MemberService {
                         .modifiedAt(member.getModifiedAt())
                         .build()
         ));
-
     }
-
 
     //로그인
     @Transactional
@@ -116,7 +114,6 @@ public class MemberService {
     private void setHeader(HttpServletResponse response, TokenDto tokenDto) {
         response.addHeader(JwtUtil.ACCESS_TOKEN, tokenDto.getAccessToken());
         response.addHeader(JwtUtil.REFRESH_TOKEN, tokenDto.getRefreshToken());
-
     }
 
     //로그아웃
@@ -194,6 +191,7 @@ public class MemberService {
     *
     * 내정보 전체 불러오기
     * */
+    @Transactional(readOnly = true) //읽기 전용 쿼리의 성능 최적화
     public ResponseDto<AllMyInfoResponseDto> getAllMyInfo(String username) {
         Member member = memberRepository.findByUsername(username).
                 orElse(null);

@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
@@ -33,47 +34,33 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)//읽기 전용 쿼리의 성능 최적화
 public class ThemeService {
 
     private final ThemeRepository themeRepository;
     private final CompanyRepository companyRepository;
-    private final AmazonS3Client amazonS3Client;
-
-    private final MemberRepository memberRepository;
-
     private final ValidateCheck validateCheck;
-
     private final ReviewRepository reviewRepository;
     private final ThemeLikeRepository themeLikeRepository;
-
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucketName;
-
-
+    private final CommonUtils commonUtils;
     /*
      *
      * 테마 DB 등록
      * */
+    @Transactional
     public ResponseDto<String> createTheme(Long companyId, MultipartFile multipartFile, ThemeRequestDto themeReqDto) throws IOException {
+        //업체 조회
         Company company = companyRepository.findById(companyId).orElseThrow(
                 () -> new IllegalArgumentException("해당 업체가 존재하지 않습니다.")
         );
-
-        String fileName = CommonUtils.buildFileName(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(multipartFile.getContentType());
-
-        byte[] bytes = IOUtils.toByteArray(multipartFile.getInputStream());
-        objectMetadata.setContentLength(bytes.length);
-        ByteArrayInputStream byteArrayIs = new ByteArrayInputStream(bytes);
-        amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, byteArrayIs, objectMetadata)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
-        String imgurl = amazonS3Client.getUrl(bucketName, fileName).toString();
-
+        //S3 이미지 올리기 기능
+        String imgUrl = commonUtils.createAll(multipartFile.getOriginalFilename(),
+                                              multipartFile.getContentType(),
+                                              multipartFile.getInputStream());
         Theme theme = Theme.builder()
                 .company(company)
                 .themeName(themeReqDto.getThemeName())
-                .themeImgUrl(imgurl)
+                .themeImgUrl(imgUrl)
                 .difficulty(themeReqDto.getDifficulty())
                 .genre(themeReqDto.getGenre())
                 .genreFilter(themeReqDto.getGenreFilter())
