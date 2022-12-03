@@ -58,16 +58,15 @@ public class Theme {
 
     @Column(nullable = false)
     private int price;
+
     @Column
     private int totalLikeCnt;
 
-    public Theme(Long themeId){
-        this.id = themeId;
-    }
-    public void updateTotalLikeCnt(int totalLikeCnt){
-        this.totalLikeCnt = totalLikeCnt;
-    }
-    public void updateThemeScore(double themeScore){
-        this.themeScore = themeScore;
-    }
+    @Column
+    private Long reviewCnt;
+
+    public Theme(Long themeId) { this.id = themeId; }
+    public void updateTotalLikeCnt(int totalLikeCnt) { this.totalLikeCnt = totalLikeCnt; }
+    public void updateThemeScore(double themeScore) { this.themeScore = themeScore; }
+    public void updateReviewCnt(Long reviewCnt) { this.reviewCnt = reviewCnt; }
 }
