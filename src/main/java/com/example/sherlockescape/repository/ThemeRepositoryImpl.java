@@ -25,36 +25,20 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
     private final JPAQueryFactory queryFactory;
 
 
+    //테마 필터링
     @Override
-    public Page<Theme> findFilter(Pageable pageable, String themeName, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people) {
-
-
-//        QueryResults<Theme> result = queryFactory
-//                .selectFrom(theme)
-//                .where(
-//                        eqLocation(location),
-//                        eqGenres(genreFilter),
-//                        eqThemeScore(themeScore),
-//                        eqDifficulty(difficulty),
-//                        eqPeople(people)
-//                )
-//                .limit(pageable.getPageSize()) // 현재 제한한 갯수
-//                .offset(pageable.getOffset())
-//                .orderBy(theme.id.desc())
-//                .fetchResults();
-//        return new PageImpl<>(result.getResults(), pageable, result.getTotal());
+    public Page<Theme> findFilter(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people) {
 
         List<Theme> result = queryFactory
                 .selectFrom(theme)
                 .where(
-                        eqThemeName(themeName),
                         eqLocation(location),
                         eqGenres(genreFilter),
                         eqThemeScore(themeScore),
                         eqDifficulty(difficulty),
                         eqPeople(people)
                 )
-                .limit(pageable.getPageSize()) // 현재 제한한 갯수
+                .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(sort(pageable),theme.id.desc())
                 .fetch();
@@ -62,7 +46,6 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
         long totalSize = queryFactory
                 .selectFrom(theme)
                 .where(
-                        eqThemeName(themeName),
                         eqLocation(location),
                         eqGenres(genreFilter),
                         eqThemeScore(themeScore),
@@ -73,6 +56,27 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
 
         return new PageImpl<>(result, pageable, totalSize);
     }
+
+
+    //테마 이름 검색
+    @Override
+    public Page<Theme> findByThemeName(Pageable pageable, String themeName) {
+        List<Theme> result = queryFactory
+                .selectFrom(theme)
+                .where(eqThemeName(themeName))
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .orderBy(sort(pageable),theme.id.desc())
+                .fetch();
+
+        long totalSize = queryFactory
+                .selectFrom(theme)
+                .where(eqThemeName(themeName))
+                .fetch().size();
+
+        return new PageImpl<>(result, pageable, totalSize);
+    }
+
 
     private BooleanExpression eqThemeName(String themeName) {
         return themeName != null ? theme.themeName.contains(themeName) : null;
@@ -124,9 +128,7 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
 
     //정렬하기
     private OrderSpecifier<?> sort(Pageable pageable) {
-        //서비스에서 보내준 Pageable 객체에 정렬조건 null 값 체크
         if (!pageable.getSort().isEmpty()) {
-            //정렬값이 들어 있으면 for 사용하여 값을 가져온다
             for (Sort.Order order : pageable.getSort()) {
                 switch (order.getProperty()) {
                     case "themeScore":

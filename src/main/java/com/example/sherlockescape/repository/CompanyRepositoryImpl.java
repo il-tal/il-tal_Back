@@ -17,11 +17,10 @@ public class CompanyRepositoryImpl implements CompanyRepositoryCustom{
 
     private final JPAQueryFactory jpaQueryFactory;
     @Override
-    public Page<Company> getCompanyList(Pageable pageable, String companyName, String location) {
+    public Page<Company> getCompanyList(Pageable pageable, String location) {
         List<Company> result = jpaQueryFactory
                 .selectFrom(company)
                 .where(
-                        eqCompanyName(companyName),
                         eqLocation(location)
                 )
                 .limit(pageable.getPageSize())
@@ -32,13 +31,32 @@ public class CompanyRepositoryImpl implements CompanyRepositoryCustom{
         long totalSize = jpaQueryFactory
                 .selectFrom(company)
                 .where(
-                        eqCompanyName(companyName),
                         eqLocation(location)
                 )
                 .fetch().size();
 
         return new PageImpl<> (result, pageable, totalSize);
     }
+
+    //업체 이름 검색
+    @Override
+    public Page<Company> findByCompanyName(Pageable pageable, String companyName) {
+        List<Company> result = jpaQueryFactory
+                .selectFrom(company)
+                .where(eqCompanyName(companyName))
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .orderBy(company.id.desc())
+                .fetch();
+
+        long totalSize = jpaQueryFactory
+                .selectFrom(company)
+                .where(eqCompanyName(companyName))
+                .fetch().size();
+
+        return new PageImpl<> (result, pageable, totalSize);
+    }
+
 
     private BooleanExpression eqCompanyName(String companyName) {
         return companyName != null ? company.companyName.contains(companyName) : null;
