@@ -48,8 +48,6 @@ public class ReviewService {
 				() -> new GlobalException(ErrorCode.THEME_NOT_FOUND)
 		);
 
-
-
 		Review review = Review.builder()
 				.theme(theme)
 				.member(member)

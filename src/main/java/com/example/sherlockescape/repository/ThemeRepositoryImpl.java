@@ -1,7 +1,5 @@
 package com.example.sherlockescape.repository;
 
-import com.example.sherlockescape.domain.QReview;
-import com.example.sherlockescape.domain.QTheme;
 import com.example.sherlockescape.domain.Theme;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
