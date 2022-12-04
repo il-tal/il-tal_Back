@@ -120,6 +120,9 @@ public class ReviewService {
 		Long companyId = theme.getCompany().getId();
 		setCompanyScore(companyId);
 
+		//리뷰카운트 테마에 저장
+		theme.updateReviewCnt(reviewRepository.countByThemeId(themeId));
+
 		return ResponseDto.success(reviewAllList);
 	}
 
