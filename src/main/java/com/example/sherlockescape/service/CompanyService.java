@@ -108,9 +108,9 @@ public class CompanyService {
     }
 
     /*업체 정보 조회*/
-    public Page<AllCompanyResponseDto> getAllCompany(Pageable pageable, String companyName, String location, String username){
+    public Page<AllCompanyResponseDto> getAllCompany(Pageable pageable, String location, String username){
 
-        Page<Company> companyList = companyRepository.getCompanyList(pageable, companyName, location);
+        Page<Company> companyList = companyRepository.getCompanyList(pageable, location);
         List<AllCompanyResponseDto> allResponseDtoList = new ArrayList<>();
 
         for(Company company: companyList){
@@ -126,7 +126,53 @@ public class CompanyService {
             //댓글 수 추가
             int totalReviewCnt = 0;
             for(Theme theme: themeList){
-                totalReviewCnt += theme.getReviewCnt();
+                int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
+                totalReviewCnt += reviewCnt;
+            }
+            AllCompanyResponseDto allResponseDto =
+                    AllCompanyResponseDto.builder()
+                            .id(companyId)
+                            .companyName(company.getCompanyName())
+                            .companyImgUrl(company.getCompanyImgUrl())
+                            .location(company.getLocation())
+                            .companyScore(company.getCompanyScore())
+                            .companyUrl(company.getCompanyUrl())
+                            .workHour(company.getWorkHour())
+                            .phoneNumber(company.getPhoneNumber())
+                            .address(company.getAddress())
+                            .companyLikeCnt(companyLikeCnt)
+                            .companyLikeCheck(companyLikeCheck)
+                            .totalReviewCnt(totalReviewCnt)
+                            .themeList(themeList).build();
+            allResponseDtoList.add(allResponseDto);
+        }
+        return new PageImpl<>(allResponseDtoList, pageable, companyList.getTotalElements());
+    }
+
+    /*
+    *
+    * 업체 이름 검색
+    * */
+    public Page<AllCompanyResponseDto> searchCompany(Pageable pageable, String companyName, String username){
+
+        Page<Company> companyList = companyRepository.findByCompanyName(pageable, companyName);
+        List<AllCompanyResponseDto> allResponseDtoList = new ArrayList<>();
+
+        for(Company company: companyList){
+            Long companyId = company.getId();
+            Optional<CompanyLike> companyLike = companyLikeRepository
+                    .findByCompanyIdAndMemberUsername(companyId, username);
+
+            //좋아요 여부 체크
+            boolean companyLikeCheck = companyLike.isPresent();
+
+            List<Theme> themeList = themeRepository.findAllByCompanyId(companyId);
+            Long companyLikeCnt = companyLikeRepository.countByCompanyId(companyId);
+            //댓글 수 추가
+            int totalReviewCnt = 0;
+            for(Theme theme: themeList){
+                int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
+                totalReviewCnt += reviewCnt;
             }
             AllCompanyResponseDto allResponseDto =
                     AllCompanyResponseDto.builder()
@@ -165,7 +211,7 @@ public class CompanyService {
             int reviewCnt = 0;
             List<Theme> themeList = themeRepository.findAllByCompanyId(company.getId());
             for(Theme theme: themeList){
-                reviewCnt += theme.getReviewCnt();
+                reviewCnt += Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
             }
             MyCompanyResponseDto myCompanyResponseDto =
                     MyCompanyResponseDto.builder()
