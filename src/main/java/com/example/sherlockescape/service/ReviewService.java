@@ -180,6 +180,7 @@ public class ReviewService {
 		return reviewResponseDtoList;
 	}
 
+	//준영속 엔티티 변경 감지 기능 적용
 	//테마 평점 계산
 	private void setThemeScore(Long themeId){
 		Theme updateThemeScore = themeRepository.findById(themeId).orElseThrow(
@@ -205,6 +206,7 @@ public class ReviewService {
 	}
 
 
+	//준영속 엔티티 변경 감지 기능 적용
 	//업체 평점 계산
 	private void setCompanyScore(Long companyId) {
 		Company updateCompanyScore = companyRepository.findById(companyId).orElseThrow(
