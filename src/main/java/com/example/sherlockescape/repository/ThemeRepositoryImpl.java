@@ -128,9 +128,7 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
 
     //정렬하기
     private OrderSpecifier<?> sort(Pageable pageable) {
-        //서비스에서 보내준 Pageable 객체에 정렬조건 null 값 체크
         if (!pageable.getSort().isEmpty()) {
-            //정렬값이 들어 있으면 for 사용하여 값을 가져온다
             for (Sort.Order order : pageable.getSort()) {
                 switch (order.getProperty()) {
                     case "themeScore":
