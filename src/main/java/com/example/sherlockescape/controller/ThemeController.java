@@ -32,7 +32,6 @@ public class ThemeController {
                                            @RequestPart(required = false, value = "file") MultipartFile multipartFile,
                                            @RequestPart(value = "theme") ThemeRequestDto themeRequestDto) throws IOException {
         return themeService.createTheme(companyId, multipartFile, themeRequestDto);
-
     }
 
     //테마 필터링
@@ -64,7 +63,7 @@ public class ThemeController {
 
     //테마 이름 검색
     @GetMapping("/themes/search")
-    public ResponseDto<Page<ThemeResponseDto>> findFilter(@PageableDefault(size = 6, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+    public ResponseDto<Page<ThemeResponseDto>> searchTheme(@PageableDefault(size = 6, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                                                           @RequestParam(value = "themeName", required = false) String themeName) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
