@@ -86,8 +86,7 @@ public class CompanyService {
         //리뷰 개수 카운트
         int totalReviewCnt = 0;
         for(Theme theme: themeList){
-            int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
-            totalReviewCnt += reviewCnt;
+            totalReviewCnt += theme.getReviewCnt();
         }
         CompanyDetailResponseDto companyDetailResponseDto =
                 CompanyDetailResponseDto.builder()
@@ -127,8 +126,7 @@ public class CompanyService {
             //댓글 수 추가
             int totalReviewCnt = 0;
             for(Theme theme: themeList){
-                int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
-                totalReviewCnt += reviewCnt;
+                totalReviewCnt += theme.getReviewCnt();
             }
             AllCompanyResponseDto allResponseDto =
                     AllCompanyResponseDto.builder()
@@ -167,7 +165,7 @@ public class CompanyService {
             int reviewCnt = 0;
             List<Theme> themeList = themeRepository.findAllByCompanyId(company.getId());
             for(Theme theme: themeList){
-                reviewCnt += reviewRepository.countByThemeId(theme.getId());
+                reviewCnt += theme.getReviewCnt();
             }
             MyCompanyResponseDto myCompanyResponseDto =
                     MyCompanyResponseDto.builder()
