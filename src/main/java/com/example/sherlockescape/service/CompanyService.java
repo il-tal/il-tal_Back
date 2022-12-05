@@ -149,10 +149,8 @@ public class CompanyService {
         return new PageImpl<>(allResponseDtoList, pageable, companyList.getTotalElements());
     }
 
-    /*
-    *
-    * 업체 이름 검색
-    * */
+
+    /*업체 이름 검색*/
     public Page<AllCompanyResponseDto> searchCompany(Pageable pageable, String companyName, String username){
 
         Page<Company> companyList = companyRepository.findByCompanyName(pageable, companyName);
@@ -193,6 +191,7 @@ public class CompanyService {
         }
         return new PageImpl<>(allResponseDtoList, pageable, companyList.getTotalElements());
     }
+
 
     /*
      *

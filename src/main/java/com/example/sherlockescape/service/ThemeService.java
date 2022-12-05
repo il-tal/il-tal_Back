@@ -1,10 +1,5 @@
 package com.example.sherlockescape.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.util.IOUtils;
 import com.example.sherlockescape.domain.Company;
 import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.domain.Theme;
@@ -20,7 +15,6 @@ import com.example.sherlockescape.repository.*;
 import com.example.sherlockescape.utils.CommonUtils;
 import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -40,7 +33,6 @@ public class ThemeService {
     private final ThemeRepository themeRepository;
     private final CompanyRepository companyRepository;
     private final ValidateCheck validateCheck;
-    private final ReviewRepository reviewRepository;
     private final ThemeLikeRepository themeLikeRepository;
     private final CommonUtils commonUtils;
     /*
@@ -76,15 +68,6 @@ public class ThemeService {
         return ResponseDto.success("테마 등록 성공");
     }
 
-//    //테마 전체 조회
-//    public List<ThemeResponseDto> findAllTheme(Pageable pageable) {
-//
-//        Page<Theme> allTheme = themeRepository.findAll(pageable);
-//        List<ThemeResponseDto> themeLists = allTheme.stream()
-//                .map(ThemeResponseDto::new).collect(Collectors.toList());
-//        return themeLists;
-//    }
-
     //테마 필터링
     public Page<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people, String username){
 
@@ -112,8 +95,8 @@ public class ThemeService {
                             .build();
             themeLists.add(themeResponseDto);
         }
-        Page<ThemeResponseDto> themes = new PageImpl<>(themeLists, pageable, filteredTheme.getTotalElements());
-        return themes;
+        Page<ThemeResponseDto> fiteredThemes = new PageImpl<>(themeLists, pageable, filteredTheme.getTotalElements());
+        return fiteredThemes;
     }
 
     //테마 필터 결과 개수 반환
@@ -260,18 +243,4 @@ public class ThemeService {
         Collections.shuffle(randomThemes);
         return new ArrayList<>(randomThemes.subList(0,10));
     }
-
-
-//    //랜덤 테마 조회
-//    public List<ThemeResponseDto> findRandomTheme(Pageable pageable) {
-//
-//        int qty = themeRepository.findAll().size();
-//        int idx = (int)(Math.random() * qty);
-//
-//        Page<Theme> randomTheme = themeRepository.findAll(PageRequest.of(idx,1));
-//        List<ThemeResponseDto> randomThemes = randomTheme.stream()
-//                .map(ThemeResponseDto::new).collect(Collectors.toList());
-//        return randomThemes;
-//    }
-
 }
