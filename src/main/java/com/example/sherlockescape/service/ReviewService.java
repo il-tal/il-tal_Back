@@ -51,8 +51,6 @@ public class ReviewService {
 				() -> new GlobalException(ErrorCode.THEME_NOT_FOUND)
 		);
 
-
-
 		Review review = Review.builder()
 				.theme(theme)
 				.member(member)
@@ -135,7 +133,10 @@ public class ReviewService {
 		Long companyId = theme.getCompany().getId();
 		setCompanyScore(companyId);
 
-		return new PageImpl<>(reviewAllList, pageable, reviewList.getTotalElements());
+		//리뷰카운트 테마에 저장
+		theme.updateReviewCnt(reviewRepository.countByThemeId(themeId));
+  
+    return new PageImpl<>(reviewAllList, pageable, reviewList.getTotalElements());
 	}
 
 	// 테마 후기 수정
@@ -195,6 +196,7 @@ public class ReviewService {
 		return reviewResponseDtoList;
 	}
 
+	//준영속 엔티티 변경 감지 기능 적용
 	//테마 평점 계산
 	private void setThemeScore(Long themeId){
 		Theme updateThemeScore = themeRepository.findById(themeId).orElseThrow(
@@ -220,6 +222,7 @@ public class ReviewService {
 	}
 
 
+	//준영속 엔티티 변경 감지 기능 적용
 	//업체 평점 계산
 	private void setCompanyScore(Long companyId) {
 		Company updateCompanyScore = companyRepository.findById(companyId).orElseThrow(
