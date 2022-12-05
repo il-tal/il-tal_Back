@@ -16,5 +16,6 @@ public class MemberBadgeResponseDto {
 	private String mainBadgeImg;
 	private String mainBadgeName;
 	private int achieveBadgeCnt;
+	private int totalAchieveCnt;
 
 }

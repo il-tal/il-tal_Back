@@ -17,6 +17,7 @@ import com.example.sherlockescape.repository.ReviewRepository;
 import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,24 +90,21 @@ public class MemberBadgeService {
     }
 
     // 메인페이지 - 명예의 전당 : 메인 badge 조회 + 획득한 badge 개수 조회
-    // 멤버 전체조회 >
     @Transactional(readOnly = true)
-    public List<MemberBadgeResponseDto> getMemberRank(Pageable pageable){
-
-        Page<Member> hofList = memberBadgeRepository.getHofList(pageable);
+    public Page<MemberBadgeResponseDto> getMemberRank(Pageable pageable){
 
         // 멤버 컬럼 값들 리스트로 변환
-        List<Member> memberList = memberRepository.findAll();
+        Page<Member> memberList = memberRepository.findAll(pageable);
 
-        for(Member member2 : memberList ) {
-            int achieveBadgeCnt = memberBadgeRepository.countAllByMemberId(member2.getId());
-//            int achieveBadgeCnt = memberBadgeRepository.findAllByMemberId(member2.getId()).size();
-            member2.updateMemberBadgeCnt(achieveBadgeCnt);
-            memberRepository.save(member2);
+        for(Member member : memberList ) {
+            int achieveBadgeCnt = memberBadgeRepository.countAllByMemberId(member.getId());
+            member.updateMemberBadgeCnt(achieveBadgeCnt);
+            memberRepository.save(member);
+            setTotalAchieveCnt(member);
         }
 
         List<MemberBadgeResponseDto> memberHofList = new ArrayList<>();
-        for(Member member : hofList) {
+        for(Member member : memberList) {
                 MemberBadgeResponseDto memberBadgeResponseDtoList =
                     MemberBadgeResponseDto.builder()
                             .id(member.getId())
@@ -114,10 +112,23 @@ public class MemberBadgeService {
                             .mainBadgeImg(member.getMainBadgeImg())
                             .mainBadgeName(member.getMainBadgeName())
                             .achieveBadgeCnt(member.getAchieveBadgeCnt())
-//                            .totalAchieveCnt(memberBadgeRepository.) // : 성공횟수
+                            .totalAchieveCnt(member.getTotalAchieveCnt())
                             .build();
             memberHofList.add(memberBadgeResponseDtoList);
+            System.out.println(member.getAchieveBadgeCnt());
         }
-        return memberHofList;
+//        return memberHofList;
+        return new PageImpl<>(memberHofList, pageable,memberList.getTotalElements());
+    }
+    public void setTotalAchieveCnt(Member member) {
+        List<Review> reviewList = reviewRepository.findReviewsByMember(member);
+        int totalAchieveCnt = 0;
+        for (Review review : reviewList) {
+            if (review.isSuccess()) {
+                totalAchieveCnt += 1;
+                member.updateTotalAchieveCnt(totalAchieveCnt);
+                memberRepository.save(member);
+            }
+        }
     }
 }
