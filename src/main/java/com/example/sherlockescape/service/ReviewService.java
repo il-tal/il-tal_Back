@@ -17,6 +17,7 @@ import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,7 +95,7 @@ public class ReviewService {
 	}
 
 	// 해당 테마 후기 조회
-	public ResponseDto<?> getReview(Long themeId, Pageable pageable) {
+	public Page<ReviewResponseDto> getReview(Long themeId, Pageable pageable) {
 
 		List<Review> reviewLists = reviewRepository.findAllByThemeId(themeId);
 
@@ -121,7 +122,6 @@ public class ReviewService {
 							.difficulty(review.getDifficulty())
 							.hint(review.getHint())
 							.comment(review.getComment())
-							.reviewCnt(totalReviewCnt)
 							.build()
 			);
 		}
@@ -135,7 +135,7 @@ public class ReviewService {
 		Long companyId = theme.getCompany().getId();
 		setCompanyScore(companyId);
 
-		return ResponseDto.success(reviewAllList);
+		return new PageImpl<>(reviewAllList, pageable, reviewList.getTotalElements());
 	}
 
 	// 테마 후기 수정
