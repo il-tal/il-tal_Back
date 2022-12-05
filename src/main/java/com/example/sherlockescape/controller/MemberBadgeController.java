@@ -2,8 +2,8 @@ package com.example.sherlockescape.controller;
 
 
 import com.example.sherlockescape.dto.ResponseDto;
-import com.example.sherlockescape.dto.response.MemberBadgeResponseDto;
 import com.example.sherlockescape.dto.response.MainAchieveResponseDto;
+import com.example.sherlockescape.dto.response.MemberBadgeResponseDto;
 import com.example.sherlockescape.dto.response.UpdateBadgeResponseDto;
 import com.example.sherlockescape.service.MemberBadgeService;
 import lombok.RequiredArgsConstructor;
@@ -28,31 +28,32 @@ public class MemberBadgeController {
 
 
     /*
-    *
-    * 대표 칭호 수정
-    * */
+     *
+     * 대표 칭호 수정
+     * */
     @PutMapping("/badge/{badgeId}")
     public ResponseDto<UpdateBadgeResponseDto> updateBadge(@AuthenticationPrincipal UserDetails userDetails,
-                                                           @PathVariable Long badgeId){
+                                                           @PathVariable Long badgeId) {
         return memberBadgeService.updateBadge(userDetails.getUsername(), badgeId);
     }
 
     /*
-    *
-    * 메인페이지 업적 조회
-    * */
+     *
+     * 메인페이지 업적 조회
+     * */
     @GetMapping("/main/achieve")
-    public ResponseDto<MainAchieveResponseDto> getAchieve(@AuthenticationPrincipal UserDetails userDetails){
+    public ResponseDto<MainAchieveResponseDto> getAchieve(@AuthenticationPrincipal UserDetails userDetails) {
         return memberBadgeService.getAchieve(userDetails.getUsername());
     }
 
     // 메인페이지 - 명예의 전당
-    @GetMapping("/main/rank")
-    public ResponseDto<List<MemberBadgeResponseDto>> getMemberRank(@PageableDefault(size = 4) Pageable pageable){
+    @GetMapping("/main/hof")
+    public ResponseDto<List<MemberBadgeResponseDto>> getMemberRank(@PageableDefault(size = 4) Pageable pageable) {
 
         //가입회원 비가입회원 구분
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
+
         List<MemberBadgeResponseDto> resDto = memberBadgeService.getMemberRank(pageable, username);
         return ResponseDto.success(resDto);
     }
