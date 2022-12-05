@@ -4,7 +4,7 @@ import com.example.sherlockescape.domain.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface MemberBadgeRepositoryCustom {
+public interface MemberRepositoryCustom {
 
-	Page<Member> getHofList(Pageable pageable);
+	Page<Member> findAll(Pageable pageable);
 }
