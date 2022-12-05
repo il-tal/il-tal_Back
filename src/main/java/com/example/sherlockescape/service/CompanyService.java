@@ -1,22 +1,25 @@
 package com.example.sherlockescape.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.example.sherlockescape.domain.*;
-
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.CompanyRequestDto;
 import com.example.sherlockescape.dto.response.AllCompanyResponseDto;
 import com.example.sherlockescape.dto.response.CompanyDetailResponseDto;
 import com.example.sherlockescape.dto.response.MyCompanyResponseDto;
-import com.example.sherlockescape.exception.ErrorCode;
-import com.example.sherlockescape.exception.GlobalException;
-import com.example.sherlockescape.repository.*;
+import com.example.sherlockescape.repository.CompanyLikeRepository;
+import com.example.sherlockescape.repository.CompanyRepository;
+import com.example.sherlockescape.repository.ReviewRepository;
+import com.example.sherlockescape.repository.ThemeRepository;
+import com.example.sherlockescape.repository.review.exception.ErrorCode;
+import com.example.sherlockescape.repository.review.exception.GlobalException;
 
+import com.example.sherlockescape.domain.Company;
+import com.example.sherlockescape.domain.CompanyLike;
+import com.example.sherlockescape.domain.Member;
+import com.example.sherlockescape.domain.Theme;
 import com.example.sherlockescape.utils.CommonUtils;
 import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service

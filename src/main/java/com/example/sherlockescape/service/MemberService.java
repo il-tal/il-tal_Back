@@ -14,8 +14,8 @@ import com.example.sherlockescape.dto.response.LoginResponseDto;
 import com.example.sherlockescape.dto.response.MemberResponseDto;
 
 import com.example.sherlockescape.dto.response.NicknameResponseDto;
-import com.example.sherlockescape.exception.ErrorCode;
-import com.example.sherlockescape.exception.GlobalException;
+import com.example.sherlockescape.repository.review.exception.ErrorCode;
+import com.example.sherlockescape.repository.review.exception.GlobalException;
 import com.example.sherlockescape.security.jwt.JwtUtil;
 import com.example.sherlockescape.security.jwt.TokenDto;
 import com.example.sherlockescape.utils.ValidateCheck;

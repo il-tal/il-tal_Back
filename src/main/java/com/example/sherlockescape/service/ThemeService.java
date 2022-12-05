@@ -1,10 +1,9 @@
 package com.example.sherlockescape.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.util.IOUtils;
+import com.example.sherlockescape.repository.CompanyRepository;
+import com.example.sherlockescape.repository.ReviewRepository;
+import com.example.sherlockescape.repository.ThemeLikeRepository;
+import com.example.sherlockescape.repository.ThemeRepository;
 import com.example.sherlockescape.domain.Company;
 import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.domain.Theme;
@@ -14,13 +13,11 @@ import com.example.sherlockescape.dto.request.ThemeRequestDto;
 import com.example.sherlockescape.dto.response.MyThemeResponseDto;
 import com.example.sherlockescape.dto.response.ThemeDetailResponseDto;
 import com.example.sherlockescape.dto.response.ThemeResponseDto;
-import com.example.sherlockescape.exception.ErrorCode;
-import com.example.sherlockescape.exception.GlobalException;
-import com.example.sherlockescape.repository.*;
+import com.example.sherlockescape.repository.review.exception.ErrorCode;
+import com.example.sherlockescape.repository.review.exception.GlobalException;
 import com.example.sherlockescape.utils.CommonUtils;
 import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 
