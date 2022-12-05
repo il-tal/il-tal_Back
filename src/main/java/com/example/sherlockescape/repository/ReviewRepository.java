@@ -9,13 +9,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ReviewRepository extends JpaRepository<Review, Long> {
-
-
+public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRepositoryCustom {
 	List<Review> findAllByThemeId(Long themeId);
     List<Review> findReviewsByMember(Member member);
     Long countByThemeId(Long id);
     List<Review> findReviewsByMemberUsername(String username);
 
+	Long countAllById (Long id);
 }
 

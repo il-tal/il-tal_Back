@@ -21,5 +21,6 @@ public class ReviewResponseDto {
 	private int difficulty;
 	private int hint;
 	private String comment;
+	private int reviewCnt;
 
 }
