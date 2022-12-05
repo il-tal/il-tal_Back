@@ -62,10 +62,6 @@ public class MemberBadgeService {
 
         List<Review> reviewList = reviewRepository.findReviewsByMember(member);
         List<MemberBadge> memberBadgeList = memberBadgeRepository.findAllByMemberUsername(username);
-        //획득한 뱃지 개수의 합 저장하기
-//        int achieveBadgeCnt = memberBadgeList.size();
-//        member.updateMemberBadgeCnt(achieveBadgeCnt);
-//        memberRepository.save(member);
         int totalAchieveCnt = 0;
         int totalFailCnt = 0;
         for(Review review: reviewList){
@@ -93,18 +89,27 @@ public class MemberBadgeService {
     }
 
     // 메인페이지 - 명예의 전당 : 메인 badge 조회 + 획득한 badge 개수 조회
+    // 멤버 전체조회 >
     @Transactional(readOnly = true)
-    public List<MemberBadgeResponseDto> getMemberRank(Pageable pageable, String username){
+    public List<MemberBadgeResponseDto> getMemberRank(Pageable pageable){
 
-        Page<MemberBadge> hofList = memberBadgeRepository.getHofList(pageable, username);
+        Page<Member> hofList = memberBadgeRepository.getHofList(pageable);
+
+        // 멤버 컬럼 값들 리스트로 변환
+        List<Member> memberList = memberRepository.findAll();
+
+        for(Member member2 : memberList ) {
+            int achieveBadgeCnt = memberBadgeRepository.countAllByMemberId(member2.getId());
+//            int achieveBadgeCnt = memberBadgeRepository.findAllByMemberId(member2.getId()).size();
+            member2.updateMemberBadgeCnt(achieveBadgeCnt);
+            memberRepository.save(member2);
+        }
 
         List<MemberBadgeResponseDto> memberHofList = new ArrayList<>();
-        for(MemberBadge memberBadge : hofList) {
-
-            Member member = validateCheck.getMember(username);
-
-            MemberBadgeResponseDto memberBadgeResponseDtoList =
+        for(Member member : hofList) {
+                MemberBadgeResponseDto memberBadgeResponseDtoList =
                     MemberBadgeResponseDto.builder()
+                            .id(member.getId())
                             .nickname(member.getNickname())
                             .mainBadgeImg(member.getMainBadgeImg())
                             .mainBadgeName(member.getMainBadgeName())

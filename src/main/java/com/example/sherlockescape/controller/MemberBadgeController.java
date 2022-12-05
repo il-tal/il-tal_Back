@@ -8,6 +8,7 @@ import com.example.sherlockescape.dto.response.UpdateBadgeResponseDto;
 import com.example.sherlockescape.service.MemberBadgeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -48,13 +49,13 @@ public class MemberBadgeController {
 
     // 메인페이지 - 명예의 전당
     @GetMapping("/main/hof")
-    public ResponseDto<List<MemberBadgeResponseDto>> getMemberRank(@PageableDefault(size = 4) Pageable pageable) {
+    public ResponseDto<List<MemberBadgeResponseDto>> getMemberRank(@PageableDefault(size = 4, sort = "achieveBadgeCnt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         //가입회원 비가입회원 구분
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        List<MemberBadgeResponseDto> resDto = memberBadgeService.getMemberRank(pageable, username);
+        List<MemberBadgeResponseDto> resDto = memberBadgeService.getMemberRank(pageable);
         return ResponseDto.success(resDto);
     }
 }

@@ -66,5 +66,6 @@ public class Member extends BaseTimeEntity {
         this.password = password;
         this.mainBadgeImg = mainBadgeImg;
         this.mainBadgeName = mainBadgeName;
+        this.achieveBadgeCnt = 0;
     }
 }
