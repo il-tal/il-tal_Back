@@ -20,9 +20,7 @@ public class CompanyRepositoryImpl implements CompanyRepositoryCustom{
     public Page<Company> getCompanyList(Pageable pageable, String location) {
         List<Company> result = jpaQueryFactory
                 .selectFrom(company)
-                .where(
-                        eqLocation(location)
-                )
+                .where(eqLocation(location))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(company.id.asc())
