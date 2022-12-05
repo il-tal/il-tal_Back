@@ -63,7 +63,7 @@ public class ThemeController {
 
     //테마 이름 검색
     @GetMapping("/themes/search")
-    public ResponseDto<Page<ThemeResponseDto>> searchTheme(@PageableDefault(size = 6, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+    public ResponseDto<Page<ThemeResponseDto>> searchTheme(@PageableDefault(size = 4, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                                                           @RequestParam(value = "themeName", required = false) String themeName) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
