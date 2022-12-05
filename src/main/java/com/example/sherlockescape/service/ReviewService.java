@@ -16,6 +16,9 @@ import com.example.sherlockescape.repository.ThemeRepository;
 import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,8 +50,6 @@ public class ReviewService {
 		Theme theme = themeRepository.findById(themeId).orElseThrow(
 				() -> new GlobalException(ErrorCode.THEME_NOT_FOUND)
 		);
-
-
 
 		Review review = Review.builder()
 				.theme(theme)
@@ -92,10 +93,22 @@ public class ReviewService {
 	}
 
 	// 해당 테마 후기 조회
-	public ResponseDto<?> getReview(Long themeId) {
+	public Page<ReviewResponseDto> getReview(Long themeId, Pageable pageable) {
+
+		List<Review> reviewLists = reviewRepository.findAllByThemeId(themeId);
+
+		int totalReviewCnt = 0;
+		for(Review review: reviewLists){
+			int reviewCnt = Math.toIntExact(reviewRepository.countAllById(review.getId()));
+			totalReviewCnt += reviewCnt;
+		}
+
+		Page<Review> reviewList = reviewRepository.getReviewList(pageable, themeId);
+
 		themeRepository.findById(themeId);
 		List<ReviewResponseDto> reviewAllList = new ArrayList<>();
-		List<Review> reviewList = reviewRepository.findAllByThemeId(themeId);
+
+
 		for(Review review: reviewList) {
 			reviewAllList.add(
 					ReviewResponseDto.builder()
@@ -122,8 +135,8 @@ public class ReviewService {
 
 		//리뷰카운트 테마에 저장
 		theme.updateReviewCnt(reviewRepository.countByThemeId(themeId));
-
-		return ResponseDto.success(reviewAllList);
+  
+    return new PageImpl<>(reviewAllList, pageable, reviewList.getTotalElements());
 	}
 
 	// 테마 후기 수정
@@ -183,6 +196,7 @@ public class ReviewService {
 		return reviewResponseDtoList;
 	}
 
+	//준영속 엔티티 변경 감지 기능 적용
 	//테마 평점 계산
 	private void setThemeScore(Long themeId){
 		Theme updateThemeScore = themeRepository.findById(themeId).orElseThrow(
@@ -202,12 +216,13 @@ public class ReviewService {
 				.average().orElse(0);
 		double themeScore = Math.round(average*100)/100.0;
 
-		//해당 테마의 score로 저장하기
+		//해당 테마의 score 로 저장하기
 		updateThemeScore.updateThemeScore(themeScore);
 		themeRepository.save(updateThemeScore);
 	}
 
 
+	//준영속 엔티티 변경 감지 기능 적용
 	//업체 평점 계산
 	private void setCompanyScore(Long companyId) {
 		Company updateCompanyScore = companyRepository.findById(companyId).orElseThrow(
@@ -231,7 +246,7 @@ public class ReviewService {
 				.average().orElse(0);
 		double companyScore = Math.round(average*100)/100.0;
 
-		//해당 테마의 score로 저장하기
+		//해당 테마의 score 로 저장하기
 		updateCompanyScore.updateCompanyScore(companyScore);
 		companyRepository.save(updateCompanyScore);
 	}

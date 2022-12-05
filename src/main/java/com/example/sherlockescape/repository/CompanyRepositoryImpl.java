@@ -63,5 +63,4 @@ public class CompanyRepositoryImpl implements CompanyRepositoryCustom{
     private BooleanExpression eqLocation(String location) {
         return location != null ? company.location.eq(location) : null;
     }
-
 }
