@@ -3,8 +3,13 @@ package com.example.sherlockescape.controller;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ReviewRequestDto;
 import com.example.sherlockescape.dto.response.MyReviewResponseDto;
+import com.example.sherlockescape.dto.response.ReviewResponseDto;
 import com.example.sherlockescape.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +33,9 @@ public class ReviewController {
 
 	// 테마 후기 조회
 	@GetMapping("/{themeId}/reviews")
-	public ResponseDto<?> getReview(@PathVariable Long themeId) {
-		return reviewService.getReview(themeId);
+	public ResponseDto<Page<ReviewResponseDto>> getReview (@PathVariable Long themeId,
+														   @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+		return ResponseDto.success(reviewService.getReview(themeId, pageable));
 	}
 
 	// 테마 후기 수정
