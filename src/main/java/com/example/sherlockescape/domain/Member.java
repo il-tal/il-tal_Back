@@ -73,5 +73,6 @@ public class Member extends BaseTimeEntity {
         this.mainBadgeImg = mainBadgeImg;
         this.mainBadgeName = mainBadgeName;
         this.achieveBadgeCnt = 0;
+        this.totalAchieveCnt = 0;
     }
 }
