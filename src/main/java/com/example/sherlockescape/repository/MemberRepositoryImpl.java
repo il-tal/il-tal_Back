@@ -24,7 +24,8 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
 				.selectFrom(member)
 				.limit(pageable.getPageSize())
 				.offset(pageable.getOffset())
-				.orderBy(member.achieveBadgeCnt.desc(),member.totalAchieveCnt.desc())
+				.orderBy(member.achieveBadgeCnt.desc())
+//				.orderBy(member.achieveBadgeCnt.desc(),member.totalAchieveCnt.desc())
 				.fetch();
 
 		long totalSize = jpaQueryFactory
