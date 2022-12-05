@@ -49,6 +49,7 @@ public class ThemeLikeService {
         Long themeLikeCnt = themeLikeRepository
                 .countByThemeId(Long.parseLong(themeLikeRequestDto.getThemeId()));
 
+        //준영속 엔티티 변경 감지 기능 적용
         updateTheme.updateTotalLikeCnt(themeLikeCnt.intValue());
         themeRepository.save(updateTheme);
 
