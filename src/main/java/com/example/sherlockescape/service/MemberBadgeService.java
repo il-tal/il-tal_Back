@@ -6,6 +6,7 @@ import com.example.sherlockescape.domain.MemberBadge;
 import com.example.sherlockescape.domain.Review;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.response.MainAchieveResponseDto;
+import com.example.sherlockescape.dto.response.MemberBadgeResponseDto;
 import com.example.sherlockescape.dto.response.UpdateBadgeResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
@@ -15,6 +16,8 @@ import com.example.sherlockescape.repository.MemberRepository;
 import com.example.sherlockescape.repository.ReviewRepository;
 import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +62,10 @@ public class MemberBadgeService {
 
         List<Review> reviewList = reviewRepository.findReviewsByMember(member);
         List<MemberBadge> memberBadgeList = memberBadgeRepository.findAllByMemberUsername(username);
+        //획득한 뱃지 개수의 합 저장하기
+//        int achieveBadgeCnt = memberBadgeList.size();
+//        member.updateMemberBadgeCnt(achieveBadgeCnt);
+//        memberRepository.save(member);
         int totalAchieveCnt = 0;
         int totalFailCnt = 0;
         for(Review review: reviewList){
@@ -83,5 +90,29 @@ public class MemberBadgeService {
                         .badgeImgUrl(badgeImgUrl)
                         .build();
         return ResponseDto.success(mainAchieveResponseDto);
+    }
+
+    // 메인페이지 - 명예의 전당 : 메인 badge 조회 + 획득한 badge 개수 조회
+    @Transactional(readOnly = true)
+    public List<MemberBadgeResponseDto> getMemberRank(Pageable pageable, String username){
+
+        Page<MemberBadge> hofList = memberBadgeRepository.getHofList(pageable, username);
+
+        List<MemberBadgeResponseDto> memberHofList = new ArrayList<>();
+        for(MemberBadge memberBadge : hofList) {
+
+            Member member = validateCheck.getMember(username);
+
+            MemberBadgeResponseDto memberBadgeResponseDtoList =
+                    MemberBadgeResponseDto.builder()
+                            .nickname(member.getNickname())
+                            .mainBadgeImg(member.getMainBadgeImg())
+                            .mainBadgeName(member.getMainBadgeName())
+                            .achieveBadgeCnt(member.getAchieveBadgeCnt())
+//                            .totalAchieveCnt(memberBadgeRepository.) // : 성공횟수
+                            .build();
+            memberHofList.add(memberBadgeResponseDtoList);
+        }
+        return memberHofList;
     }
 }
