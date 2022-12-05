@@ -41,9 +41,12 @@ public class Member extends BaseTimeEntity {
     @Column(unique = true)
     private String kakaoId;
 
-//    @Column(/*nullable = false*/)
-//    private String passwordCheck;
+    @Column
+    private int achieveBadgeCnt;
 
+    public void updateMemberBadgeCnt(int achieveBadgeCnt){
+        this.achieveBadgeCnt = achieveBadgeCnt;
+    }
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
@@ -63,7 +66,6 @@ public class Member extends BaseTimeEntity {
         this.username = kakaoId;
         this.nickname = nickname;
         this.password = password;
-//        this.passwordCheck = passwordCheck;
         this.mainBadgeImg = mainBadgeImg;
         this.mainBadgeName = mainBadgeName;
 
