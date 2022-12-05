@@ -32,7 +32,6 @@ public class ThemeController {
                                            @RequestPart(required = false, value = "file") MultipartFile multipartFile,
                                            @RequestPart(value = "theme") ThemeRequestDto themeRequestDto) throws IOException {
         return themeService.createTheme(companyId, multipartFile, themeRequestDto);
-
     }
 
     //테마 필터링
@@ -46,8 +45,8 @@ public class ThemeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        Page<ThemeResponseDto> themeList = themeService.filter(pageable, location, genreFilter, themeScore, difficulty, people, username);
-        return ResponseDto.success(themeList);
+        Page<ThemeResponseDto> filteredThemeList = themeService.filter(pageable, location, genreFilter, themeScore, difficulty, people, username);
+        return ResponseDto.success(filteredThemeList);
     }
 
     //테마 필터링 결과 개수 반환
@@ -64,14 +63,15 @@ public class ThemeController {
 
     //테마 이름 검색
     @GetMapping("/themes/search")
-    public ResponseDto<Page<ThemeResponseDto>> searchTheme(@PageableDefault(size = 6, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-                                                           @RequestParam(value = "themeName", required = false) String themeName) {
+    public ResponseDto<Page<ThemeResponseDto>> searchTheme(@PageableDefault(size = 4, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                                                          @RequestParam(value = "themeName", required = false) String themeName) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
         Page<ThemeResponseDto> searchedThemeList = themeService.searchTheme(pageable, themeName, username);
         return ResponseDto.success(searchedThemeList);
     }
+
 
     //테마 상세페이지
     @GetMapping("/theme/{themeId}")
@@ -88,7 +88,6 @@ public class ThemeController {
     (@PageableDefault(size = 3, sort = "totalLikeCnt", direction = Sort.Direction.DESC) Pageable pageable){
         return ResponseDto.success(themeService.findBestTheme(pageable));
     }
-
 
 
     //메인페이지 랜덤테마

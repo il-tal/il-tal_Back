@@ -63,12 +63,13 @@ public class CompanyController {
         return ResponseDto.success(resDto);
     }
 
+
     /*
      *
      *업체 이름 검색
      */
     @GetMapping("/companies/search")
-    public ResponseDto<Page<AllCompanyResponseDto>> searchCompany(@PageableDefault(size = 6) Pageable pageable,
+    public ResponseDto<Page<AllCompanyResponseDto>> searchCompany(@PageableDefault(size = 4) Pageable pageable,
                                                                   @RequestParam(value = "companyName", required = false) String companyName){
 
         //가입회원 비가입회원 구분
@@ -78,5 +79,4 @@ public class CompanyController {
         Page<AllCompanyResponseDto> resDto = companyService.searchCompany(pageable, companyName, username);
         return ResponseDto.success(resDto);
     }
-
 }
