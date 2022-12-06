@@ -5,6 +5,7 @@ import com.example.sherlockescape.dto.request.BadgeCreateRequestDto;
 import com.example.sherlockescape.dto.request.BadgeGiveRequestDto;
 import com.example.sherlockescape.dto.response.AllBadgeResponseDto;
 import com.example.sherlockescape.dto.response.BadgeResponseDto;
+import com.example.sherlockescape.repository.badge.simplequery.BadgeSimpleQueryDto;
 import com.example.sherlockescape.service.BadgeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,8 +36,8 @@ public class BadgeController {
     * badge전체조회
     * */
     @GetMapping("/badges")
-    public ResponseDto<List<AllBadgeResponseDto>> getAllBadge(){
-        List<AllBadgeResponseDto> allBadgeResponseDtoList = badgeService.getAllBadge();
+    public ResponseDto<List<BadgeSimpleQueryDto>> getAllBadge(){
+        List<BadgeSimpleQueryDto> allBadgeResponseDtoList = badgeService.getAllBadge();
         return ResponseDto.success(allBadgeResponseDtoList);
     }
     /*
