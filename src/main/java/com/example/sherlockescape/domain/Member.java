@@ -42,24 +42,21 @@ public class Member extends BaseTimeEntity {
     private String kakaoId;
     @Column
     private Integer achieveBadgeCnt;
-
+    @Column
+    private Integer totalAchieveCnt;
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
     }
-
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
-
     public void updateMemberBadgeCnt(int achieveBadgeCnt) { this.achieveBadgeCnt = achieveBadgeCnt; }
-
-
+    public void updateTotalAchieveCnt(int totalAchieveCnt){ this.totalAchieveCnt = totalAchieveCnt; }
     public void updateBadge(String badgeImg, String badgeName) {
         this.mainBadgeImg = badgeImg;
         this.mainBadgeName = badgeName;
     }
-
     public Member(String kakaoId, String nickname, String password, String mainBadgeImg, String mainBadgeName) {
         this.kakaoId = kakaoId;
         this.username = kakaoId;

@@ -5,7 +5,6 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
-
   h2:
     console:
       enabled: true
@@ -47,7 +46,6 @@ server:
       charset: utf-8
       enabled: true
       force: true
-
 
 cloud:
   aws:

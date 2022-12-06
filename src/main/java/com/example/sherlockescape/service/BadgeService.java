@@ -69,9 +69,13 @@ public class BadgeService {
     }
 
     //뱃지 전체 조회
+    //jpql simple query dto 성능 개선
     public List<BadgeSimpleQueryDto> getAllBadge() {
+
         return badgeSimpleQueryRepository.findBadgeDto();
     }
+
+
     //뱃지 부여
     @Transactional
     public ResponseDto<BadgeResponseDto> giveBadge(String username, BadgeGiveRequestDto badgeGiveRequestDto) {
@@ -103,7 +107,7 @@ public class BadgeService {
                 throw new GlobalException(ErrorCode.SUCCESS_NOT_ENOUGH);
             }
         }else if(badgeList.get(1).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())){
-            if(totalAchieveCnt >= 3){
+            if(null == memberBadge && totalAchieveCnt >= 3){
                 createBadge = new MemberBadge(member, badgeList.get(1));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
@@ -112,7 +116,7 @@ public class BadgeService {
                 throw new GlobalException(ErrorCode.SUCCESS_NOT_ENOUGH);
             }
         }else if(badgeList.get(2).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
-            if (totalAchieveCnt >= 7 ) {
+            if (null == memberBadge && totalAchieveCnt >= 7 ) {
                 createBadge = new MemberBadge(member, badgeList.get(2));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
@@ -121,7 +125,7 @@ public class BadgeService {
                 throw new GlobalException(ErrorCode.SUCCESS_NOT_ENOUGH);
             }
         }else if(badgeList.get(3).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
-            if (totalAchieveCnt >= 20) {
+            if (null == memberBadge && totalAchieveCnt >= 20) {
                 createBadge = new MemberBadge(member, badgeList.get(3));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
@@ -130,7 +134,7 @@ public class BadgeService {
                 throw new GlobalException(ErrorCode.SUCCESS_NOT_ENOUGH);
             }
         }else if(badgeList.get(4).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
-            if (totalAchieveCnt >= 50) {
+            if (null == memberBadge && totalAchieveCnt >= 50) {
                 createBadge = new MemberBadge(member, badgeList.get(4));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
@@ -151,7 +155,7 @@ public class BadgeService {
                 throw new GlobalException(ErrorCode.FAIL_NOT_ENOUGH);
             }
         }else if(badgeList.get(6).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())){
-            if(totalAchieveCnt >= 7){
+            if(null == memberBadge && totalAchieveCnt >= 7){
                 createBadge = new MemberBadge(member, badgeList.get(6));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
@@ -160,7 +164,7 @@ public class BadgeService {
                 throw new GlobalException(ErrorCode.FAIL_NOT_ENOUGH);
             }
         }else if(badgeList.get(7).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
-            if (totalAchieveCnt >= 10) {
+            if (null == memberBadge && totalAchieveCnt >= 10) {
                 createBadge = new MemberBadge(member, badgeList.get(7));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
@@ -169,7 +173,7 @@ public class BadgeService {
                 throw new GlobalException(ErrorCode.FAIL_NOT_ENOUGH);
             }
         }else if(badgeList.get(8).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
-            if (totalAchieveCnt >= 30) {
+            if (null == memberBadge && totalAchieveCnt >= 30) {
                 createBadge = new MemberBadge(member, badgeList.get(8));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
@@ -178,7 +182,7 @@ public class BadgeService {
                 throw new GlobalException(ErrorCode.FAIL_NOT_ENOUGH);
             }
         }else if(badgeList.get(9).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
-            if (totalAchieveCnt + totalFailCnt >= 50) {
+            if (null == memberBadge && totalAchieveCnt + totalFailCnt >= 50) {
                 createBadge = new MemberBadge(member, badgeList.get(9));
                 memberBadgeRepository.save(createBadge);
             }else if(null != memberBadge){
@@ -187,6 +191,9 @@ public class BadgeService {
                 throw new GlobalException(ErrorCode.FAIL_NOT_ENOUGH);
             }
         }
+
+        int achieveBadgeCnt = memberBadgeRepository.countAllByMemberId(member.getId());
+        member.updateMemberBadgeCnt(achieveBadgeCnt);
 
         assert createBadge != null;
         BadgeResponseDto badgeResponseDto =
