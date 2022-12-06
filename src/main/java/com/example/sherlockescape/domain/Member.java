@@ -40,7 +40,6 @@ public class Member extends BaseTimeEntity {
 
     @Column(unique = true)
     private String kakaoId;
-
     @Column
     private Integer achieveBadgeCnt;
 
