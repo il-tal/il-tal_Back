@@ -36,15 +36,18 @@ spring:
     serialization:
       fail-on-empty-beans: false
 
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+
 server:
   servlet:
     encoding:
       charset: utf-8
       enabled: true
       force: true
-  multipart:
-    max-file-size: 30MB
-    max-request-size: 30MB
+
 
 cloud:
   aws:
