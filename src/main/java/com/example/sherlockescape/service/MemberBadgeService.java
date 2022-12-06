@@ -18,7 +18,6 @@ import com.example.sherlockescape.repository.review.simplequery.ReviewSimpleQuer
 import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,11 +98,10 @@ public class MemberBadgeService {
 
     // 메인페이지 - 명예의 전당 : 메인 badge 조회 + 획득한 badge 개수 조회
     @Transactional
-    public Page<MemberBadgeResponseDto> getMemberRank(Pageable pageable){
+    public List<MemberBadgeResponseDto> getMemberRank(Pageable pageable){
 
         // 멤버 컬럼 값들 리스트로 변환
         Page<Member> memberList = memberRepository.findAllMember(pageable);
-
         List<MemberBadgeResponseDto> memberHofList = new ArrayList<>();
 
         for(Member member : memberList ) {
@@ -118,6 +116,6 @@ public class MemberBadgeService {
                             .build();
             memberHofList.add(memberBadgeResponseDtoList);
         }
-        return new PageImpl<>(memberHofList, pageable, memberList.getTotalElements());
+        return memberHofList;
     }
 }

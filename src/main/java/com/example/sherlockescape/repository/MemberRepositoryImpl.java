@@ -21,17 +21,20 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
 	@Override
 	public Page<Member> findAllMember(Pageable pageable) {
 		List<Member> result = jpaQueryFactory
-				.selectFrom(member)
-				.where(member.achieveBadgeCnt.gt(0))
-				.limit(5)
-				.offset(pageable.getOffset())
-				.orderBy(member.achieveBadgeCnt.desc(),member.totalAchieveCnt.desc())
-				.fetch();
+
+					.selectFrom(member)
+					.where(member.achieveBadgeCnt.gt(0))
+					.limit(pageable.getPageSize())
+					.offset(pageable.getOffset())
+					.orderBy(member.achieveBadgeCnt.desc(),member.totalAchieveCnt.desc())
+					.fetch();
 
 		long totalSize = jpaQueryFactory
 				.selectFrom(member)
+				.where(member.achieveBadgeCnt.gt(0))
 				.fetch().size();
 
 		return new PageImpl<>(result, pageable, totalSize);
 	}
+
 }
