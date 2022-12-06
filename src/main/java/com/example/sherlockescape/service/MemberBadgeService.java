@@ -100,7 +100,6 @@ public class MemberBadgeService {
             int achieveBadgeCnt = memberBadgeRepository.countAllByMemberId(member.getId());
             member.updateMemberBadgeCnt(achieveBadgeCnt);
             memberRepository.save(member);
-//            setTotalAchieveCnt(member);
         }
 
         List<MemberBadgeResponseDto> memberHofList = new ArrayList<>();
@@ -112,23 +111,10 @@ public class MemberBadgeService {
                             .mainBadgeImg(member.getMainBadgeImg())
                             .mainBadgeName(member.getMainBadgeName())
                             .achieveBadgeCnt(member.getAchieveBadgeCnt())
-//                            .totalAchieveCnt(member.getTotalAchieveCnt())
                             .build();
             memberHofList.add(memberBadgeResponseDtoList);
             System.out.println(member.getAchieveBadgeCnt());
         }
-//        return memberHofList;
         return new PageImpl<>(memberHofList, pageable,memberList.getTotalElements());
     }
-//    public void setTotalAchieveCnt(Member member) {
-//        List<Review> reviewList = reviewRepository.findReviewsByMember(member);
-//        int totalAchieveCnt = 0;
-//        for (Review review : reviewList) {
-//            if (review.isSuccess()) {
-//                totalAchieveCnt += 1;
-//                member.updateTotalAchieveCnt(totalAchieveCnt);
-//                memberRepository.save(member);
-//            }
-//        }
-//    }
 }
