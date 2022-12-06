@@ -95,19 +95,12 @@ public class ReviewService {
 	// 해당 테마 후기 조회
 	public Page<ReviewResponseDto> getReview(Long themeId, Pageable pageable) {
 
-		List<Review> reviewLists = reviewRepository.findAllByThemeId(themeId);
-
-		int totalReviewCnt = 0;
-		for(Review review: reviewLists){
-			int reviewCnt = Math.toIntExact(reviewRepository.countAllById(review.getId()));
-			totalReviewCnt += reviewCnt;
-		}
+		Theme theme = themeRepository.findById(themeId).orElseThrow(
+				() -> new GlobalException(ErrorCode.THEME_NOT_FOUND)
+		);
 
 		Page<Review> reviewList = reviewRepository.getReviewList(pageable, themeId);
-
-		themeRepository.findById(themeId);
 		List<ReviewResponseDto> reviewAllList = new ArrayList<>();
-
 
 		for(Review review: reviewList) {
 			reviewAllList.add(
@@ -125,18 +118,14 @@ public class ReviewService {
 		}
 		//리뷰 점수 테마 평점에 반영하기
 		setThemeScore(themeId);
-
 		//리뷰 점수 업체 평점에 반영하기
-		Theme theme = themeRepository.findById(themeId).orElseThrow(
-				() -> new GlobalException(ErrorCode.THEME_NOT_FOUND)
-		);
 		Long companyId = theme.getCompany().getId();
 		setCompanyScore(companyId);
-
 		//리뷰카운트 테마에 저장
 		theme.updateReviewCnt(reviewRepository.countByThemeId(themeId));
-  
-    return new PageImpl<>(reviewAllList, pageable, reviewList.getTotalElements());
+
+		return new PageImpl<>(reviewAllList, pageable, reviewList.getTotalElements());
+
 	}
 
 	// 테마 후기 수정
@@ -218,7 +207,6 @@ public class ReviewService {
 
 		//해당 테마의 score 로 저장하기
 		updateThemeScore.updateThemeScore(themeScore);
-		themeRepository.save(updateThemeScore);
 	}
 
 
@@ -248,6 +236,5 @@ public class ReviewService {
 
 		//해당 테마의 score 로 저장하기
 		updateCompanyScore.updateCompanyScore(companyScore);
-		companyRepository.save(updateCompanyScore);
 	}
 }
