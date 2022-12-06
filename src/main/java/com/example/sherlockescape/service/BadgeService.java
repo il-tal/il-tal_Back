@@ -5,13 +5,14 @@ package com.example.sherlockescape.service;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.BadgeCreateRequestDto;
 import com.example.sherlockescape.dto.request.BadgeGiveRequestDto;
-import com.example.sherlockescape.dto.response.AllBadgeResponseDto;
 import com.example.sherlockescape.dto.response.BadgeResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.BadgeRepository;
 import com.example.sherlockescape.repository.MemberBadgeRepository;
 import com.example.sherlockescape.repository.ReviewRepository;
+import com.example.sherlockescape.repository.badge.simplequery.BadgeSimpleQueryDto;
+import com.example.sherlockescape.repository.badge.simplequery.BadgeSimpleQueryRepository;
 import com.example.sherlockescape.utils.CommonUtils;
 import com.example.sherlockescape.utils.ValidateCheck;
 import com.example.sherlockescape.domain.Badge;
@@ -24,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -38,6 +38,7 @@ public class BadgeService {
     private final MemberBadgeRepository memberBadgeRepository;
     private final ReviewRepository reviewRepository;
     private final CommonUtils commonUtils;
+    private final BadgeSimpleQueryRepository badgeSimpleQueryRepository;
 
 
     //뱃지 db 저장
@@ -68,20 +69,8 @@ public class BadgeService {
     }
 
     //뱃지 전체 조회
-    public List<AllBadgeResponseDto> getAllBadge() {
-        List<Badge> badgeList = badgeRepository.findAll();
-        List<AllBadgeResponseDto> badgeResponseDtoList = new ArrayList<>();
-        for(Badge badge: badgeList){
-            AllBadgeResponseDto allBadgeResponseDto = AllBadgeResponseDto.builder()
-                    .id(badge.getId())
-                    .badgeImgUrl(badge.getBadgeImgUrl())
-                    .badgeName(badge.getBadgeName())
-                    .badgeExplain(badge.getBadgeExplain())
-                    .badgeGoal(badge.getBadgeGoal())
-                    .build();
-            badgeResponseDtoList.add(allBadgeResponseDto);
-        }
-        return badgeResponseDtoList;
+    public List<BadgeSimpleQueryDto> getAllBadge() {
+        return badgeSimpleQueryRepository.findBadgeDto();
     }
     //뱃지 부여
     @Transactional
