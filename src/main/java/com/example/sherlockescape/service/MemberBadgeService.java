@@ -60,6 +60,7 @@ public class MemberBadgeService {
     }
 
     //main achieve 전체 조회
+    @Transactional
     public ResponseDto<MainAchieveResponseDto> getAchieve(String username) {
         Member member = validateCheck.getMember(username);
 
@@ -77,6 +78,7 @@ public class MemberBadgeService {
                 totalFailCnt +=1;
             }
         }
+
         List<String> badgeImgUrl = new ArrayList<>();
         for(MemberBadge memberBadge: memberBadgeList){
             String badgeImg = memberBadge.getBadge().getBadgeImgUrl();
@@ -87,6 +89,7 @@ public class MemberBadgeService {
                         .nickname(member.getNickname())
                         .mainBadgeImg(member.getMainBadgeImg())
                         .mainBadgeName(member.getMainBadgeName())
+                        .achieveBadgeCnt(member.getAchieveBadgeCnt())
                         .totalAchieveCnt(totalAchieveCnt)
                         .totalFailCnt(totalFailCnt)
                         .badgeImgUrl(badgeImgUrl)
@@ -95,31 +98,26 @@ public class MemberBadgeService {
     }
 
     // 메인페이지 - 명예의 전당 : 메인 badge 조회 + 획득한 badge 개수 조회
-    @Transactional(readOnly = true)
+    @Transactional
     public Page<MemberBadgeResponseDto> getMemberRank(Pageable pageable){
 
         // 멤버 컬럼 값들 리스트로 변환
-        Page<Member> memberList = memberRepository.findAll(pageable);
-
-        for(Member member : memberList ) {
-            int achieveBadgeCnt = memberBadgeRepository.countAllByMemberId(member.getId());
-            member.updateMemberBadgeCnt(achieveBadgeCnt);
-            memberRepository.save(member);
-        }
+        Page<Member> memberList = memberRepository.findAllMember(pageable);
 
         List<MemberBadgeResponseDto> memberHofList = new ArrayList<>();
-        for(Member member : memberList) {
-                MemberBadgeResponseDto memberBadgeResponseDtoList =
+
+        for(Member member : memberList ) {
+            MemberBadgeResponseDto memberBadgeResponseDtoList =
                     MemberBadgeResponseDto.builder()
                             .id(member.getId())
                             .nickname(member.getNickname())
                             .mainBadgeImg(member.getMainBadgeImg())
                             .mainBadgeName(member.getMainBadgeName())
                             .achieveBadgeCnt(member.getAchieveBadgeCnt())
+                            .totalAchieveCnt(member.getTotalAchieveCnt())
                             .build();
             memberHofList.add(memberBadgeResponseDtoList);
-            System.out.println(member.getAchieveBadgeCnt());
         }
-        return new PageImpl<>(memberHofList, pageable,memberList.getTotalElements());
+        return new PageImpl<>(memberHofList, pageable, memberList.getTotalElements());
     }
 }
