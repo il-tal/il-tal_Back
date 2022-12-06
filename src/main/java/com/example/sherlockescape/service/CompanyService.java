@@ -9,8 +9,8 @@ import com.example.sherlockescape.repository.CompanyLikeRepository;
 import com.example.sherlockescape.repository.CompanyRepository;
 import com.example.sherlockescape.repository.ReviewRepository;
 import com.example.sherlockescape.repository.ThemeRepository;
-import com.example.sherlockescape.repository.review.exception.ErrorCode;
-import com.example.sherlockescape.repository.review.exception.GlobalException;
+import com.example.sherlockescape.exception.ErrorCode;
+import com.example.sherlockescape.exception.GlobalException;
 
 import com.example.sherlockescape.domain.Company;
 import com.example.sherlockescape.domain.CompanyLike;
@@ -88,7 +88,8 @@ public class CompanyService {
         //리뷰 개수 카운트
         int totalReviewCnt = 0;
         for(Theme theme: themeList){
-            totalReviewCnt += theme.getReviewCnt();
+            int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
+            totalReviewCnt += reviewCnt;
         }
         CompanyDetailResponseDto companyDetailResponseDto =
                 CompanyDetailResponseDto.builder()
