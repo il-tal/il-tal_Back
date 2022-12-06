@@ -3,8 +3,8 @@ package com.example.sherlockescape.utils;
 
 import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.dto.request.MemberRequestDto;
-import com.example.sherlockescape.repository.review.exception.ErrorCode;
-import com.example.sherlockescape.repository.review.exception.GlobalException;
+import com.example.sherlockescape.exception.ErrorCode;
+import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.MemberRepository;
 import com.example.sherlockescape.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;

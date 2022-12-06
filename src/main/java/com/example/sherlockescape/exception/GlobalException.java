@@ -1,4 +1,4 @@
-package com.example.sherlockescape.repository.review.exception;
+package com.example.sherlockescape.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

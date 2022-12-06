@@ -1,4 +1,4 @@
-package com.example.sherlockescape.repository.review.exception;
+package com.example.sherlockescape.exception;
 
 import com.example.sherlockescape.dto.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
