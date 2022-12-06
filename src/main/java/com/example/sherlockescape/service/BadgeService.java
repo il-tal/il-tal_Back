@@ -69,6 +69,7 @@ public class BadgeService {
     }
 
     //뱃지 전체 조회
+    //jpql simple query dto 성능 개선
     public List<BadgeSimpleQueryDto> getAllBadge() {
         return badgeSimpleQueryRepository.findBadgeDto();
     }
