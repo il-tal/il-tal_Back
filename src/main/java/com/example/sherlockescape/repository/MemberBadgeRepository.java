@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface MemberBadgeRepository extends JpaRepository<MemberBadge, Long> {
+public interface MemberBadgeRepository extends JpaRepository<MemberBadge, Long>{
     List<MemberBadge> findAllByMemberUsername(String username);
     MemberBadge findByBadgeIdAndMemberUsername(long parseLong, String username);
+
+    int countAllByMemberId(Long memberId);
 }
