@@ -12,6 +12,4 @@ public interface MemberBadgeRepository extends JpaRepository<MemberBadge, Long>{
     MemberBadge findByBadgeIdAndMemberUsername(long parseLong, String username);
 
     int countAllByMemberId(Long memberId);
-
-    List<MemberBadge> findAllByMemberId(Long memberId);
 }

@@ -44,8 +44,6 @@ public class Member extends BaseTimeEntity {
     @Column
     private Integer achieveBadgeCnt;
 
-    @Column
-    private Integer totalAchieveCnt;
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
@@ -56,8 +54,6 @@ public class Member extends BaseTimeEntity {
     }
 
     public void updateMemberBadgeCnt(int achieveBadgeCnt) { this.achieveBadgeCnt = achieveBadgeCnt; }
-
-    public void updateTotalAchieveCnt(int totalAchieveCnt) { this.totalAchieveCnt = totalAchieveCnt; }
 
 
     public void updateBadge(String badgeImg, String badgeName) {
@@ -73,6 +69,5 @@ public class Member extends BaseTimeEntity {
         this.mainBadgeImg = mainBadgeImg;
         this.mainBadgeName = mainBadgeName;
         this.achieveBadgeCnt = 0;
-        this.totalAchieveCnt = 0;
     }
 }
