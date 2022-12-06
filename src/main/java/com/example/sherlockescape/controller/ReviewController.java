@@ -34,7 +34,7 @@ public class ReviewController {
 	// 테마 후기 조회
 	@GetMapping("/{themeId}/reviews")
 	public ResponseDto<Page<ReviewResponseDto>> getReview (@PathVariable Long themeId,
-														   @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+														   @PageableDefault(size = 6, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseDto.success(reviewService.getReview(themeId, pageable));
 	}
 

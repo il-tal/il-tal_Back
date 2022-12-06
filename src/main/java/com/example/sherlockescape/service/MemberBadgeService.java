@@ -6,15 +6,20 @@ import com.example.sherlockescape.domain.MemberBadge;
 import com.example.sherlockescape.domain.Review;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.response.MainAchieveResponseDto;
+import com.example.sherlockescape.dto.response.MemberBadgeResponseDto;
 import com.example.sherlockescape.dto.response.UpdateBadgeResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.BadgeRepository;
 import com.example.sherlockescape.repository.MemberBadgeRepository;
 import com.example.sherlockescape.repository.MemberRepository;
-import com.example.sherlockescape.repository.ReviewRepository;
+import com.example.sherlockescape.repository.memberbadge.simplequery.MemberBadgeSimpleQueryRepository;
+import com.example.sherlockescape.repository.review.simplequery.ReviewSimpleQueryRepository;
 import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +34,9 @@ public class MemberBadgeService {
     private final ValidateCheck validateCheck;
     private final BadgeRepository badgeRepository;
     private final MemberRepository memberRepository;
-    private final ReviewRepository reviewRepository;
     private final MemberBadgeRepository memberBadgeRepository;
+    private final ReviewSimpleQueryRepository reviewSimpleQueryRepository;
+    private final MemberBadgeSimpleQueryRepository memberBadgeSimpleQueryRepository;
 
 
     //대표 뱃지 수정
@@ -57,8 +63,11 @@ public class MemberBadgeService {
     public ResponseDto<MainAchieveResponseDto> getAchieve(String username) {
         Member member = validateCheck.getMember(username);
 
-        List<Review> reviewList = reviewRepository.findReviewsByMember(member);
-        List<MemberBadge> memberBadgeList = memberBadgeRepository.findAllByMemberUsername(username);
+        //review fetch 조인 조회 성능 최적화
+        List<Review> reviewList = reviewSimpleQueryRepository.findReviewsWithMember(member);
+
+        //memberBadge fetch 조인 조회 성능 최적화
+        List<MemberBadge> memberBadgeList = memberBadgeSimpleQueryRepository.findBadgesWithMemberUsername(username);
         int totalAchieveCnt = 0;
         int totalFailCnt = 0;
         for(Review review: reviewList){
@@ -83,5 +92,34 @@ public class MemberBadgeService {
                         .badgeImgUrl(badgeImgUrl)
                         .build();
         return ResponseDto.success(mainAchieveResponseDto);
+    }
+
+    // 메인페이지 - 명예의 전당 : 메인 badge 조회 + 획득한 badge 개수 조회
+    @Transactional(readOnly = true)
+    public Page<MemberBadgeResponseDto> getMemberRank(Pageable pageable){
+
+        // 멤버 컬럼 값들 리스트로 변환
+        Page<Member> memberList = memberRepository.findAll(pageable);
+
+        for(Member member : memberList ) {
+            int achieveBadgeCnt = memberBadgeRepository.countAllByMemberId(member.getId());
+            member.updateMemberBadgeCnt(achieveBadgeCnt);
+            memberRepository.save(member);
+        }
+
+        List<MemberBadgeResponseDto> memberHofList = new ArrayList<>();
+        for(Member member : memberList) {
+                MemberBadgeResponseDto memberBadgeResponseDtoList =
+                    MemberBadgeResponseDto.builder()
+                            .id(member.getId())
+                            .nickname(member.getNickname())
+                            .mainBadgeImg(member.getMainBadgeImg())
+                            .mainBadgeName(member.getMainBadgeName())
+                            .achieveBadgeCnt(member.getAchieveBadgeCnt())
+                            .build();
+            memberHofList.add(memberBadgeResponseDtoList);
+            System.out.println(member.getAchieveBadgeCnt());
+        }
+        return new PageImpl<>(memberHofList, pageable,memberList.getTotalElements());
     }
 }

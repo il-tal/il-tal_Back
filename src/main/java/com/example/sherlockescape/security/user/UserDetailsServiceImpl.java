@@ -26,7 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return createUserDetails(member);
     }
 
-    private UserDetails createUserDetails(com.example.sherlockescape.domain.Member member){
+    private UserDetails createUserDetails(Member member){
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("member");
 
             return new User(
