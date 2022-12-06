@@ -83,10 +83,10 @@ public class ThemeRepositoryImpl implements ThemeQueryRepository {
     }
 
     private BooleanExpression eqLocation(List<String> location) {
-        return location != null ? Expressions.anyOf(location.stream().map(this::isFilteredLoacation).toArray(BooleanExpression[]::new)) : null;
+        return location != null ? Expressions.anyOf(location.stream().map(this::isFilteredLocation).toArray(BooleanExpression[]::new)) : null;
     }
 
-    private BooleanExpression isFilteredLoacation(String location) {
+    private BooleanExpression isFilteredLocation(String location) {
         return theme.company.location.contains(location);
     }
 
