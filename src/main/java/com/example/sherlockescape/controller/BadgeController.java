@@ -3,7 +3,6 @@ package com.example.sherlockescape.controller;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.BadgeCreateRequestDto;
 import com.example.sherlockescape.dto.request.BadgeGiveRequestDto;
-import com.example.sherlockescape.dto.response.AllBadgeResponseDto;
 import com.example.sherlockescape.dto.response.BadgeResponseDto;
 import com.example.sherlockescape.repository.badge.simplequery.BadgeSimpleQueryDto;
 import com.example.sherlockescape.service.BadgeService;
