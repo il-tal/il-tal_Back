@@ -19,13 +19,13 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
 	private final JPAQueryFactory jpaQueryFactory;
 
 	@Override
-	public Page<Member> findAll(Pageable pageable) {
+	public Page<Member> findAllMember(Pageable pageable) {
 		List<Member> result = jpaQueryFactory
 				.selectFrom(member)
-				.limit(pageable.getPageSize())
+				.where(member.achieveBadgeCnt.gt(0))
+				.limit(5)
 				.offset(pageable.getOffset())
-				.orderBy(member.achieveBadgeCnt.desc())
-//				.orderBy(member.achieveBadgeCnt.desc(),member.totalAchieveCnt.desc())
+				.orderBy(member.achieveBadgeCnt.desc(),member.totalAchieveCnt.desc())
 				.fetch();
 
 		long totalSize = jpaQueryFactory

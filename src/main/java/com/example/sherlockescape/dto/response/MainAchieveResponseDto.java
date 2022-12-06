@@ -18,6 +18,6 @@ public class MainAchieveResponseDto {
     private String nickname;
     private int totalAchieveCnt;
     private int totalFailCnt;
-    private int achieveCnt;
+    private int achieveBadgeCnt;
     private List<String> badgeImgUrl;
 }

@@ -75,7 +75,7 @@ public class ReviewService {
 				totalFailCnt += 1;
 			}
 		}
-
+		member.updateTotalAchieveCnt(totalAchieveCnt);
 		MyReviewResponseDto myReviewResponseDto =
 				MyReviewResponseDto.builder()
 						.id(review.getId())
