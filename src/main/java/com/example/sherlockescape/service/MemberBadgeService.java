@@ -88,7 +88,6 @@ public class MemberBadgeService {
                         .nickname(member.getNickname())
                         .mainBadgeImg(member.getMainBadgeImg())
                         .mainBadgeName(member.getMainBadgeName())
-                        .achieveBadgeCnt(member.getAchieveBadgeCnt())
                         .totalAchieveCnt(totalAchieveCnt)
                         .totalFailCnt(totalFailCnt)
                         .badgeImgUrl(badgeImgUrl)
