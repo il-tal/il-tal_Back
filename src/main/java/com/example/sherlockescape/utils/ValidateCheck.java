@@ -47,8 +47,8 @@ public class ValidateCheck {
     }
 
     //닉네임 중복 체크
-    public void userNicknameDuplicateCheck(MemberRequestDto memberRequestDto){
-        if(memberRepository.findByNickname(memberRequestDto.getNickname()).isPresent()){
+    public void userNicknameDuplicateCheck(String nickname){
+        if(memberRepository.findByNickname(nickname).isPresent()){
             throw new GlobalException(ErrorCode.DUPLICATE_MEMBER_NICKNAME);
         }
     }
