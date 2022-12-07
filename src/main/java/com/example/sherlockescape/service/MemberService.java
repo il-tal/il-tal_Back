@@ -52,7 +52,7 @@ public class MemberService {
         // username 중복 검사
         validateCheck.usernameDuplicateCheck(memberReqDto);
         // nickname 중복 검사
-        validateCheck.userNicknameDuplicateCheck(memberReqDto);
+        validateCheck.userNicknameDuplicateCheck(memberReqDto.getNickname());
         // 비빌번호 확인 & 비빌번호 불일치
         if(!memberReqDto.getPassword().equals(memberReqDto.getPasswordConfirm())){
             throw new GlobalException(ErrorCode.BAD_PASSWORD_CONFIRM);
@@ -126,6 +126,7 @@ public class MemberService {
     @Transactional
     public ResponseDto<NicknameResponseDto> updateNickname(String username,NicknameRequestDto nicknameRequestDto) {
         Member member = validateCheck.getMember(username);
+        validateCheck.userNicknameDuplicateCheck(nicknameRequestDto.getNickname());
         member.updateNickname(nicknameRequestDto.getNickname());
         memberRepository.save(member);
         NicknameResponseDto nicknameResponseDto = NicknameResponseDto.builder()
@@ -231,6 +232,24 @@ public class MemberService {
         }else{
             Tendency findTendency = tendencyRepository.findByMember(member);
             return ResponseDto.success(new AllMyInfoResponseDto(member, findTendency, totalAchieveCnt, totalFailCnt));
+        }
+    }
+
+    //닉네임 중복 확인
+    public ResponseEntity<ResponseDto<String>> nicknameDuplicateCheck(String nickname) {
+        if(memberRepository.existsByNickname(nickname)){
+            throw new GlobalException(ErrorCode.DUPLICATE_MEMBER_NICKNAME);
+        }else{
+            return ResponseEntity.ok().body(ResponseDto.success("사용 가능한 닉네입 입니다."));
+        }
+    }
+
+    //아이디 중복 확인
+    public ResponseEntity<ResponseDto<String>> usernameDuplicateCheck(String username) {
+        if(memberRepository.existsByUsername(username)){
+            throw new GlobalException(ErrorCode.DUPLICATE_MEMBER_ID);
+        }else{
+            return ResponseEntity.ok().body(ResponseDto.success("사용 가능한 아이디 입니다."));
         }
     }
 }
