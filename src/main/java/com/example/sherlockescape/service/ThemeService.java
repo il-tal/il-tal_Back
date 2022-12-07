@@ -42,7 +42,7 @@ public class ThemeService {
      * 테마 DB 등록
      * */
     @Transactional
-    public ResponseDto<String> createTheme(Long companyId, MultipartFile multipartFile, ThemeRequestDto themeReqDto) throws IOException {
+    public ResponseDto<Long> createTheme(Long companyId, MultipartFile multipartFile, ThemeRequestDto themeReqDto) throws IOException {
         //업체 조회
         Company company = companyRepository.findById(companyId).orElseThrow(
                 () -> new IllegalArgumentException("해당 업체가 존재하지 않습니다.")
@@ -67,7 +67,7 @@ public class ThemeService {
                 .price(themeReqDto.getPrice())
                 .build();
         themeRepository.save(theme);
-        return ResponseDto.success("테마 등록 성공");
+        return ResponseDto.success(theme.getId());
     }
 
     //테마 필터링
