@@ -28,7 +28,7 @@ public class ThemeController {
      * 테마 DB 등록
      * */
     @PostMapping("/theme/{companyId}")
-    public ResponseDto<String> createTheme(@PathVariable Long companyId,
+    public ResponseDto<Long> createTheme(@PathVariable Long companyId,
                                            @RequestPart(required = false, value = "file") MultipartFile multipartFile,
                                            @RequestPart(value = "theme") ThemeRequestDto themeRequestDto) throws IOException {
         return themeService.createTheme(companyId, multipartFile, themeRequestDto);
