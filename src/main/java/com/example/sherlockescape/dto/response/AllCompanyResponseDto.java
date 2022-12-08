@@ -18,33 +18,17 @@ import java.util.List;
 public class AllCompanyResponseDto {
 
     private Long id;
-
     private String companyName;
     private String companyImgUrl;
     private String location;
     private double companyScore;
     private String companyUrl;
-
     private Long companyLikeCnt;
     private String address;
     private String phoneNumber;
     private String workHour;
-
     private boolean companyLikeCheck;
-
     private int totalReviewCnt;
     private List<Theme> themeList;
 
-
-    public AllCompanyResponseDto(Company company){
-        this.id = company.getId();
-        this.companyImgUrl =company.getCompanyImgUrl();
-        this.companyScore = company.getCompanyScore();
-        this.location = company.getLocation();
-        this.companyUrl = company.getCompanyUrl();
-        this.address = company.getAddress();
-        this.phoneNumber = company.getPhoneNumber();
-        this.workHour = company.getWorkHour();
-        this.themeList = company.getThemeList();
-    }
 }

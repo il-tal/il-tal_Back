@@ -2,6 +2,7 @@ package com.example.sherlockescape.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -43,7 +44,6 @@ public class Theme {
 
     @Lob
     private String synopsis;
-
     @Column
     private double themeScore;
 
@@ -59,11 +59,14 @@ public class Theme {
     @Column(nullable = false)
     private int price;
     @Column
+    private Boolean themeLikeCheck;
+    @Column
     private int totalLikeCnt;
     @Column
     private Long reviewCnt;
 
     public Theme(Long themeId) { this.id = themeId; }
+    public void updateThemeLikeCheck(boolean themeLikeCheck){this.themeLikeCheck = themeLikeCheck;}
     public void updateTotalLikeCnt(int totalLikeCnt) { this.totalLikeCnt = totalLikeCnt; }
     public void updateThemeScore(double themeScore) { this.themeScore = themeScore; }
     public void updateReviewCnt(Long reviewCnt) { this.reviewCnt = reviewCnt; }

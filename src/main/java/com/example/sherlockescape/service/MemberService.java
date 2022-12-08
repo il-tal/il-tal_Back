@@ -236,6 +236,7 @@ public class MemberService {
     }
 
     //닉네임 중복 확인
+    @Transactional(readOnly = true) //읽기 전용 쿼리의 성능 최적화
     public ResponseEntity<ResponseDto<String>> nicknameDuplicateCheck(String nickname) {
         if(memberRepository.existsByNickname(nickname)){
             throw new GlobalException(ErrorCode.DUPLICATE_MEMBER_NICKNAME);
@@ -245,6 +246,7 @@ public class MemberService {
     }
 
     //아이디 중복 확인
+    @Transactional(readOnly = true) //읽기 전용 쿼리의 성능 최적화
     public ResponseEntity<ResponseDto<String>> usernameDuplicateCheck(String username) {
         if(memberRepository.existsByUsername(username)){
             throw new GlobalException(ErrorCode.DUPLICATE_MEMBER_ID);

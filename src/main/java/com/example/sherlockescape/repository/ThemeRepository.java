@@ -11,4 +11,5 @@ public interface ThemeRepository extends JpaRepository<Theme, Long>, ThemeQueryR
     List<Theme> findAllByCompanyId(Long companyId);
 
     Page<Theme> findAllByOrderByTotalLikeCntDesc(Pageable pageable);
+
 }
