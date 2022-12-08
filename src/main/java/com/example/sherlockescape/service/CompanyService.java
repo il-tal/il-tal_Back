@@ -1,21 +1,15 @@
 package com.example.sherlockescape.service;
 
+import com.example.sherlockescape.domain.*;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.CompanyRequestDto;
 import com.example.sherlockescape.dto.response.AllCompanyResponseDto;
 import com.example.sherlockescape.dto.response.CompanyDetailResponseDto;
 import com.example.sherlockescape.dto.response.MyCompanyResponseDto;
-import com.example.sherlockescape.repository.CompanyLikeRepository;
-import com.example.sherlockescape.repository.CompanyRepository;
-import com.example.sherlockescape.repository.ReviewRepository;
-import com.example.sherlockescape.repository.ThemeRepository;
+import com.example.sherlockescape.repository.*;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
 
-import com.example.sherlockescape.domain.Company;
-import com.example.sherlockescape.domain.CompanyLike;
-import com.example.sherlockescape.domain.Member;
-import com.example.sherlockescape.domain.Theme;
 import com.example.sherlockescape.utils.CommonUtils;
 import com.example.sherlockescape.utils.ValidateCheck;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +39,8 @@ public class CompanyService {
     private final ValidateCheck validateCheck;
     private final CommonUtils commonUtils;
 
+    private final ThemeLikeRepository themeLikeRepository;
+
     /*
      *
      * 업체 DB 정보 등록
@@ -70,6 +66,7 @@ public class CompanyService {
     }
 
     //업체 상세 페이지 조회
+    @Transactional
     public ResponseDto<CompanyDetailResponseDto> getCompanyDetail(Long companyId, String username) {
         Company company = companyRepository.findById(companyId).orElseThrow(
                 () -> new GlobalException(ErrorCode.COMPANY_NOT_FOUND)
@@ -90,6 +87,10 @@ public class CompanyService {
         for(Theme theme: themeList){
             int reviewCnt = Math.toIntExact(reviewRepository.countByThemeId(theme.getId()));
             totalReviewCnt += reviewCnt;
+            Optional<ThemeLike> themeLike = themeLikeRepository.findByThemeIdAndMemberUsername(theme.getId(), username);
+            boolean themeLikeCheck;
+            themeLikeCheck = themeLike.isPresent();
+            theme.updateThemeLikeCheck(themeLikeCheck);
         }
         CompanyDetailResponseDto companyDetailResponseDto =
                 CompanyDetailResponseDto.builder()
@@ -201,7 +202,6 @@ public class CompanyService {
      * 내가 찜한 업체 조회
      * */
     public List<MyCompanyResponseDto> getMyCompanies(String username) {
-        Member member = validateCheck.getMember(username);
         List<CompanyLike> companyLikeList = companyLikeRepository.findCompanyLikesByMemberUsername(username);
         List<MyCompanyResponseDto> myCompanyResponseDtoList = new ArrayList<>();
 
