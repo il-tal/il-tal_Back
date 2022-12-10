@@ -126,6 +126,7 @@ public class ReviewService {
 		setCompanyScore(companyId);
 
 		//리뷰카운트 테마에 저장
+		//변경 감지 기능
 		theme.updateReviewCnt(reviewRepository.countByThemeId(themeId));
 
     	return new PageImpl<>(reviewAllList,pageable,reviewList.getTotalElements());

@@ -3,6 +3,7 @@ package com.example.sherlockescape.service;
 import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.domain.RefreshToken;
 import com.example.sherlockescape.dto.request.KakaoUserInfoDto;
+import com.example.sherlockescape.dto.response.KakaoUserResponseDto;
 import com.example.sherlockescape.repository.MemberRepository;
 import com.example.sherlockescape.repository.RefreshTokenRepository;
 import com.example.sherlockescape.security.jwt.JwtUtil;
@@ -48,7 +49,7 @@ public class KakaoUserService {
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final JwtUtil jwtUtil;
 
-	public KakaoUserInfoDto kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+	public KakaoUserResponseDto kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
 
 		// 1. "인가 코드"로 "액세스 토큰" 요청
 		String accessToken = getAccessToken(code);
@@ -73,10 +74,15 @@ public class KakaoUserService {
 			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), kakaoUserInfo.getId().toString());
 			refreshTokenRepository.save(newToken);
 		}
+		// 토큰 생성 후 tokenDto 에 저장
 		setHeader(response, tokenDto);
 
-		// 토큰 생성 후 tokenDto 에 저장
-		return kakaoUserInfo;
+		Member member = memberRepository.findByKakaoId(kakaoUser.getKakaoId()).orElse(null);
+		assert member != null;
+		return KakaoUserResponseDto.builder()
+				.username(member.getUsername())
+				.nickname(member.getNickname())
+				.build();
 	}
 
 	// 1. "인가 코드"로 "액세스 토큰" 요청
@@ -88,7 +94,7 @@ public class KakaoUserService {
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 		body.add("grant_type", "authorization_code");
 		body.add("client_id", "7555650f225a920f06012d44affc4f03");
-		body.add("redirect_uri","http://localhost:3000/kakao/callback");
+		body.add("redirect_uri","https://il-tal.com/kakao/callback");
 		body.add("code", code);
 		// HTTP 요청 보내기
 		HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);

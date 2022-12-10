@@ -98,6 +98,7 @@ public class BadgeService {
         //성공뱃지
         MemberBadge createBadge = null;
         if(badgeList.get(0).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())){
+
             if(null == memberBadge && totalAchieveCnt >= 1){
                 createBadge = new MemberBadge(member, badgeList.get(0));
                 memberBadgeRepository.save(createBadge);
@@ -107,6 +108,7 @@ public class BadgeService {
                 throw new GlobalException(ErrorCode.SUCCESS_NOT_ENOUGH);
             }
         }else if(badgeList.get(1).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())){
+
             if(null == memberBadge && totalAchieveCnt >= 3){
                 createBadge = new MemberBadge(member, badgeList.get(1));
                 memberBadgeRepository.save(createBadge);
@@ -116,6 +118,7 @@ public class BadgeService {
                 throw new GlobalException(ErrorCode.SUCCESS_NOT_ENOUGH);
             }
         }else if(badgeList.get(2).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
+
             if (null == memberBadge && totalAchieveCnt >= 7 ) {
                 createBadge = new MemberBadge(member, badgeList.get(2));
                 memberBadgeRepository.save(createBadge);
@@ -125,6 +128,7 @@ public class BadgeService {
                 throw new GlobalException(ErrorCode.SUCCESS_NOT_ENOUGH);
             }
         }else if(badgeList.get(3).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
+
             if (null == memberBadge && totalAchieveCnt >= 20) {
                 createBadge = new MemberBadge(member, badgeList.get(3));
                 memberBadgeRepository.save(createBadge);
@@ -134,6 +138,7 @@ public class BadgeService {
                 throw new GlobalException(ErrorCode.SUCCESS_NOT_ENOUGH);
             }
         }else if(badgeList.get(4).getId() == Long.parseLong(badgeGiveRequestDto.getBadgeId())) {
+
             if (null == memberBadge && totalAchieveCnt >= 50) {
                 createBadge = new MemberBadge(member, badgeList.get(4));
                 memberBadgeRepository.save(createBadge);
