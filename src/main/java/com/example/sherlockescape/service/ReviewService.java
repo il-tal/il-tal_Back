@@ -177,6 +177,7 @@ public class ReviewService {
 					.id(review.getTheme().getId())
 					.themeName(review.getTheme().getThemeName())
 					.playTime(review.getTheme().getPlayTime())
+					.themeImgUrl(review.getTheme().getThemeImgUrl())
 					.playDate(review.getPlayDate())
 					.score(review.getScore())
 					.success(review.isSuccess())
