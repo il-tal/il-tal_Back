@@ -27,7 +27,6 @@ import java.util.List;
 public class MemberBadgeController {
 
     private final MemberBadgeService memberBadgeService;
-    private final MemberRepository memberRepository;
 
 
     /*
