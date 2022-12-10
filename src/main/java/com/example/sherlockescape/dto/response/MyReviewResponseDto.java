@@ -22,4 +22,5 @@ public class MyReviewResponseDto {
     private boolean success;
     private int totalAchieveCnt;
     private int totalFailCnt;
+    private String themeImgUrl;
 }
