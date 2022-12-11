@@ -16,8 +16,12 @@ import static com.example.sherlockescape.domain.QCompany.company;
 public class CompanyRepositoryImpl implements CompanyRepositoryCustom{
 
     private final JPAQueryFactory jpaQueryFactory;
+    private final CompanyLikeRepository companyLikeRepository;
+
+    //지역별로 업체 검색
     @Override
     public Page<Company> getCompanyList(Pageable pageable, String location) {
+
         List<Company> result = jpaQueryFactory
                 .selectFrom(company)
                 .where(eqLocation(location))

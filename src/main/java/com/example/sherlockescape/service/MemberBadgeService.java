@@ -33,9 +33,9 @@ public class MemberBadgeService {
     private final ValidateCheck validateCheck;
     private final BadgeRepository badgeRepository;
     private final MemberRepository memberRepository;
-    private final MemberBadgeRepository memberBadgeRepository;
     private final ReviewSimpleQueryRepository reviewSimpleQueryRepository;
     private final MemberBadgeSimpleQueryRepository memberBadgeSimpleQueryRepository;
+
 
 
     //대표 뱃지 수정
@@ -96,25 +96,21 @@ public class MemberBadgeService {
     }
 
     // 메인페이지 - 명예의 전당 : 메인 badge 조회 + 획득한 badge 개수 조회
+    // query projection 사용
     @Transactional
-    public List<MemberBadgeResponseDto> getMemberRank(Pageable pageable){
+    public Page<MemberBadgeResponseDto> getMemberRank(Pageable pageable){
 
-        // 멤버 컬럼 값들 리스트로 변환
-        Page<Member> memberList = memberRepository.findAllMember(pageable);
-        List<MemberBadgeResponseDto> memberHofList = new ArrayList<>();
-
-        for(Member member : memberList ) {
-            MemberBadgeResponseDto memberBadgeResponseDtoList =
-                    MemberBadgeResponseDto.builder()
-                            .id(member.getId())
-                            .nickname(member.getNickname())
-                            .mainBadgeImg(member.getMainBadgeImg())
-                            .mainBadgeName(member.getMainBadgeName())
-                            .achieveBadgeCnt(member.getAchieveBadgeCnt())
-                            .totalAchieveCnt(member.getTotalAchieveCnt())
-                            .build();
-            memberHofList.add(memberBadgeResponseDtoList);
-        }
-        return memberHofList;
+        //refactoring 후
+        //멤버 컬럼 값들 리스트로 변환
+        return memberRepository.findAllMember(pageable);
     }
 }
+
+
+
+
+
+
+
+
+
