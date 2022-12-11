@@ -6,7 +6,6 @@ import com.example.sherlockescape.dto.request.*;
 import com.example.sherlockescape.dto.response.LoginResponseDto;
 import com.example.sherlockescape.dto.response.MemberResponseDto;
 import com.example.sherlockescape.dto.response.NicknameResponseDto;
-import com.example.sherlockescape.service.KakaoUserService;
 import com.example.sherlockescape.service.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
