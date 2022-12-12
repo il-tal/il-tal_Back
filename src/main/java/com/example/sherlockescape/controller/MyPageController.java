@@ -2,10 +2,7 @@ package com.example.sherlockescape.controller;
 
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.MyTendencyRequestDto;
-import com.example.sherlockescape.dto.response.AllMyInfoResponseDto;
-import com.example.sherlockescape.dto.response.MyCompanyResponseDto;
-import com.example.sherlockescape.dto.response.MyReviewResponseDto;
-import com.example.sherlockescape.dto.response.MyThemeResponseDto;
+import com.example.sherlockescape.dto.response.*;
 import com.example.sherlockescape.service.CompanyService;
 import com.example.sherlockescape.service.MemberService;
 import com.example.sherlockescape.service.ReviewService;
@@ -33,8 +30,8 @@ public class MyPageController {
     * 내가 작성한 리뷰 조회
     * */
     @GetMapping("/myreviews")
-    public ResponseDto<List<MyReviewResponseDto>> getMyReviews(@AuthenticationPrincipal UserDetails userDetails){
-        List<MyReviewResponseDto> myReviewResponseDtoList = reviewService.getMyReviews(userDetails.getUsername());
+    public ResponseDto<List<MyReviewProjectionsDto>> getMyReviews(@AuthenticationPrincipal UserDetails userDetails){
+        List<MyReviewProjectionsDto> myReviewResponseDtoList = reviewService.getMyReviews(userDetails.getUsername());
         return ResponseDto.success(myReviewResponseDtoList);
     }
 

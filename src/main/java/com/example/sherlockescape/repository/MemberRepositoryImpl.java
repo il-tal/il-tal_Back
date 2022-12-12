@@ -1,6 +1,5 @@
 package com.example.sherlockescape.repository;
 
-import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.dto.response.MemberBadgeResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -10,7 +9,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.sherlockescape.domain.QMember.member;

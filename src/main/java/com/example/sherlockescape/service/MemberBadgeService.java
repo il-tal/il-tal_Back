@@ -11,7 +11,6 @@ import com.example.sherlockescape.dto.response.UpdateBadgeResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.BadgeRepository;
-import com.example.sherlockescape.repository.MemberBadgeRepository;
 import com.example.sherlockescape.repository.MemberRepository;
 import com.example.sherlockescape.repository.memberbadge.simplequery.MemberBadgeSimpleQueryRepository;
 import com.example.sherlockescape.repository.review.simplequery.ReviewSimpleQueryRepository;

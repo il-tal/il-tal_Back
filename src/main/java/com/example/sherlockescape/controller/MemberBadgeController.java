@@ -5,7 +5,6 @@ import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.response.MainAchieveResponseDto;
 import com.example.sherlockescape.dto.response.MemberBadgeResponseDto;
 import com.example.sherlockescape.dto.response.UpdateBadgeResponseDto;
-import com.example.sherlockescape.repository.MemberRepository;
 import com.example.sherlockescape.service.MemberBadgeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,8 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

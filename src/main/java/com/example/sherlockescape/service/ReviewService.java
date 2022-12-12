@@ -6,6 +6,7 @@ import com.example.sherlockescape.domain.Review;
 import com.example.sherlockescape.domain.Theme;
 import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.ReviewRequestDto;
+import com.example.sherlockescape.dto.response.MyReviewProjectionsDto;
 import com.example.sherlockescape.dto.response.MyReviewResponseDto;
 import com.example.sherlockescape.dto.response.ReviewResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
@@ -166,27 +167,31 @@ public class ReviewService {
 	}
 
 	//내가 작성한 후기 조회
-	public List<MyReviewResponseDto> getMyReviews(String username) {
+	public List<MyReviewProjectionsDto> getMyReviews(String username) {
 
-		List<Review> reviewList = reviewRepository.findReviewsByMemberUsername(username);
+		//refactoring
+		//querydsl projections, theme join 사용
+		return reviewRepository.getMyReviewList(username);
 
-		List<MyReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
-		for(Review review: reviewList){
-
-			MyReviewResponseDto myReviewResponseDtoList = MyReviewResponseDto.builder()
-					.id(review.getTheme().getId())
-					.themeName(review.getTheme().getThemeName())
-					.playTime(review.getTheme().getPlayTime())
-					.themeImgUrl(review.getTheme().getThemeImgUrl())
-					.playDate(review.getPlayDate())
-					.score(review.getScore())
-					.success(review.isSuccess())
-					.difficulty(review.getDifficulty())
-					.comment(review.getComment())
-					.build();
-			reviewResponseDtoList.add(myReviewResponseDtoList);
-		}
-		return reviewResponseDtoList;
+//		List<Review> reviewList = reviewRepository.findReviewsByMemberUsername(username);
+//
+//		List<MyReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
+//		for(Review review: reviewList){
+//
+//			MyReviewResponseDto myReviewResponseDtoList = MyReviewResponseDto.builder()
+//					.id(review.getTheme().getId())
+//					.themeName(review.getTheme().getThemeName())
+//					.playTime(review.getTheme().getPlayTime())
+//					.themeImgUrl(review.getTheme().getThemeImgUrl())
+//					.playDate(review.getPlayDate())
+//					.score(review.getScore())
+//					.success(review.isSuccess())
+//					.difficulty(review.getDifficulty())
+//					.comment(review.getComment())
+//					.build();
+//			reviewResponseDtoList.add(myReviewResponseDtoList);
+//		}
+//		return reviewResponseDtoList;
 	}
 
 	//준영속 엔티티 변경 감지 기능 적용
