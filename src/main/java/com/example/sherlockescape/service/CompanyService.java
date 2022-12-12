@@ -65,6 +65,25 @@ public class CompanyService {
         return ResponseDto.success("업체 등록 성공");
     }
 
+    /*
+    *
+    * 업체 DB 수정
+    * */
+    @Transactional
+    public Long updateCompany(Long companyId, MultipartFile multipartFile) throws IOException {
+        Company company = companyRepository.findById(companyId).orElseThrow(
+                () -> new GlobalException(ErrorCode.COMPANY_NOT_FOUND)
+        );
+
+        String imgUrl = commonUtils.createAll(multipartFile.getOriginalFilename(),
+                multipartFile.getContentType(),
+                multipartFile.getInputStream());
+
+        company.updateCompanyImgUrl(imgUrl);
+
+        return company.getId();
+    }
+
     //업체 상세 페이지 조회
     @Transactional
     public ResponseDto<CompanyDetailResponseDto> getCompanyDetail(Long companyId, String username) {
@@ -234,4 +253,5 @@ public class CompanyService {
         }
         return myCompanyResponseDtoList;
     }
+
 }

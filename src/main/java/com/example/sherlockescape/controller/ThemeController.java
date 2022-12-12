@@ -34,6 +34,17 @@ public class ThemeController {
         return themeService.createTheme(companyId, multipartFile, themeRequestDto);
     }
 
+    /*
+     *
+     * 테마 DB 수정
+     * */
+    @PostMapping("/theme/update/{themeId}")
+    public Long updateTheme(@PathVariable Long themeId,
+                            @RequestPart(required = false, value = "file") MultipartFile multipartFile) throws IOException {
+        return themeService.updateTheme(themeId, multipartFile);
+    }
+
+
     //테마 필터링
     @GetMapping("/themes")
     public ResponseDto<Page<ThemeResponseDto>> findFilter(@PageableDefault(size = 9, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
@@ -84,8 +95,11 @@ public class ThemeController {
 
     //메인 페이지 인기테마
     @GetMapping("/main/best")
-    public ResponseDto<List<ThemeResponseDto>> getBestTheme
-    (@PageableDefault(size = 3, sort = "totalLikeCnt", direction = Sort.Direction.DESC) Pageable pageable){
+    public ResponseDto<List<ThemeResponseDto>> getBestTheme(@PageableDefault(
+                                                            size = 3,
+                                                            sort = "totalLikeCnt",
+                                                            direction = Sort.Direction.DESC
+                                                            )Pageable pageable){
         return ResponseDto.success(themeService.findBestTheme(pageable));
     }
 

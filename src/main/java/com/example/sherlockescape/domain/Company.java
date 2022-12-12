@@ -1,5 +1,6 @@
 package com.example.sherlockescape.domain;
 
+import com.example.sherlockescape.dto.request.CompanyRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -54,8 +55,8 @@ public class Company {
     public Company(Long companyId){
         this.id = companyId;
     }
-
     public void updateCompanyScore(double companyScore){
         this.companyScore = companyScore;
     }
+    public void updateCompanyImgUrl(String imgUrl){ this.companyImgUrl = imgUrl; }
 }

@@ -1,5 +1,6 @@
 package com.example.sherlockescape.domain;
 
+import com.example.sherlockescape.dto.request.ThemeRequestDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -70,4 +71,5 @@ public class Theme {
     public void updateTotalLikeCnt(int totalLikeCnt) { this.totalLikeCnt = totalLikeCnt; }
     public void updateThemeScore(double themeScore) { this.themeScore = themeScore; }
     public void updateReviewCnt(Long reviewCnt) { this.reviewCnt = reviewCnt; }
+    public void updateThemeImgUrl(String imgUrl) { this.themeImgUrl = imgUrl; }
 }

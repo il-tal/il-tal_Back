@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,27 @@ public class CompanyController {
     public ResponseDto<String> createCompany(@RequestPart(required = false, value = "file") MultipartFile multipartFile,
                                              @RequestPart(value = "company") @Valid CompanyRequestDto companyRequestDto) throws IOException {
         return companyService.createCompany(multipartFile, companyRequestDto);
+    }
+
+//    /*
+//     *
+//     * 업체 DB 수정
+//     * */
+//    @PostMapping("/company/{companyId}")
+//    public Long updateCompany(@PathVariable Long companyId,
+//                                             @RequestPart(required = false, value = "file") MultipartFile multipartFile,
+//                                             @RequestPart(value = "company") @Valid CompanyRequestDto companyRequestDto) throws IOException {
+//        return companyService.updateCompany(companyId, multipartFile, companyRequestDto);
+//    }
+
+    /*
+     *
+     * 업체 DB 수정
+     * */
+    @PostMapping("/company/{companyId}")
+    public Long updateCompany(@PathVariable Long companyId,
+                              @RequestPart(required = false, value = "file") MultipartFile multipartFile) throws IOException {
+        return companyService.updateCompany(companyId, multipartFile);
     }
 
     /*

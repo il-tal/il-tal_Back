@@ -5,6 +5,7 @@ import com.example.sherlockescape.domain.Member;
 import com.example.sherlockescape.domain.Theme;
 import com.example.sherlockescape.domain.ThemeLike;
 import com.example.sherlockescape.dto.ResponseDto;
+import com.example.sherlockescape.dto.request.CompanyRequestDto;
 import com.example.sherlockescape.dto.request.ThemeRequestDto;
 import com.example.sherlockescape.dto.response.MyThemeResponseDto;
 import com.example.sherlockescape.dto.response.ThemeDetailResponseDto;
@@ -69,6 +70,27 @@ public class ThemeService {
         themeRepository.save(theme);
         return ResponseDto.success(theme.getId());
     }
+
+    /*
+    *
+    *
+    * 테마 DB 수정
+    * */
+    @Transactional
+    public Long updateTheme(Long themeId, MultipartFile multipartFile) throws IOException {
+
+        Theme theme = themeRepository.findById(themeId).orElseThrow(
+                () -> new GlobalException(ErrorCode.THEME_NOT_FOUND)
+        );
+
+        String imgUrl = commonUtils.createAll(multipartFile.getOriginalFilename(),
+                                              multipartFile.getContentType(),
+                                              multipartFile.getInputStream());
+        theme.updateThemeImgUrl(imgUrl);
+
+        return theme.getId();
+    }
+
 
     //테마 필터링
     public Page<ThemeResponseDto> filter(Pageable pageable, List<String> location, List<String> genreFilter, List<Integer> themeScore, List<Integer> difficulty, List<Integer> people, String username){
@@ -245,4 +267,5 @@ public class ThemeService {
         Collections.shuffle(randomThemes);
         return new ArrayList<>(randomThemes.subList(0,10));
     }
+
 }
