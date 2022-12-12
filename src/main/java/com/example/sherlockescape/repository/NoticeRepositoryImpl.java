@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import static com.example.sherlockescape.domain.QNotice.notice1;
+import static com.example.sherlockescape.domain.QNotice.notice;
 
 @RequiredArgsConstructor
 public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
@@ -19,14 +19,14 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
 	@Override
 	public Page<Notice> getNoticeList(Pageable pageable) {
 		List<Notice> result = jpaQueryFactory
-				.selectFrom(notice1)
+				.selectFrom(notice)
 				.limit(pageable.getPageSize())
 				.offset(pageable.getOffset())
-				.orderBy(notice1.id.desc())
+				.orderBy(notice.id.desc())
 				.fetch();
 
 		long totalSize = jpaQueryFactory
-				.selectFrom(notice1)
+				.selectFrom(notice)
 				.fetch().size();
 
 		return new PageImpl<>(result, pageable, totalSize);

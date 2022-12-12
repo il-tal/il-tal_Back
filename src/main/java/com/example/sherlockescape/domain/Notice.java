@@ -24,14 +24,14 @@ public class Notice extends BaseTimeEntity {
 	private String title;
 
 	@Column
-	private String notice;
+	private String noticeContent;
 
 	@Column
 	private String noticeImgUrl;
 
-	public void update(NoticeRequestDto requestDto) {
+	public void update(NoticeRequestDto requestDto, String imgUrl) {
 		this.title = requestDto.getTitle();
-		this.notice = requestDto.getNotice();
-		this.noticeImgUrl = requestDto.getNoticeImgUrl();
+		this.noticeContent = requestDto.getNoticeContent();
+		this.noticeImgUrl = imgUrl;
 	}
 }

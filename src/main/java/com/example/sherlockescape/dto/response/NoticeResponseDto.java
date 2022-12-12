@@ -15,7 +15,7 @@ public class NoticeResponseDto {
 
 	private Long id;
 	private String title;
-	private String notice;
+	private String noticeContent;
 	private String noticeImgUrl;
 	private LocalDateTime createdAt;
 	private LocalDateTime modifiedAt;
