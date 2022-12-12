@@ -1,18 +1,15 @@
 package com.example.sherlockescape.dto.request;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Builder
 @Getter
 @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class NoticeRequestDto {
 
 	private String title;
-	private String notice;
-	private String noticeImgUrl;
+	private String noticeContent;
 
 }

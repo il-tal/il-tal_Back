@@ -7,6 +7,7 @@ import com.example.sherlockescape.dto.response.NoticeResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.NoticeRepository;
+import com.example.sherlockescape.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,7 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,15 +29,20 @@ import java.util.List;
 public class NoticeService {
 
 	private final NoticeRepository noticeRepository;
+	private final CommonUtils commonUtils;
 
 	// 공지사항 작성
 	@Transactional
-	public ResponseDto<String> createNotice(NoticeRequestDto noticeRequestDto) {
+	public ResponseDto<String> createNotice(MultipartFile multipartFile, NoticeRequestDto noticeRequestDto) throws IOException {
+
+		String imgUrl = commonUtils.createAll(multipartFile.getOriginalFilename(),
+												multipartFile.getContentType(),
+												multipartFile.getInputStream());
 
 		Notice notice = Notice.builder()
 				.title(noticeRequestDto.getTitle())
-				.notice(noticeRequestDto.getNotice())
-				.noticeImgUrl(noticeRequestDto.getNoticeImgUrl())
+				.noticeContent(noticeRequestDto.getNoticeContent())
+				.noticeImgUrl(imgUrl)
 				.build();
 		noticeRepository.save(notice);
 		return ResponseDto.success("공지사항 등록 완료!");
@@ -53,7 +61,7 @@ public class NoticeService {
 				NoticeResponseDto.builder()
 						.id(notice.getId())
 						.title(notice.getTitle())
-						.notice(notice.getNotice())
+						.noticeContent(notice.getNoticeContent())
 						.noticeImgUrl(notice.getNoticeImgUrl())
 						.createdAt(notice.getCreatedAt())
 						.modifiedAt(notice.getModifiedAt())
@@ -75,7 +83,7 @@ public class NoticeService {
 					NoticeResponseDto.builder()
 							.id(notice.getId())
 							.title(notice.getTitle())
-							.notice(notice.getNotice())
+							.noticeContent(notice.getNoticeContent())
 							.noticeImgUrl(notice.getNoticeImgUrl())
 							.createdAt(notice.getCreatedAt())
 							.modifiedAt(notice.getModifiedAt())
@@ -88,13 +96,17 @@ public class NoticeService {
 
 	// 공지사항 수정
 	@Transactional
-	public ResponseDto<String> updateNotice(Long noticeId, NoticeRequestDto noticeRequestDto) {
+	public ResponseDto<String> updateNotice( Long noticeId, MultipartFile multipartFile, NoticeRequestDto noticeRequestDto) throws IOException {
+
+		String imgUrl = commonUtils.createAll(multipartFile.getOriginalFilename(),
+				multipartFile.getContentType(),
+				multipartFile.getInputStream());
 
 		Notice notice = noticeRepository.findById(noticeId).orElseThrow(
 				() -> new GlobalException(ErrorCode.NOTICE_NOT_FOUND)
 		);
 
-		notice.update(noticeRequestDto);
+		notice.update(noticeRequestDto, imgUrl);
 		return ResponseDto.success("공지사항 수정 완료!");
 	}
 
