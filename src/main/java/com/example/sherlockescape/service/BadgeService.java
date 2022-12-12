@@ -6,6 +6,7 @@ import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.BadgeCreateRequestDto;
 import com.example.sherlockescape.dto.request.BadgeGiveRequestDto;
 import com.example.sherlockescape.dto.response.BadgeResponseDto;
+import com.example.sherlockescape.dto.response.MyBadgeProjectionsDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.BadgeRepository;
@@ -74,6 +75,7 @@ public class BadgeService {
 
         return badgeSimpleQueryRepository.findBadgeDto();
     }
+
 
 
     //뱃지 부여
@@ -211,5 +213,11 @@ public class BadgeService {
                             .gotBadge(true)
                             .build();
             return ResponseDto.success(badgeResponseDto);
+    }
+
+    //멤버가 가진 칭호 조회
+    public List<MyBadgeProjectionsDto> getMemberBadges(String username) {
+
+        return memberBadgeRepository.findAllBadges(username);
     }
 }

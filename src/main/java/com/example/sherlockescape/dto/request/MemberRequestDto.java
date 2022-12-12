@@ -12,10 +12,10 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class MemberRequestDto {
 //
-//    비밀번호 소문자/특수문자 포함 8-16자
+//    비밀번호 소문자포함 8-16자
 //    아이디 영문/숫자포함 4-12자
 //    닉네임 한글/영어포함 2-10자
-    private static final String PASSWORD_REGEX = "^(?=.*[~`!@#$%\\^&*()-])(?=.*[a-zA-Z]).{8,16}$";
+    private static final String PASSWORD_REGEX = "^(?=.*[a-zA-Z]).{8,16}$";
 
     @NotBlank(message = "Username은 공백일 수 없습니다.")
     //@Pattern(regexp = "[a-zA-Z0-9]{4,12}", message = "닉네임양식을 확인해주세요!")

@@ -4,6 +4,7 @@ import com.example.sherlockescape.dto.ResponseDto;
 import com.example.sherlockescape.dto.request.BadgeCreateRequestDto;
 import com.example.sherlockescape.dto.request.BadgeGiveRequestDto;
 import com.example.sherlockescape.dto.response.BadgeResponseDto;
+import com.example.sherlockescape.dto.response.MyBadgeProjectionsDto;
 import com.example.sherlockescape.repository.badge.simplequery.BadgeSimpleQueryDto;
 import com.example.sherlockescape.service.BadgeService;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,16 @@ public class BadgeController {
     }
     /*
     *
+    * member badge 조회
+    * */
+    @GetMapping("/member/badges")
+    public ResponseDto<List<MyBadgeProjectionsDto>> getMemberBadges(@AuthenticationPrincipal UserDetails userDetails){
+        List<MyBadgeProjectionsDto> myBadgeProjectionsDto = badgeService.getMemberBadges(userDetails.getUsername());
+        return ResponseDto.success(myBadgeProjectionsDto);
+    }
+
+    /*
+    *
     * badge 부여
     * */
     @PostMapping("/badge/give")
@@ -48,8 +59,5 @@ public class BadgeController {
                                                    @RequestBody BadgeGiveRequestDto badgeGiveRequestDto){
         return badgeService.giveBadge(userDetails.getUsername(), badgeGiveRequestDto);
     }
-    /*
-    *
-    * test
-    * */
+
 }
