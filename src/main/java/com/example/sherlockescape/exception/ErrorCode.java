@@ -2,7 +2,6 @@ package com.example.sherlockescape.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
@@ -28,6 +27,7 @@ public enum ErrorCode {
 	BADGE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "Badge not Found", "뱃지가 존재 하지 않습니다."),
 	TENDENCY_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "Tendency not Found", "성향이 존재 하지 않습니다."),
 	REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "Review not Found", "리뷰가 존재 하지 않습니다."),
+	NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "Notice not Found", "공지가 존재 하지 않습니다."),
 
 
 	/* CONFLICT 409 error*/
