@@ -35,6 +35,8 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
 						notice.createdAt,
 						notice.modifiedAt
 				))
+				.limit(pageable.getPageSize())
+				.offset(pageable.getOffset())
 				.fetch();
 
 		return new PageImpl<>(result, pageable, result.size());
