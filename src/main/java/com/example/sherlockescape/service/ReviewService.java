@@ -173,28 +173,9 @@ public class ReviewService {
 		//querydsl projections, theme join 사용
 		return reviewRepository.getMyReviewList(username);
 
-//		List<Review> reviewList = reviewRepository.findReviewsByMemberUsername(username);
-//
-//		List<MyReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
-//		for(Review review: reviewList){
-//
-//			MyReviewResponseDto myReviewResponseDtoList = MyReviewResponseDto.builder()
-//					.id(review.getTheme().getId())
-//					.themeName(review.getTheme().getThemeName())
-//					.playTime(review.getTheme().getPlayTime())
-//					.themeImgUrl(review.getTheme().getThemeImgUrl())
-//					.playDate(review.getPlayDate())
-//					.score(review.getScore())
-//					.success(review.isSuccess())
-//					.difficulty(review.getDifficulty())
-//					.comment(review.getComment())
-//					.build();
-//			reviewResponseDtoList.add(myReviewResponseDtoList);
-//		}
-//		return reviewResponseDtoList;
 	}
 
-	//준영속 엔티티 변경 감지 기능 적용
+
 	//테마 평점 계산
 	private void setThemeScore(Long themeId){
 		Theme updateThemeScore = themeRepository.findById(themeId).orElseThrow(
@@ -214,12 +195,13 @@ public class ReviewService {
 				.average().orElse(0);
 		double themeScore = Math.round(average*100)/100.0;
 
+		//준영속 엔티티 변경 감지 기능 적용
 		//해당 테마의 score 로 저장하기
 		updateThemeScore.updateThemeScore(themeScore);
 	}
 
 
-	//준영속 엔티티 변경 감지 기능 적용
+
 	//업체 평점 계산
 	private void setCompanyScore(Long companyId) {
 		Company updateCompanyScore = companyRepository.findById(companyId).orElseThrow(
@@ -243,6 +225,7 @@ public class ReviewService {
 				.average().orElse(0);
 		double companyScore = Math.round(average*100)/100.0;
 
+		//준영속 엔티티 변경 감지 기능 적용
 		//해당 테마의 score 로 저장하기
 		updateCompanyScore.updateCompanyScore(companyScore);
 	}

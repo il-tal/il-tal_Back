@@ -11,21 +11,18 @@ import com.example.sherlockescape.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class NoticeService {
 
 	private final NoticeRepository noticeRepository;
@@ -50,47 +47,14 @@ public class NoticeService {
 
 
 	// 공지사항 상세조회
-	@Transactional(readOnly = true)
-	public ResponseDto<NoticeResponseDto> getNotice(Long noticeId) {
-
-		Notice notice = noticeRepository.findById(noticeId).orElseThrow(
-				() -> new GlobalException(ErrorCode.NOTICE_NOT_FOUND)
-		);
-
-		return ResponseEntity.ok().body(ResponseDto.success(
-				NoticeResponseDto.builder()
-						.id(notice.getId())
-						.title(notice.getTitle())
-						.noticeContent(notice.getNoticeContent())
-						.noticeImgUrl(notice.getNoticeImgUrl())
-						.createdAt(notice.getCreatedAt())
-						.modifiedAt(notice.getModifiedAt())
-						.build()
-		)).getBody();
+	public NoticeResponseDto getNotice(Long noticeId) {
+		return noticeRepository.getDetailNotice(noticeId);
 	}
 
 
 	// 공지사항 전체조회
-	@Transactional(readOnly = true)
 	public Page<NoticeResponseDto> getAllNotice(Pageable pageable) {
-
-		Page<Notice> noticeList = noticeRepository.getNoticeList(pageable);
-
-		List<NoticeResponseDto> noticeAllList = new ArrayList<>();
-
-		for(Notice notice: noticeList) {
-			noticeAllList.add(
-					NoticeResponseDto.builder()
-							.id(notice.getId())
-							.title(notice.getTitle())
-							.noticeContent(notice.getNoticeContent())
-							.noticeImgUrl(notice.getNoticeImgUrl())
-							.createdAt(notice.getCreatedAt())
-							.modifiedAt(notice.getModifiedAt())
-							.build()
-			);
-		}
-		return new PageImpl<>(noticeAllList,pageable,noticeList.getTotalElements());
+		return noticeRepository.getAllNotices(pageable);
 	}
 
 

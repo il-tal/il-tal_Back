@@ -29,7 +29,7 @@ public class NoticeController {
 
 	// 공지사항 상세조회
 	@GetMapping("/notice/{noticeId}")
-	public ResponseDto<?> getNotice(@PathVariable Long noticeId){
+	public ResponseDto<NoticeResponseDto> getNotice(@PathVariable Long noticeId){
 		return ResponseDto.success(noticeService.getNotice(noticeId));
 	}
 
