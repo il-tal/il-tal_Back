@@ -11,6 +11,7 @@ import com.example.sherlockescape.dto.response.UpdateBadgeResponseDto;
 import com.example.sherlockescape.exception.ErrorCode;
 import com.example.sherlockescape.exception.GlobalException;
 import com.example.sherlockescape.repository.BadgeRepository;
+import com.example.sherlockescape.repository.MemberBadgeRepository;
 import com.example.sherlockescape.repository.MemberRepository;
 import com.example.sherlockescape.repository.memberbadge.simplequery.MemberBadgeSimpleQueryRepository;
 import com.example.sherlockescape.repository.review.simplequery.ReviewSimpleQueryRepository;
@@ -34,6 +35,7 @@ public class MemberBadgeService {
     private final MemberRepository memberRepository;
     private final ReviewSimpleQueryRepository reviewSimpleQueryRepository;
     private final MemberBadgeSimpleQueryRepository memberBadgeSimpleQueryRepository;
+    private final MemberBadgeRepository memberBadgeRepository;
 
 
 
@@ -67,6 +69,7 @@ public class MemberBadgeService {
 
         //memberBadge fetch 조인 조회 성능 최적화
         List<MemberBadge> memberBadgeList = memberBadgeSimpleQueryRepository.findBadgesWithMemberUsername(username);
+        int achieveCnt = memberBadgeRepository.countAllByMemberId(member.getId());
         int totalAchieveCnt = 0;
         int totalFailCnt = 0;
         for(Review review: reviewList){
@@ -87,6 +90,7 @@ public class MemberBadgeService {
                         .nickname(member.getNickname())
                         .mainBadgeImg(member.getMainBadgeImg())
                         .mainBadgeName(member.getMainBadgeName())
+                        .achieveBadgeCnt(achieveCnt)
                         .totalAchieveCnt(totalAchieveCnt)
                         .totalFailCnt(totalFailCnt)
                         .badgeImgUrl(badgeImgUrl)

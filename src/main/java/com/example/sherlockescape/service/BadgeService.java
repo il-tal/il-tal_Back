@@ -76,8 +76,6 @@ public class BadgeService {
         return badgeSimpleQueryRepository.findBadgeDto();
     }
 
-
-
     //뱃지 부여
     @Transactional
     public ResponseDto<BadgeResponseDto> giveBadge(String username, BadgeGiveRequestDto badgeGiveRequestDto) {
