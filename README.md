@@ -21,14 +21,13 @@
 
 ## 🚪 프로젝트 소개
 
-[:globe_with_meridians:]()
+### 일탈 웹사이트 바로가기 [:globe_with_meridians:](https://il-tal.com/)
 
-> 지루한 일상으로부터의 일탈을 꿈꾸는 <br/>
-> 방탈출 사이트 일상의 탈출입니다.
+> 방탈출, 하고는 싶은데 뭘 해야할지 모르겠다면?? :thinking: <br/>
+> 일탈에서 방탈출 정보를 한번에 모아보고, 바로 예약사이트로 연결까지 <br/>
+> 나의 방탈출 업적을 기록해 뱃지도 받아보세요~
 
-![](./src/asset/test-img.webp)
-
-프로젝트를 소개하는 내용입니다
+[![일탈](https://user-images.githubusercontent.com/109974940/207609115-5527fcaf-8c71-4c18-83a5-138c8671c20b.jpeg)](https://il-tal.com/)
 
 <p align="right">(<a href="#Top">맨 위로</a>)</p>
 
